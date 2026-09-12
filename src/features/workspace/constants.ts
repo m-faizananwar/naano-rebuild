@@ -17,7 +17,8 @@ export const INDUSTRIES = [
 ] as const;
 export const REGIONS = ["Europe", "North America", "Latin America", "Asia", "Africa", "Oceania", "Middle East", "Worldwide"] as const;
 
-export const MCP_ENDPOINT = "https://naano.com/api/mcp";
+// The endpoint path on OUR host; the page derives the origin from the request. Documented, not served in this build.
+export const MCP_ENDPOINT_PATH = "/api/mcp";
 export const MCP_SETUPS = [
   {
     key: "claude",

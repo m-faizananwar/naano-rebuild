@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { STATUS_LABELS } from "@/lib/collaboration-labels";
+import type { CollaborationStatus } from "@/lib/collaboration-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { TrackedLinkPerformance } from "../../server/creator-queries";
 
@@ -28,7 +30,7 @@ export function TrackedLinksTable({ rows }: { rows: TrackedLinkPerformance[] }) 
                   <TableCell className="font-medium">{r.brand}</TableCell>
                   <TableCell className="text-muted-foreground">{r.campaign}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{r.status.replaceAll("_", " ")}</Badge>
+                    <Badge variant="secondary">{STATUS_LABELS[r.status as CollaborationStatus] ?? r.status}</Badge>
                   </TableCell>
                   <TableCell>
                     <Link href={`/r/${r.code}`} className="font-mono text-xs text-brand hover:underline" target="_blank">

@@ -33,8 +33,8 @@ export const COLLAB_TAB_STATUSES: Record<Exclude<CollabTabKey, "all">, readonly 
 };
 
 export const COLLAB_STATUS_LABEL: Record<CollaborationStatus, string> = {
-  invited: "Invitation sent",
-  applied: "Application received",
+  invited: "Invited",
+  applied: "Applied",
   accepted: "Accepted",
   declined: "Declined",
   draft_submitted: "Draft ready",

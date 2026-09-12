@@ -23,15 +23,18 @@ export function CreatorCard({ creator }: { creator: CreatorDto }) {
         <BookButton creator={creator} />
       </div>
 
-      <div className="flex items-center gap-3">
-        <Avatar className="size-14 rounded-full border">
+      {/* Reference card: avatar centred above the name, then one row of four stats. */}
+      <div className="flex flex-col items-center text-center">
+        <Avatar className="size-16 rounded-full border">
           <AvatarImage src={creator.avatarUrl} alt="" />
           <AvatarFallback>{creator.name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <CreatorIdentity creator={creator} />
+        <div className="mt-3 w-full">
+          <CreatorIdentity creator={creator} centered />
+        </div>
       </div>
 
-      <CreatorStats creator={creator} />
+      <CreatorStats creator={creator} columns={4} />
 
       <div className="mt-auto flex items-center justify-between">
         <FitPill score={creator.fit.score} />

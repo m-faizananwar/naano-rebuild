@@ -4,13 +4,12 @@ import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MCP_ENDPOINT } from "../../constants";
 import type { McpClientSetup } from "./mcpClientsFor";
 
-export function McpSetupDialog({ setup }: { setup: McpClientSetup }) {
+export function McpSetupDialog({ setup, url }: { setup: McpClientSetup; url: string }) {
   async function copy() {
     try {
-      await navigator.clipboard.writeText(MCP_ENDPOINT);
+      await navigator.clipboard.writeText(url);
       toast.success("MCP URL copied");
     } catch {
       toast.error("Could not copy the URL");
@@ -32,7 +31,7 @@ export function McpSetupDialog({ setup }: { setup: McpClientSetup }) {
             </li>
           ))}
         </ol>
-        <p className="rounded-lg bg-muted px-3 py-2 font-mono text-xs break-all">{MCP_ENDPOINT}</p>
+        <p className="rounded-lg bg-muted px-3 py-2 font-mono text-xs break-all">{url}</p>
         <div className="flex flex-wrap gap-2">
           <Button type="button" onClick={copy}>
             <Copy aria-hidden="true" /> Copy MCP URL
