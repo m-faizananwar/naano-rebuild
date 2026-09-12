@@ -1,7 +1,7 @@
 import type { AudienceMix, CreatorBundle } from "@/db/schema";
 import { daysAgo, faker, jitter, lognormal, pickWeighted, toPercentMix } from "./random";
 import {
-  COUNTRY_WEIGHTS, FORMER_EMPLOYERS, HEADLINE_TEMPLATES, INDUSTRIES, INDUSTRY_AUDIENCE, type Industry,
+  COUNTRY_WEIGHTS, CPM_EUR, FORMER_EMPLOYERS, HEADLINE_TEMPLATES, INDUSTRIES, INDUSTRY_AUDIENCE, type Industry,
   JOB_TITLES, POST_BODIES, POST_OPENERS, SENIORITY, tierFor,
 } from "./taxonomy";
 
@@ -53,9 +53,11 @@ export function recommendPriceCents(followers: number) {
   return Math.min(PRICE_CAP, Math.max(PRICE_FLOOR, Math.round(jitter(base, 0.15) / 500) * 500));
 }
 
-export function askingPriceCents(followers: number) {
-  const positioning = lognormal(1000, 0.7, 60, 1400) / 1000;
-  const cents = Math.round((recommendPriceCents(followers) * positioning) / 500) * 500;
+// What creators actually charge: their median views priced at a CPM drawn from
+// naano's observed 11-34 EUR band, rounded to 5 EUR, within the platform limits.
+export function priceFromViewsCents(medianViews: number) {
+  const cpm = lognormal(CPM_EUR.median * 100, CPM_EUR.sigma, CPM_EUR.min * 100, CPM_EUR.max * 100) / 100;
+  const cents = Math.round(((medianViews * cpm) / 1000) * 100 / 500) * 500;
   return Math.min(PRICE_CAP, Math.max(PRICE_FLOOR, cents));
 }
 
@@ -117,7 +119,7 @@ export function buildCreator(overrides: Partial<CreatorFixture> = {}): CreatorFi
   const tier = tierFor(followers);
   const medianViews = overrides.medianViews ?? Math.round(followers * jitter(tier.reach, 0.35));
   const engagementRate = overrides.engagementRate ?? Number(jitter(tier.engagement, 0.35).toFixed(4));
-  const priceCents = overrides.priceCents ?? askingPriceCents(followers);
+  const priceCents = overrides.priceCents ?? priceFromViewsCents(medianViews);
   const bundles: CreatorBundle[] =
     overrides.bundles ??
     (faker.datatype.boolean({ probability: 0.4 })
@@ -157,6 +159,7 @@ export function buildDemoCreator(): CreatorFixture {
     industries: ["AI", "SaaS", "Productivity"],
     headline: "Building AI workflows for small SaaS teams · notes on productivity that actually ships",
     followers: 2070,
+    medianViews: 8280,
     priceCents: 31500,
     bundles: [{ posts: 5, totalCents: 134000 }],
   });

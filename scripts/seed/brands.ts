@@ -227,6 +227,29 @@ const premiumInboxes: BrandFixture = {
         ],
       }),
     },
+    {
+      key: "pi-agencies",
+      name: "Agency wave — deliverability for lead-gen teams",
+      description: "Creators who run outbound for clients explain what pre-warmed infrastructure changes.",
+      status: "active",
+      openToApplications: true,
+      postDeadline: daysFromNow(9),
+      defaultFeeCents: 30_000,
+      createdAt: daysAgo(4),
+      brief: brief("Premium Inboxes", {
+        whatToTell: "Pre-warmed domains and mailboxes for agencies that manage dozens of client domains. Tell the story of one client account you would not risk on unproven infrastructure.",
+        targetIndustries: ["Outreach", "Sales", "Growth / GTM"],
+        links: ["https://premiuminboxes.com"],
+        angles: [
+          {
+            angle: "One client, one blacklisting",
+            hook: "Agencies don't lose clients to bad copy. They lose them to a blacklisted domain.",
+            direction: "A concrete account story, then the infrastructure lesson.",
+            example: "The client noticed before we did. Replies dropped to zero on a Tuesday; by Thursday the domain was gone. Never again.",
+          },
+        ],
+      }),
+    },
   ],
 };
 
@@ -266,6 +289,29 @@ const orbisearch: BrandFixture = {
             hook: "Your support team's real job is search.",
             direction: "Quantify the tab-hunting. Then show one search.",
             example: "I timed it: 4 minutes 20 seconds per ticket spent looking, not answering. That's the whole product story.",
+          },
+        ],
+      }),
+    },
+    {
+      key: "orbi-product",
+      name: "Product teams — one search over docs and Slack",
+      description: "Product and ops leads on the cost of knowledge scattered across tools.",
+      status: "active",
+      openToApplications: true,
+      postDeadline: daysFromNow(11),
+      defaultFeeCents: 35_000,
+      createdAt: daysAgo(3),
+      brief: brief("OrbiSearch", {
+        whatToTell: "One search box over docs, tickets and Slack, with permissions respected. Tell the story of a product or ops team that stopped re-answering the same question.",
+        targetIndustries: ["Productivity", "AI", "SaaS", "Data / Analytics"],
+        links: ["https://orbisearch.example"],
+        angles: [
+          {
+            angle: "The question asked 40 times",
+            hook: "Your team answered the same question 40 times last quarter. Search should have answered it once.",
+            direction: "Quantify the repeat questions, then show one search.",
+            example: "I counted: 40 Slack threads, same question, four different answers. One search box with the right permissions ended it.",
           },
         ],
       }),

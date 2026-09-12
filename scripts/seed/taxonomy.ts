@@ -40,14 +40,18 @@ export const INDUSTRY_AUDIENCE: Record<Industry, Partial<Record<(typeof JOB_TITL
   "LegalTech": { Founders: 35, Operations: 25, Finance: 15 },
 };
 
-// naano's Q2 2026 benchmark: smaller creators get higher CTR.
+// naano's Q2 2026 benchmark: smaller creators get higher CTR. `reach` is
+// median views as a multiple of followers (LinkedIn reach runs 1.5-4x the
+// follower count, higher for smaller accounts).
 export const TIERS = [
-  { max: 3_000, ctr: 0.138, engagement: 0.055, reach: 0.45 },
-  { max: 7_000, ctr: 0.121, engagement: 0.042, reach: 0.32 },
-  { max: 10_000, ctr: 0.104, engagement: 0.034, reach: 0.25 },
-  { max: 100_000, ctr: 0.087, engagement: 0.024, reach: 0.12 },
-  { max: Infinity, ctr: 0.087, engagement: 0.018, reach: 0.06 },
+  { max: 3_000, ctr: 0.138, engagement: 0.055, reach: 3.6 },
+  { max: 7_000, ctr: 0.121, engagement: 0.042, reach: 3.0 },
+  { max: 10_000, ctr: 0.104, engagement: 0.034, reach: 2.5 },
+  { max: 100_000, ctr: 0.087, engagement: 0.024, reach: 2.0 },
+  { max: Infinity, ctr: 0.087, engagement: 0.018, reach: 1.6 },
 ] as const;
+// naano's real CPMs sit between 11 and 34 EUR.
+export const CPM_EUR = { median: 18, sigma: 0.3, min: 11, max: 34 } as const;
 
 export function tierFor(followers: number) {
   return TIERS.find((t) => followers <= t.max) ?? TIERS[TIERS.length - 1];
