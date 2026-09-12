@@ -21,7 +21,7 @@ function Divider({ label }: { label: string }) {
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const { next } = await searchParams;
   return (
-    <AuthSplitLayout panelTitle="Welcome back." panelBody="Sign in to manage your campaigns, creators and payouts, all in one place.">
+    <AuthSplitLayout>
       <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
       <p className="mt-2 text-sm text-muted-foreground">Sign in to your account</p>
       <div className="mt-6 rounded-2xl bg-brand-soft/60 p-4">
