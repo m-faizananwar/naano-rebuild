@@ -7,6 +7,9 @@ export const BRAND = {
   tagline: "The creators your buyers already trust.",
   // Demo logins: brand@<demoDomain> / creator@<demoDomain>, seeded by scripts/seed.
   demoDomain: "demo.amplio",
+  // Demo domain of a database seeded before the rename; the demo login falls
+  // back to it so a live database keeps working until pnpm db:seed:remote.
+  legacyDemoDomain: "demo.naano",
   supportEmail: "hello@amplio.example",
   // The matching copilot (naano's "Nao") and the support bot in Messages.
   copilot: "Amp",

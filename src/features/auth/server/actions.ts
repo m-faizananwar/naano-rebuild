@@ -1,7 +1,7 @@
 "use server";
 
 import { randomBytes } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb, isDbConfigured } from "@/db";
 import { brands, creators, users } from "@/db/schema";
@@ -96,7 +96,13 @@ export async function demoLogin(roleInput: string): Promise<ActionResult<{ redir
   const role = roleSchema.safeParse(roleInput);
   if (!role.success) return { ok: false, error: "Unknown demo role" };
 
-  const [user] = await getDb().select({ id: users.id }).from(users).where(eq(users.email, DEMO_ACCOUNTS[role.data].email));
+  const account = DEMO_ACCOUNTS[role.data];
+  const [user] = await getDb()
+    .select({ id: users.id })
+    .from(users)
+    .where(inArray(users.email, [account.email, account.legacyEmail]))
+    .orderBy(sql`case when ${users.email} = ${account.email} then 0 else 1 end`)
+    .limit(1);
   if (!user) return { ok: false, error: "Demo accounts are not seeded on this database yet (run pnpm db:seed)." };
 
   await createSession(user.id);

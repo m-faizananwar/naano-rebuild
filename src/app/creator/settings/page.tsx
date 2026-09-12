@@ -10,6 +10,7 @@ import { getCreatorSettings } from "@/features/workspace/server/settings-queries
 import type { CreatorProfileInput } from "@/features/workspace/schemas";
 
 import { BRAND } from "@/config/brand";
+import { isDemoEmail } from "@/features/auth/constants";
 export const metadata: Metadata = { title: `Settings · ${BRAND.wordmark}` };
 
 export default async function CreatorSettingsPage() {
@@ -47,7 +48,7 @@ export default async function CreatorSettingsPage() {
             <p className="text-sm text-muted-foreground">Signed in as {settings.email} · card handle @{settings.handle}</p>
           </div>
           <div>
-            <DeleteAccountButton isDemo={settings.email.endsWith(`@${BRAND.demoDomain}`)} />
+            <DeleteAccountButton isDemo={isDemoEmail(settings.email)} />
           </div>
         </TabsContent>
       </Tabs>
