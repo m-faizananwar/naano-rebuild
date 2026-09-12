@@ -22,8 +22,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (result.kind === "unconfigured") return NextResponse.redirect(new URL("/", request.url), HTTP_FOUND);
   if (result.kind === "unknown") return new NextResponse("Unknown link", { status: HTTP_NOT_FOUND });
 
-  // Relative destinations (the seeded demo landing page) resolve against this deployment.
+  // Relative destinations (the seeded demo landing page) resolve against this
+  // deployment. Seeded placeholder hosts (*.example) have nowhere to go, so
+  // they land on the demo page for that brand with its own pixel key.
   const destination = new URL(result.destination, request.url);
+  if (destination.hostname.endsWith(".example")) {
+    destination.href = new URL(`/demo/landing?site=${result.siteKey}`, request.url).href;
+  }
   destination.searchParams.set(CLICK_QUERY_PARAM, result.clickId);
   const response = NextResponse.redirect(destination, HTTP_FOUND);
   response.cookies.set(CLICK_COOKIE, result.clickId, {

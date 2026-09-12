@@ -128,8 +128,9 @@ function spec(
     brandId: campaign.brand.id,
     brandUserId: campaign.brand.userId,
     brandCompany: campaign.brand.company,
-    // The demo brand's links land on our pixel demo page so the whole loop is clickable on the live site.
-    destination: campaign.brand.key === "zune" ? "/demo/landing" : campaign.brand.website,
+    // Every seeded link lands on our pixel demo page for that brand, so the whole
+    // loop is clickable on the live site from either side.
+    destination: campaign.brand.key === "zune" ? "/demo/landing" : `/demo/landing?site=${campaign.brand.pixelSiteKey}`,
     pixelSiteKey: campaign.brand.pixelSiteKey,
     creatorId: creator.id,
     creatorUserId: creator.userId,
