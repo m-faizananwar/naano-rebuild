@@ -74,6 +74,12 @@ export default defineConfig([
     },
   },
 
+  // ---- seed fixtures are data, not business logic --------------------------------
+  {
+    files: ["scripts/**/*.ts"],
+    rules: { "no-magic-numbers": "off" },
+  },
+
   // ---- src/lib is pure ---------------------------------------------------------
   {
     files: ["src/lib/**/*.ts"],
