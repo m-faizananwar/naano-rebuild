@@ -9,6 +9,7 @@ import { PostExamplesSection } from "@/features/public/components/landing/PostEx
 import { PricingSection } from "@/features/public/components/landing/PricingSection";
 import { QuoteSection } from "@/features/public/components/landing/QuoteSection";
 import { ResultsSection } from "@/features/public/components/landing/ResultsSection";
+import { PublicAssistantPill } from "@/features/public/components/nav/PublicAssistantPill";
 import { PublicFooter } from "@/features/public/components/nav/PublicFooter";
 import { PublicNav } from "@/features/public/components/nav/PublicNav";
 import { CtaSection } from "@/features/public/components/shared/CtaSection";
@@ -41,6 +42,7 @@ export default async function HomePage() {
         <Reveal><CtaSection /></Reveal>
       </main>
       <PublicFooter />
+      <PublicAssistantPill />
     </>
   );
 }

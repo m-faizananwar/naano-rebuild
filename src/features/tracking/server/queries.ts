@@ -1,10 +1,11 @@
 import "server-only";
 import { and, count, countDistinct, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { brands, campaigns, clicks, collaborations, creators, ledgerEntries, pixelEvents, trackingLinks, users } from "@/db/schema";
+import { brands, campaigns, clicks, collaborations, creatorPosts, creators, ledgerEntries, pixelEvents, trackingLinks, users } from "@/db/schema";
 import { CSV_MAX_ROWS, RESULTS_WINDOW_DAYS, SERIES_DAYS, type SeriesRange } from "../constants";
 
 const DAY_MS = 86_400_000;
+const DETAIL_ROWS = 6;
 const PUBLISHED = ["live", "paid"] as const;
 
 export type ResultsSummary = {
@@ -37,6 +38,14 @@ export type PublishedPost = {
   publishedAt: string | null;
   trackedUrl: string;
   clicks: number;
+  // "Latest metrics collected from your posts": the creator's recent public posts (LinkedIn's own numbers are not imported).
+  avgReactions: number;
+  avgComments: number;
+};
+export type AttributionDetails = {
+  byCountry: Array<{ country: string; clicks: number }>;
+  byReferrer: Array<{ referrer: string; clicks: number }>;
+  events: { visits: number; signups: number; purchases: number; revenueCents: number };
 };
 export type ClickLogRow = {
   clickedAt: string;
@@ -195,7 +204,9 @@ export async function getPublishedPosts(brandId: string, origin: string): Promis
       postUrl: collaborations.postUrl,
       publishedAt: collaborations.publishedAt,
       code: trackingLinks.code,
-      clicks: count(clicks.id),
+      clicks: countDistinct(clicks.id),
+      avgReactions: sql<number>`coalesce((select avg(${creatorPosts.reactions}) from ${creatorPosts} where ${creatorPosts.creatorId} = ${creators.id}), 0)::int`,
+      avgComments: sql<number>`coalesce((select avg(${creatorPosts.comments}) from ${creatorPosts} where ${creatorPosts.creatorId} = ${creators.id}), 0)::int`,
     })
     .from(collaborations)
     .innerJoin(campaigns, eq(campaigns.id, collaborations.campaignId))
@@ -215,7 +226,41 @@ export async function getPublishedPosts(brandId: string, origin: string): Promis
     publishedAt: r.publishedAt?.toISOString() ?? null,
     trackedUrl: `${origin}/r/${r.code}`,
     clicks: r.clicks,
+    avgReactions: r.avgReactions,
+    avgComments: r.avgComments,
   }));
+}
+
+// "More metrics & attribution details": where the clicks came from and what the pixel saw.
+export async function getAttributionDetails(brandId: string): Promise<AttributionDetails> {
+  const db = getDb();
+  const base = brandClicks(brandId).as("bc");
+  const byCountry = await db
+    .select({ country: sql<string>`coalesce(${base.country}, 'Unknown')`, clicks: count() })
+    .from(base)
+    .groupBy(sql`1`)
+    .orderBy(desc(count()))
+    .limit(DETAIL_ROWS);
+  const byReferrer = await db
+    .select({ referrer: sql<string>`coalesce(${base.referrer}, 'Direct')`, clicks: count() })
+    .from(base)
+    .groupBy(sql`1`)
+    .orderBy(desc(count()))
+    .limit(DETAIL_ROWS);
+  const [events] = await db
+    .select({
+      visits: sql<number>`count(*) filter (where ${pixelEvents.type} = 'visit')::int`,
+      signups: sql<number>`count(*) filter (where ${pixelEvents.type} = 'signup')::int`,
+      purchases: sql<number>`count(*) filter (where ${pixelEvents.type} = 'purchase')::int`,
+      revenueCents: sql<number>`coalesce(sum(${pixelEvents.valueCents}), 0)::int`,
+    })
+    .from(pixelEvents)
+    .where(eq(pixelEvents.brandId, brandId));
+  return {
+    byCountry: byCountry.map((r) => ({ country: r.country, clicks: r.clicks })),
+    byReferrer: byReferrer.map((r) => ({ referrer: r.referrer.replace(/^https?:\/\//, "").replace(/\/$/, ""), clicks: r.clicks })),
+    events: events ?? { visits: 0, signups: 0, purchases: 0, revenueCents: 0 },
+  };
 }
 
 export async function getClickLog(brandId: string, creatorId?: string): Promise<ClickLogRow[]> {

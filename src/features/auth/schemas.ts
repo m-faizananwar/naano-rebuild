@@ -13,6 +13,8 @@ export const registerSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid business email"),
   password: z.string().min(PASSWORD_MIN, `At least ${PASSWORD_MIN} characters`).max(200),
   heardAbout: z.enum(HEARD_ABOUT_OPTIONS).optional(),
+  // Creator handle from a Deal Link / referral link (?ref=), attributed on brand sign-up.
+  ref: z.string().trim().max(80).regex(/^[a-z0-9-]*$/).optional(),
 });
 export type RegisterInput = z.infer<typeof registerSchema>;
 

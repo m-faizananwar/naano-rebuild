@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { EmptyState } from "@/components/page/EmptyState";
 import { PageHeader } from "@/components/page/PageHeader";
 import { getViewer } from "@/features/auth/server/session";
+import { AttributionDetails } from "@/features/tracking/components/results/AttributionDetails";
 import { AttributionTable } from "@/features/tracking/components/results/AttributionTable";
 import { ClicksChart } from "@/features/tracking/components/results/ClicksChart";
 import { PixelCard } from "@/features/tracking/components/results/PixelCard";
@@ -11,7 +12,7 @@ import { PublishedPostsTable } from "@/features/tracking/components/results/Publ
 import { ResultsTiles } from "@/features/tracking/components/results/ResultsTiles";
 import { SERIES_DAYS, type SeriesRange } from "@/features/tracking/constants";
 import {
-  getAttributionByCreator, getClicksSeries, getPixelStatus, getPublishedPosts, getResultsSummary,
+  getAttributionByCreator, getAttributionDetails, getClicksSeries, getPixelStatus, getPublishedPosts, getResultsSummary,
 } from "@/features/tracking/server/queries";
 
 export const metadata: Metadata = { title: "Results · naano" };
@@ -29,12 +30,13 @@ export default async function BrandResultsPage({ searchParams }: { searchParams:
   const range: SeriesRange = rawRange && rawRange in SERIES_DAYS ? (rawRange as SeriesRange) : "month";
   const origin = await currentOrigin();
   const brandId = viewer.brand.id;
-  const [summary, series, attribution, pixel, posts] = await Promise.all([
+  const [summary, series, attribution, pixel, posts, details] = await Promise.all([
     getResultsSummary(brandId),
     getClicksSeries(brandId, range),
     getAttributionByCreator(brandId),
     getPixelStatus(brandId),
     getPublishedPosts(brandId, origin),
+    getAttributionDetails(brandId),
   ]);
 
   return (
@@ -49,6 +51,7 @@ export default async function BrandResultsPage({ searchParams }: { searchParams:
         <PublishedPostsTable posts={posts} />
         {pixel ? <PixelCard pixel={pixel} origin={origin} /> : null}
         <AttributionTable rows={attribution} exportPath="/brand/results/export" />
+        <AttributionDetails details={details} />
       </div>
     </>
   );

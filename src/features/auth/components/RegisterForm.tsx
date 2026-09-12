@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,11 @@ const BACK = "inline-flex items-center gap-2 text-sm text-foreground/80 hover:te
 // instead of leaving the page.
 export function RegisterForm({ role, onBack }: { role: Role; onBack?: () => void }) {
   const router = useRouter();
+  const ref = useSearchParams().get("ref") ?? undefined;
   const [serverError, setServerError] = useState<string | null>(null);
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { role, firstName: "", lastName: "", email: "", password: "" },
+    defaultValues: { role, firstName: "", lastName: "", email: "", password: "", ref },
   });
   const { errors, isSubmitting } = form.formState;
 

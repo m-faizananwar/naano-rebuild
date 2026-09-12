@@ -50,7 +50,9 @@ export async function register(input: RegisterInput): Promise<ActionResult<{ red
   if (data.role === "brand") {
     const domain = data.email.split("@")[1] ?? "";
     const company = domain.split(".")[0] || `${data.firstName}'s company`;
+    const [referrer] = data.ref ? await db.select({ id: creators.id }).from(creators).where(eq(creators.handle, data.ref)) : [];
     await db.insert(brands).values({
+      referredByCreatorId: referrer?.id ?? null,
       ownerUserId: user.id,
       slug: `${slugify(company)}-${suffix()}`,
       company: company.charAt(0).toUpperCase() + company.slice(1),

@@ -7,7 +7,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getViewer } from "@/features/auth/server/session";
 import { CopyLinkButton } from "@/features/workspace/components/CopyLinkButton";
-import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT } from "@/features/workspace/constants";
+import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT, PLATFORM_COMMISSION_PERCENT } from "@/features/workspace/constants";
+import { IntroducedBrands } from "@/features/workspace/components/IntroducedBrands";
+import { getAffiliateSummary } from "@/features/workspace/server/affiliate-queries";
+import { formatCents } from "@/lib/money";
 
 export const metadata: Metadata = { title: "Affiliate program · naano" };
 
@@ -17,6 +20,7 @@ export default async function CreatorAffiliatePage() {
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;
   const link = `${origin}/register/brand?ref=${viewer.creator.handle}`;
+  const summary = await getAffiliateSummary(viewer.creator.id);
   return (
     <>
       <PageHeader
@@ -52,10 +56,11 @@ export default async function CreatorAffiliatePage() {
           </div>
         </section>
         <section className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Rewards earned</p><p className="text-2xl font-semibold">€0.00</p></div>
-          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Brands introduced</p><p className="text-2xl font-semibold">0</p><p className="text-xs text-muted-foreground">0 have generated rewards</p></div>
-          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Earning now</p><p className="text-2xl font-semibold">0</p><p className="text-xs text-muted-foreground">Inside the three-month window</p></div>
+          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Rewards earned</p><p className="text-2xl font-semibold">{formatCents(summary.rewardsCents, "EUR")}</p></div>
+          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Brands introduced</p><p className="text-2xl font-semibold">{summary.brandsIntroduced}</p><p className="text-xs text-muted-foreground">{summary.brandsRewarding} have generated rewards</p></div>
+          <div className="rounded-2xl border bg-background p-5"><p className="text-xs text-muted-foreground">Earning now</p><p className="text-2xl font-semibold">{summary.earningNow}</p><p className="text-xs text-muted-foreground">Inside the three-month window</p></div>
         </section>
+        <IntroducedBrands brands={summary.brands} />
         <section className="rounded-2xl border bg-background p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-brand">Two ways to introduce a brand</p>
           <h2 className="mt-1 text-2xl font-semibold tracking-tight">Choose the link that fits the conversation.</h2>
@@ -77,7 +82,9 @@ export default async function CreatorAffiliatePage() {
             </li>
           </ul>
         </section>
-        <p className="text-xs text-muted-foreground">Referral attribution (the ?ref= on sign-up) is not stored in this build, so these counters stay at zero honestly.</p>
+        <p className="text-xs text-muted-foreground">
+          Brands that sign up through your link are attributed to you. Rewards assume a {PLATFORM_COMMISSION_PERCENT}% platform commission (naano does not publish its take rate); you receive {AFFILIATE_SHARE_PERCENT}% of it for {AFFILIATE_MONTHS} months from the brand&apos;s first paid campaign.
+        </p>
       </div>
     </>
   );
