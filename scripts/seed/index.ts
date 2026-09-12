@@ -125,7 +125,8 @@ function spec(
     brandId: campaign.brand.id,
     brandUserId: campaign.brand.userId,
     brandCompany: campaign.brand.company,
-    destination: campaign.brand.website,
+    // The demo brand's links land on our pixel demo page so the whole loop is clickable on the live site.
+    destination: campaign.brand.key === "zune" ? "/demo/landing" : campaign.brand.website,
     pixelSiteKey: campaign.brand.pixelSiteKey,
     creatorId: creator.id,
     creatorUserId: creator.userId,
