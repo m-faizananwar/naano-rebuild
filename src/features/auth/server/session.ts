@@ -8,6 +8,7 @@ import { SESSION_COOKIE, SESSION_TTL_DAYS } from "../constants";
 import type { Role } from "../schemas";
 
 const DAY_MS = 86_400_000;
+const HOUR_MS = 3_600_000;
 const TOKEN_BYTES = 32;
 
 export type Viewer = {
@@ -40,6 +41,16 @@ export async function createSession(userId: string) {
   });
 }
 
+// A one-hour session without a cookie, for callers that cannot carry one (the
+// Vapi voice webhook). It is a normal row: same csrf token, same expiry check.
+export async function createHeadlessSession(userId: string) {
+  const token = randomBytes(TOKEN_BYTES).toString("base64url");
+  const csrfToken = randomBytes(TOKEN_BYTES).toString("base64url");
+  const expiresAt = new Date(Date.now() + HOUR_MS);
+  await getDb().insert(sessions).values({ userId, tokenHash: hashToken(token), csrfToken, expiresAt });
+  return token;
+}
+
 export async function destroySession() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
@@ -55,7 +66,11 @@ export async function getViewer(): Promise<Viewer | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
+  return viewerFromToken(token);
+}
 
+export async function viewerFromToken(token: string): Promise<Viewer | null> {
+  if (!isDbConfigured()) return null;
   const db = getDb();
   const [row] = await db
     .select({ user: users, csrfToken: sessions.csrfToken })
