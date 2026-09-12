@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { collaborationEvents, collaborations, creators } from "@/db/schema";
+import { campaigns, collaborationEvents, collaborations, creators } from "@/db/schema";
 import { nextStatus } from "@/lib/collaboration-status";
 import { holdBookingFee } from "./side-effects";
 
@@ -25,6 +25,13 @@ export type CreateCollaborationInput = {
   note?: string;
 };
 
+export class CampaignNotOpenError extends Error {
+  constructor() {
+    super("This campaign is not accepting bookings");
+    this.name = "CampaignNotOpenError";
+  }
+}
+
 export class DuplicateCollaborationError extends Error {
   constructor() {
     super("This creator already has a collaboration on this campaign");
@@ -43,6 +50,14 @@ export async function createCollaboration(input: CreateCollaborationInput) {
       .from(collaborations)
       .where(and(eq(collaborations.campaignId, input.campaignId), eq(collaborations.creatorId, input.creatorId)));
     if (existing) throw new DuplicateCollaborationError();
+
+    // Invitations need an active campaign; applications additionally need it open.
+    const [campaign] = await tx
+      .select({ status: campaigns.status, open: campaigns.openToApplications })
+      .from(campaigns)
+      .where(eq(campaigns.id, input.campaignId));
+    if (!campaign) throw new Error(`campaign ${input.campaignId} not found`);
+    if (campaign.status !== "active" || (input.origin === "application" && !campaign.open)) throw new CampaignNotOpenError();
 
     const [creator] = await tx.select({ priceCents: creators.priceCents }).from(creators).where(eq(creators.id, input.creatorId));
     if (!creator) throw new Error(`creator ${input.creatorId} not found`);
