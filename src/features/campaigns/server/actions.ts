@@ -1,0 +1,195 @@
+"use server";
+
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { getDb } from "@/db";
+import { campaigns } from "@/db/schema";
+import { getViewer } from "@/features/auth/server/session";
+import { createCollaboration, DuplicateCollaborationError } from "@/features/collaborations/server/create";
+import { InsufficientFundsError } from "@/features/collaborations/server/side-effects";
+import { DAY_MS, DEFAULT_FEE_CENTS, DEFAULT_POST_DEADLINE_DAYS } from "../constants";
+import {
+  type ActionResult, basicsSchema, type BasicsInput, createFromAiSchema, type CreateFromAiInput, createFromLinkSchema,
+  type CreateFromLinkInput, inviteSchema, type InviteInput, type LaunchInput, type LaunchResultDto, launchSchema,
+  saveBriefSchema, type SaveBriefInput,
+} from "../schemas";
+import { generateCampaignDraft } from "./brief-ai";
+import { getBrandProfile, getCampaign, getCreatorPicks } from "./queries";
+
+const NOT_SIGNED_IN = "Sign in as a brand to manage campaigns.";
+const NOT_FOUND = "This campaign does not exist or belongs to another workspace.";
+const GENERIC = "Something went wrong on our side. Nothing was saved — please try again.";
+
+type Owned = { brandId: string; campaignId: string };
+
+async function ownedCampaign(campaignId: string): Promise<Owned | null> {
+  const viewer = await getViewer();
+  if (!viewer?.brand) return null;
+  const campaign = await getCampaign(viewer.brand.id, campaignId);
+  return campaign ? { brandId: viewer.brand.id, campaignId } : null;
+}
+
+function firstIssue(error: { issues: Array<{ message: string }> }) {
+  return error.issues[0]?.message ?? "Invalid input";
+}
+
+function revalidateCampaign(campaignId: string) {
+  revalidatePath("/brand/campaigns");
+  revalidatePath(`/brand/campaigns/${campaignId}`, "layout");
+}
+
+async function createDraft(
+  source: "ai" | "link",
+  input: { prompt: string | null; url: string | null },
+): Promise<ActionResult<{ campaignId: string; generatedWith: "ai" | "template" }>> {
+  const viewer = await getViewer();
+  if (!viewer?.brand) return { ok: false, error: NOT_SIGNED_IN };
+  const brand = await getBrandProfile(viewer.brand.id);
+  if (!brand) return { ok: false, error: NOT_SIGNED_IN };
+  // The link is never fetched in this build: the template runs off the workspace profile.
+  const { draft, generatedWith } = await generateCampaignDraft({ brand, prompt: input.prompt });
+  const [row] = await getDb()
+    .insert(campaigns)
+    .values({
+      brandId: brand.id,
+      name: draft.name,
+      description: draft.description,
+      status: "draft",
+      openToApplications: false,
+      postDeadline: new Date(Date.now() + DEFAULT_POST_DEADLINE_DAYS * DAY_MS),
+      defaultFeeCents: DEFAULT_FEE_CENTS,
+      brief: draft.brief,
+      source,
+      sourcePrompt: input.prompt,
+      sourceUrl: input.url,
+    })
+    .returning({ id: campaigns.id });
+  revalidatePath("/brand/campaigns");
+  return { ok: true, data: { campaignId: row.id, generatedWith } };
+}
+
+export async function createCampaignFromAi(input: CreateFromAiInput) {
+  const parsed = createFromAiSchema.safeParse(input);
+  if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
+  try {
+    return await createDraft("ai", { prompt: parsed.data.prompt, url: null });
+  } catch (error) {
+    console.error("[campaigns] createCampaignFromAi failed", { error });
+    return { ok: false as const, error: GENERIC };
+  }
+}
+
+export async function createCampaignFromLink(input: CreateFromLinkInput) {
+  const parsed = createFromLinkSchema.safeParse(input);
+  if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
+  try {
+    return await createDraft("link", { prompt: null, url: parsed.data.url });
+  } catch (error) {
+    console.error("[campaigns] createCampaignFromLink failed", { error });
+    return { ok: false as const, error: GENERIC };
+  }
+}
+
+export async function updateCampaignBasics(input: BasicsInput): Promise<ActionResult<{ campaignId: string }>> {
+  const parsed = basicsSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  const { campaignId, name, description, postDeadline, defaultFeeCents } = parsed.data;
+  try {
+    const owned = await ownedCampaign(campaignId);
+    if (!owned) return { ok: false, error: NOT_FOUND };
+    await getDb()
+      .update(campaigns)
+      .set({ name, description, postDeadline: postDeadline ? new Date(`${postDeadline}T12:00:00Z`) : null, defaultFeeCents })
+      .where(and(eq(campaigns.id, campaignId), eq(campaigns.brandId, owned.brandId)));
+    revalidateCampaign(campaignId);
+    return { ok: true, data: { campaignId } };
+  } catch (error) {
+    console.error("[campaigns] updateCampaignBasics failed", { campaignId, error });
+    return { ok: false, error: GENERIC };
+  }
+}
+
+export async function saveBrief(input: SaveBriefInput): Promise<ActionResult<{ campaignId: string }>> {
+  const parsed = saveBriefSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  const { campaignId, brief } = parsed.data;
+  try {
+    const owned = await ownedCampaign(campaignId);
+    if (!owned) return { ok: false, error: NOT_FOUND };
+    await getDb().update(campaigns).set({ brief }).where(and(eq(campaigns.id, campaignId), eq(campaigns.brandId, owned.brandId)));
+    revalidateCampaign(campaignId);
+    return { ok: true, data: { campaignId } };
+  } catch (error) {
+    console.error("[campaigns] saveBrief failed", { campaignId, error });
+    return { ok: false, error: GENERIC };
+  }
+}
+
+// One funded invitation. Wallet short → the creator goes to `unfunded`;
+// already on the campaign → `skipped`. Nothing here throws to the caller.
+async function inviteOne(campaignId: string, creator: { id: string; name: string; priceCents: number }, result: LaunchResultDto) {
+  try {
+    await createCollaboration({ campaignId, creatorId: creator.id, origin: "invitation" });
+    result.invited.push(creator.id);
+  } catch (error) {
+    if (error instanceof InsufficientFundsError) {
+      result.unfunded.push({ creatorId: creator.id, name: creator.name, shortfallCents: error.shortfallCents });
+      return;
+    }
+    if (error instanceof DuplicateCollaborationError) {
+      result.skipped.push({ creatorId: creator.id, name: creator.name, reason: "Already on this campaign" });
+      return;
+    }
+    console.error("[campaigns] invitation failed", { campaignId, creatorId: creator.id, error });
+    result.skipped.push({ creatorId: creator.id, name: creator.name, reason: "Could not send the invitation" });
+  }
+}
+
+export async function launchCampaign(input: LaunchInput): Promise<ActionResult<LaunchResultDto>> {
+  const parsed = launchSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  const { campaignId, creatorIds } = parsed.data;
+  try {
+    const viewer = await getViewer();
+    if (!viewer?.brand) return { ok: false, error: NOT_SIGNED_IN };
+    const [campaign, brand] = await Promise.all([getCampaign(viewer.brand.id, campaignId), getBrandProfile(viewer.brand.id)]);
+    if (!campaign || !brand) return { ok: false, error: NOT_FOUND };
+    const picks = await getCreatorPicks(creatorIds, campaign, brand);
+    // Cheapest first so a short wallet still funds as many creators as it can.
+    picks.sort((a, b) => a.priceCents - b.priceCents);
+
+    await getDb()
+      .update(campaigns)
+      .set({ status: "active", openToApplications: true })
+      .where(and(eq(campaigns.id, campaignId), eq(campaigns.brandId, brand.id)));
+    const result: LaunchResultDto = { campaignId, invited: [], unfunded: [], skipped: [] };
+    for (const creator of picks) await inviteOne(campaignId, creator, result);
+    revalidateCampaign(campaignId);
+    revalidatePath("/brand", "layout");
+    return { ok: true, data: result };
+  } catch (error) {
+    console.error("[campaigns] launchCampaign failed", { campaignId, error });
+    return { ok: false, error: GENERIC };
+  }
+}
+
+export async function inviteCreator(input: InviteInput): Promise<ActionResult<{ collaborationId: string }>> {
+  const parsed = inviteSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  const { campaignId, creatorId } = parsed.data;
+  try {
+    const owned = await ownedCampaign(campaignId);
+    if (!owned) return { ok: false, error: NOT_FOUND };
+    const collab = await createCollaboration({ campaignId, creatorId, origin: "invitation" });
+    revalidateCampaign(campaignId);
+    revalidatePath("/brand", "layout");
+    return { ok: true, data: { collaborationId: collab.id } };
+  } catch (error) {
+    if (error instanceof InsufficientFundsError) {
+      return { ok: false, error: `Your wallet is short by €${(error.shortfallCents / 100).toFixed(2)} for this invitation. Top up from Billing.` };
+    }
+    if (error instanceof DuplicateCollaborationError) return { ok: false, error: "This creator is already on this campaign." };
+    console.error("[campaigns] inviteCreator failed", { campaignId, creatorId, error });
+    return { ok: false, error: GENERIC };
+  }
+}
