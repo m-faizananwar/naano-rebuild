@@ -247,7 +247,7 @@ export const PRICING = {
       priceNote: "/ month + post spend",
       priceDetail: "Flat fee. Custom quote for multi-brand or agency setups.",
       features: ["Campaign strategy and positioning", "Creator sourcing and coordination", "Brief creation and campaign launch", "Reporting and optimisation"],
-      cta: { href: "/#cta", label: "Book a strategy call", primary: true },
+      cta: { href: "/book-a-call", label: "Book a strategy call", primary: true },
     },
   ],
 } as const;
@@ -300,7 +300,7 @@ export const CTA = {
   cardTitle: "30-minute working session",
   cardBody: "Leave with a concrete plan for your next creator campaign.",
   bullets: ["Creator strategy", "Campaign format", "Budget recommendation"],
-  button: { href: "/register/brand", label: "Book a strategy call" },
+  button: { href: "/book-a-call", label: "Book a strategy call" },
   buttonNote: "Create your workspace first; you pick a time from Book a call.",
   alt: { text: "Prefer to start yourself?", href: "/register/brand", label: "Start for free" },
   footnote: "Trusted by B2B teams building creator-led acquisition.",
