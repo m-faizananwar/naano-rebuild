@@ -5,7 +5,8 @@ import {
 
 export type NavItem = { href: string; label: string; icon: LucideIcon };
 
-// Brand sidebar, exactly as the product map lists it.
+// Brand sidebar, exactly as the product map lists it. The account menu shows the
+// same secondary items (Invite Creators · Book a call · Integrations · Settings · Sign out).
 export const BRAND_NAV: NavItem[] = [
   { href: "/brand", label: "Overview", icon: LayoutGrid },
   { href: "/brand/creators", label: "Creators", icon: Users },
@@ -16,7 +17,7 @@ export const BRAND_NAV: NavItem[] = [
   { href: "/brand/billing", label: "Billing", icon: CreditCard },
 ];
 export const BRAND_SECONDARY_NAV: NavItem[] = [
-  { href: "/brand/invite", label: "Invite creators", icon: UserPlus },
+  { href: "/brand/invite", label: "Invite Creators", icon: UserPlus },
   { href: "/brand/book-a-call", label: "Book a call", icon: CalendarCheck },
   { href: "/brand/integrations", label: "Integrations", icon: Plug },
   { href: "/brand/settings", label: "Settings", icon: Settings },
@@ -41,7 +42,7 @@ export const CREATOR_ACCOUNT_NAV: NavItem[] = [
 
 export function navFor(role: "brand" | "creator") {
   return role === "brand"
-    ? { primary: BRAND_NAV, secondary: BRAND_SECONDARY_NAV, account: BRAND_SECONDARY_NAV.slice(-1) }
+    ? { primary: BRAND_NAV, secondary: BRAND_SECONDARY_NAV, account: BRAND_SECONDARY_NAV }
     : { primary: CREATOR_NAV, secondary: [], account: CREATOR_ACCOUNT_NAV };
 }
 
