@@ -1,4 +1,5 @@
 import { cn } from "cn";
+import { CountUp } from "@/components/motion/CountUp";
 
 const STRONG = 80;
 const GOOD = 60;
@@ -12,7 +13,7 @@ export function FitPill({ score, className }: { score: number; className?: strin
         : "bg-muted text-muted-foreground";
   return (
     <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold tabular-nums", tone, className)} title="Fit with the selected campaign">
-      {score}% fit
+      <CountUp value={score} format="percent" /> fit
     </span>
   );
 }

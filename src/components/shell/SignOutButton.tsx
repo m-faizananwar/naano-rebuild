@@ -9,7 +9,7 @@ export function SignOutButton({ csrfToken, className }: { csrfToken: string; cla
       <input type="hidden" name={CSRF_FIELD} value={csrfToken} />
       <button type="submit" className={className}>
         <LogOut className="size-4 shrink-0" aria-hidden="true" />
-        Sign out
+        <span className="side-label">Sign out</span>
       </button>
     </form>
   );

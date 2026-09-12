@@ -6,6 +6,8 @@ import { LaunchPlanPopover } from "@/features/campaigns/components/LaunchPlanPop
 
 type Plan = { explored: boolean; briefed: boolean; invited: boolean; stepsLeft: number };
 const TOTAL_STEPS = 3;
+const RING_RADIUS = 8;
+const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
 // The "GET STARTED · Discover the Marketplace · N/3" ring from the brand top bar.
 export function LaunchPlanButton({ plan }: { plan: Plan }) {
@@ -19,8 +21,22 @@ export function LaunchPlanButton({ plan }: { plan: Plan }) {
         aria-label={`Activation progress: ${done} of ${TOTAL_STEPS}`}
         className="hidden h-9 items-center gap-2 rounded-lg border px-3 text-xs font-semibold hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 md:inline-flex"
       >
-        <span className="relative flex size-5 items-center justify-center rounded-full border-2 border-brand/30">
-          <span className="absolute inset-0 rounded-full border-2 border-brand" style={{ clipPath: `inset(0 ${100 - (done / TOTAL_STEPS) * 100}% 0 0)` }} aria-hidden="true" />
+        <span className="relative flex size-5 items-center justify-center">
+          {/* The ring animates its stroke to the current step (0.6s). */}
+          <svg viewBox="0 0 20 20" className="absolute inset-0 -rotate-90" aria-hidden="true">
+            <circle cx="10" cy="10" r={RING_RADIUS} fill="none" strokeWidth="2" className="stroke-brand/25" />
+            <circle
+              cx="10"
+              cy="10"
+              r={RING_RADIUS}
+              fill="none"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="stroke-brand transition-[stroke-dashoffset] duration-600 ease-out motion-reduce:transition-none"
+              strokeDasharray={RING_LENGTH}
+              strokeDashoffset={RING_LENGTH * (1 - done / TOTAL_STEPS)}
+            />
+          </svg>
           <span className="text-[9px] text-brand">{done}</span>
         </span>
         <span className="uppercase tracking-wide text-muted-foreground">Get started</span>

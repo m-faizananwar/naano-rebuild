@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +13,7 @@ import { ShortlistButton } from "../cards/ShortlistButton";
 import { useMarketplace } from "../useMarketplace";
 
 // rank · avatar · name · LinkedIn badge · industries · flag · MEDIAN VIEWS · CPM · POST COST · Book · bookmark · →
-export function MatchingResultRow({ creator, rank }: { creator: CreatorDto; rank: number }) {
+export function MatchingResultRow({ creator, rank, index = 0 }: { creator: CreatorDto; rank: number; index?: number }) {
   const { openProfile } = useMarketplace();
   const stats = [
     { label: "Median views", value: formatCompact(creator.medianViews) },
@@ -19,7 +21,7 @@ export function MatchingResultRow({ creator, rank }: { creator: CreatorDto; rank
     { label: "Post cost", value: formatEuro(creator.priceCents) },
   ];
   return (
-    <li className="grid gap-3 rounded-xl border bg-background p-3 md:grid-cols-[2rem_1fr_auto_auto] md:items-center">
+    <li style={{ "--i": index } as React.CSSProperties} className="grid gap-3 rounded-xl border bg-background p-3 md:grid-cols-[2rem_1fr_auto_auto] md:items-center">
       <span className="text-sm font-semibold tabular-nums text-muted-foreground">{rank}</span>
       <div className="flex min-w-0 items-center gap-3">
         <Avatar className="size-10 rounded-full border">

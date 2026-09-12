@@ -86,7 +86,7 @@ export function MatchingView({ ctx }: Props) {
       <div className="grid gap-6 lg:grid-cols-[1fr_16rem]">
         <section className="grid gap-5">
           <div className="rounded-3xl bg-gradient-to-b from-brand/10 to-transparent px-6 pt-8 pb-4 text-center">
-            <Cloud className="mx-auto size-10 text-brand" aria-hidden="true" />
+            <Cloud className="animate-float mx-auto size-10 text-brand" aria-hidden="true" />
             <h2 className="mt-3 text-2xl font-semibold tracking-tight">Hey {ctx.company}, let&apos;s find the right creators for you.</h2>
             <div className="mx-auto mt-4 flex max-w-md justify-center">
               <CampaignSelector campaigns={ctx.campaigns} selected={ctx.selectedCampaign} />

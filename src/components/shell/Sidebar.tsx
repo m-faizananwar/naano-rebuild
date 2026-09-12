@@ -17,7 +17,11 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
       <Link href={root} className="px-3" aria-label="Overview">
         <NaanoWordmark />
       </Link>
-      {viewer.role === "brand" ? <AgencyModeToggle /> : null}
+      {viewer.role === "brand" ? (
+        <div className="side-chrome">
+          <AgencyModeToggle />
+        </div>
+      ) : null}
       <SidebarNav role={viewer.role} section="primary" onNavigate={onNavigate} />
       {nav.secondary.length > 0 ? (
         <div className="mt-auto border-t pt-4">

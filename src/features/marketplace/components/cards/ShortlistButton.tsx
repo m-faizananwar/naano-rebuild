@@ -22,7 +22,7 @@ export function ShortlistButton({ creator, className, size = "icon-sm" }: Props)
       onClick={() => toggleShortlist(creator)}
       className={cn("rounded-full text-muted-foreground hover:text-brand", on && "text-brand", className)}
     >
-      <Bookmark className={cn("size-4", on && "fill-current")} aria-hidden="true" />
+      <Bookmark key={String(on)} className={cn("animate-pop size-4", on && "fill-current")} aria-hidden="true" />
     </Button>
   );
 }

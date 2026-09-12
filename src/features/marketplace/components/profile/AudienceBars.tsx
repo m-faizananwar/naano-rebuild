@@ -12,7 +12,7 @@ export function AudienceBars({ title, mix }: Props) {
           <li key={label} className="grid grid-cols-[8rem_1fr_2.5rem] items-center gap-2 text-sm">
             <span className="truncate" title={label}>{label}</span>
             <span className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
-              <span className="block h-full rounded-full bg-brand" style={{ width: `${Math.min(100, pct)}%` }} />
+              <span className="animate-fill block h-full rounded-full bg-brand" style={{ width: `${Math.min(100, pct)}%` }} />
             </span>
             <span className="text-right tabular-nums text-muted-foreground">{Math.round(pct)}%</span>
           </li>

@@ -28,7 +28,7 @@ export function SidebarNav({ role, section, onNavigate }: Props) {
               )}
             >
               <item.icon className="size-4 shrink-0" aria-hidden="true" />
-              {item.label}
+              <span className="side-label truncate">{item.label}</span>
             </Link>
           </li>
         );

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PAGE_SIZE } from "../constants";
 import type { CountryOptionDto, CreatorListDto, MarketplaceContextDto, MarketplaceQuery } from "../schemas";
 import { CreatorGrid } from "./cards/CreatorGrid";
+import { ImprovingStrip } from "./cards/ImprovingStrip";
 import { ShowMoreButton } from "./cards/ShowMoreButton";
 import { CampaignSelector } from "./filters/CampaignSelector";
 import { MarketplaceToolbar } from "./filters/MarketplaceToolbar";
@@ -51,6 +52,7 @@ function ListBody({ list, query }: { list: CreatorListDto; query: MarketplaceQue
   if (list.items.length > 0) {
     return (
       <>
+        <ImprovingStrip />
         <CreatorGrid creators={list.items} />
         <ShowMoreButton shown={Math.min(list.items.length, query.page * PAGE_SIZE)} total={list.total} page={query.page} hasMore={list.hasMore} />
       </>
