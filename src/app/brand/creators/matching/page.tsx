@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ErrorState } from "@/components/page/ErrorState";
 import { PageHeader } from "@/components/page/PageHeader";
+import { WelcomeCoachMark } from "@/features/brand-onboarding/components/WelcomeCoachMark";
 import { CreatorsTabs } from "@/features/marketplace/components/CreatorsTabs";
 import { MatchingView } from "@/features/marketplace/components/matching/MatchingView";
 import { parseMarketplaceQuery, type RawSearchParams } from "@/features/marketplace/schemas";
@@ -29,6 +30,7 @@ export default async function BrandMatchingPage({ searchParams }: Props) {
       <PageHeader title="Creators" />
       <CreatorsTabs active="matching" campaignId={data.ctx.selectedCampaign?.id} />
       <MatchingView ctx={data.ctx} />
+      <WelcomeCoachMark />
     </>
   );
 }
