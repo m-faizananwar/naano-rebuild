@@ -12,7 +12,8 @@ export function AppShell({ viewer, children }: { viewer: ShellViewer; children: 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar viewer={viewer} />
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
-          <div className="mx-auto w-full max-w-6xl">{children}</div>
+          {/* Grid/flex items default to min-width:auto, which lets a wide table stretch the page; wide content must scroll inside its own container. */}
+          <div className="mx-auto w-full min-w-0 max-w-6xl [&_.grid>*]:min-w-0 [&_.flex>*]:min-w-0">{children}</div>
         </main>
       </div>
     </div>
