@@ -1,110 +1,97 @@
 # naano-rebuild
 
-Rebuild of the naano creator marketplace (B2B brands book LinkedIn creators, track clicks → leads per post, pay
-through the platform). Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn, Drizzle + Postgres, Vercel.
+A working rebuild of [naano](https://naano.com), the B2B LinkedIn creator marketplace: brands book vetted creators at a
+fixed price per post, creators write in their own voice, and every post's clicks, sign-ups and purchases are attributed
+back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn,
+Drizzle + Postgres, deployed on Vercel.
 
-Live: https://naano-rebuild-ashy.vercel.app · smoke test: `GET /api/health` → `{ ok, db, commit }`.
+Live: https://naano-rebuild-ashy.vercel.app · Demo logins on `/login`: **Explore as demo brand** (Zune) / **Explore as
+demo creator** — one click, no typing. Password for both seeded accounts is `demo1234` if you prefer the form.
 
 ## Run
 
 ```bash
 pnpm install
-cp .env.example .env.local   # DATABASE_URL already points at the docker db
-pnpm db:up                   # postgres 16 in docker (needs Docker running)
-pnpm db:migrate && pnpm db:seed
-pnpm dev                     # http://localhost:3000 → /login → "Explore as demo brand / creator"
+cp .env.example .env.local        # DATABASE_URL points at the docker postgres below
+pnpm db:up                        # postgres 16 in docker
+pnpm db:migrate && pnpm db:seed   # 14 tables, 300 creators, 3 brands, demo accounts, ~1,200 clicks
+pnpm dev                          # http://localhost:3000
 ```
 
-Demo accounts (seeded): `brand@demo.naano` (Zune) and `creator@demo.naano`, password `demo1234`.
-`pnpm db:reset` drops the volume and rebuilds everything from the seed.
+| Command            | What                                                              |
+| ------------------ | ----------------------------------------------------------------- |
+| `pnpm typecheck`   | `tsc --noEmit`                                                    |
+| `pnpm lint`        | ESLint — the engineering rules in `eslint.config.mjs`             |
+| `pnpm test`        | Vitest, 80 unit tests over the pure logic                         |
+| `pnpm build`       | Production build                                                  |
+| `pnpm db:up/down`  | Docker Postgres                                                   |
+| `pnpm db:generate` | Drizzle migration from `src/db/schema/*`                          |
+| `pnpm db:migrate`  | Apply migrations to `DATABASE_URL`                                |
+| `pnpm db:seed`     | Reset and reseed (`scripts/seed/*`, fixed faker seed)             |
+| `pnpm db:reset`    | down + up + migrate + seed                                        |
 
-| Command            | What                                              |
-| ------------------ | ------------------------------------------------- |
-| `pnpm typecheck`   | `tsc --noEmit`                                    |
-| `pnpm lint`        | ESLint (rules in `eslint.config.mjs`)             |
-| `pnpm test`        | Vitest, unit tests for pure logic                 |
-| `pnpm build`       | Production build                                  |
-| `pnpm db:up`       | Start Postgres 16 in docker-compose               |
-| `pnpm db:generate` | Drizzle migration from `src/db/schema/`           |
-| `pnpm db:migrate`  | Apply migrations to `DATABASE_URL`                |
-| `pnpm db:seed`     | Seed data (`scripts/seed/`)                       |
+CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push. Smoke test after every deploy:
+`GET /api/health` → `{ ok, db, commit }` (503 with `db: "not configured"` until `DATABASE_URL` is set).
 
-CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push.
+**Without a database** every page still renders: the app shells show an honest "Database not configured" state on every
+tab, the public pages fall back to static content, `/api/health` is the only thing that reports the reason. The
+deploy never 500s because of a missing env var: `ANTHROPIC_API_KEY` is optional everywhere it is used.
 
 ## Architecture
 
 ```
-src/app                      routes only; page.tsx calls a query, renders a view
+src/app                      routes only; page.tsx calls a query and renders a view (< 100 lines)
 src/features/<domain>/
   components/                views
-  server/queries.ts          reads  (DTOs out, never drizzle rows)
-  server/actions.ts          writes (server actions, zod validated, { ok, ... })
-  schemas.ts                 zod: single source of truth for form/action/dto
+  server/queries.ts          reads  (plain DTOs, never drizzle rows)
+  server/actions.ts          writes (server actions, zod-validated, { ok, data } | { ok:false, error })
+  schemas.ts                 zod: single source of truth for form, action and DTO
   constants.ts
-src/db                       drizzle client + schema; only features/*/server imports it
-src/lib                      pure functions only (money, fit score, state machine, estimator)
-src/components/ui            shadcn output, not edited
-src/components/shell, page   app shell and page primitives
+src/db                       drizzle client + schema; only features/*/server imports it (lint-enforced)
+src/lib                      pure functions only, unit-tested (fit score, state machine, money, estimator…)
+src/components/ui            shadcn output, not edited · src/components/{shell,page,motion}  shared composites
 ```
 
 Domains: `auth`, `marketplace`, `campaigns`, `collaborations`, `tracking`, `payouts`, plus `workspace` (overviews,
-settings, integrations, community, affiliate, notifications) and `public` (marketing site). Full rules: `CLAUDE.md` →
-"Engineering rules"; layer boundaries are lint-enforced. Plan and data model: `docs/plan.md`.
+settings, integrations, community, affiliate, notifications), `public` (marketing site), `brand-onboarding`,
+`creator-onboarding`. Full rules: `CLAUDE.md` → "Engineering rules". The build was split across parallel agent streams;
+their prompts and reports are in `docs/agent-streams.md`, the plan in `docs/plan.md`, the recon in `docs/reference/`.
 
-**Auth** is our own: `users` (bcrypt), `sessions` (hashed token, httpOnly cookie, CSRF token per session),
-`src/proxy.ts` guards `/brand/*` and `/creator/*`, the layouts check the role. Registration copies naano's flow minus
-the 6-digit email code — no email provider, skipped on purpose. LinkedIn/Google sign-up buttons are visual.
+**The collaboration state machine** (`src/lib/collaboration-status.ts`, tested exhaustively) is the spine: invited or
+applied → accepted/declined → draft submitted ⇄ changes requested → approved → scheduled → live → paid. Every status
+change goes through `transition()` (`src/features/collaborations/server/transition.ts`), which writes a
+`collaboration_events` row and the money side effects: an invitation holds the fee from the brand's wallet, a decline
+releases it, acceptance creates the tracked link, going live creates a pending payout, paying settles both.
 
-**Without `DATABASE_URL`** every workspace screen renders a "database not configured" state instead of failing, the
-public site still renders (with static fallbacks), and `/api/health` is the only thing that reports it (503).
-
-**Collaboration state machine** (`src/lib/collaboration-status.ts`, tested against every combination):
-invited/applied → accepted/declined → draft_submitted ⇄ changes_requested → approved → scheduled → live → paid.
-`features/collaborations/server/transition.ts` is the only status writer; it also holds/releases the booking fee,
-creates the tracking link on accept and records payouts on live/paid. Invitations are funded: the fee is held from
-the brand's wallet when sent.
-
-**Brand › Creators** (`src/features/marketplace`). 300 seeded creators ranked by `fitScore()` (audience overlap with
-the ICP, category match, engagement vs size benchmark, posting consistency — with a one-line reason) against the
-campaign chosen in "Fit for". Filters, sort, search, tab and page live in the URL; bookmarks persist in `shortlist`.
-"Book" opens naano's "Your selection" dialog; "Make an offer" (10/20/30% presets, post-by date, campaign brief,
-approve-first) creates a funded invitation. AI Matching ("Nao") ranks with the same score and writes a rationale with
-Claude when `ANTHROPIC_API_KEY` is set, otherwise a deterministic template — the UI labels which.
-
-**Brand › Campaigns** (`src/features/campaigns`). Cards with creator / published / committed-budget counts from rows.
-Chooser: "Create with AI" (prompt + value prop + ICPs → draft brief, Claude or template, labelled), "Start from your
-link" (stores the URL, brief from the workspace profile — says so), "Naano team" → book-a-call stub. Drafts go through
-the launch stepper (basics → brief editor → pick creators by fit → review with the pre-spend estimator from naano's
-Q2 2026 benchmarks, `src/lib/estimator.ts`) and launch sends funded invitations, reporting any the wallet can't cover.
-Detail tabs: Collaborations · Brief · Shortlist · Analytics (daily clicks from the clicks table).
-
-**Tracking** (`src/features/tracking`). `/r/{code}` is one insert + one 302; the click id rides on a cookie and a
-`?nn=` param. `/n.js` exposes `naano('track', type, props)` exactly like naano's pixel; `/api/pixel` stores the events.
-`/demo/landing` is a stand-in customer site with the pixel installed — Zune's seeded links land there, so the whole
-loop is clickable. Brand › Results shows reach, clicks, committed budget, clicks over time, attribution by creator with
-visits/sign-ups/purchases, and a CSV export of the click log per creator — the audit trail.
-
-**Money** (`src/features/payouts`). One ledger: top-ups, bookings (held on invite/accept), payouts (pending on live,
-completed on paid), withdrawals. Brand › Billing and Creator › Earnings are views over it; withdrawal is a real action
-against the available balance. No Stripe: the add-budget dialog is deferred and withdrawals use a demo rail.
-
-**Public site** (`src/features/public`): `/`, for-creators, for-agencies, pricing, faq, case-study, about, benchmarks.
-Copy and marketing figures are naano's published claims (`constants.ts`, `page-copy.ts`, `benchmarks-data.ts`), not
-measurements. The landing page's showcase and "real posts" sections read seeded creators/posts; clicks and leads there
-are estimated from the benchmarks and labelled "est.". Video testimonials are poster cards; logos are text wordmarks.
+**Attribution is real.** `/r/{code}` is one insert + one 302; the click id rides on a cookie and a `?nn=` param.
+`/n.js` is a pixel with naano's API (`naano('track', 'signup', { email })`); `/api/pixel` stores the event against the
+click. `/demo/landing` is a stand-in customer site with the pixel installed — the demo brand's tracked links point at it,
+so on the live site you can click a creator's link, sign up, and watch Results move. Every number on every dashboard is a
+query over rows; the click log exports to CSV per creator.
 
 ## What's real vs stubbed
 
 | Area | Status |
 | --- | --- |
-| Auth, sessions, demo login, register | real (no email verification) |
-| Seed: 300 creators, 3 brands, every collaboration state, clicks, ledger | real |
-| Collaboration state machine + funded bookings | real, tested |
-| Brand: overview, creators marketplace, profile modal, booking/offer dialogs, AI matching | real (Claude path needs a key; template otherwise) |
-| Brand: campaigns, AI/link/team chooser, brief editor, launch stepper, estimator, detail tabs | real (link flow does not fetch the URL) |
-| Brand: results, pixel, click log CSV; billing ledger | real; add-budget dialog deferred |
-| Creator: overview, opportunities, collaborations, detail actions; brand collaborations + review/pay; messages | stream C — see git log for status |
-| Creator: analytics, earnings + withdrawal, settings, community, affiliate, tour, integrations | real; Slack/Stripe/MCP endpoint not wired |
-| Settings (brand profile/audience/team), notifications | real; team invites need email (says so) |
-| Public site, register/login visuals | real, static copy |
-| Onboarding (website analysis, creator card steps 2–4), Stripe, email codes, LinkedIn import, X/YouTube, FR, agency mode, MCP endpoint, calendar booking | not built |
+| Auth | Own users/sessions (bcrypt, httpOnly cookie, CSRF token on the session). Register copies naano's flow; the 6-digit email code step is skipped on purpose; LinkedIn/Google buttons are visual. |
+| Brand onboarding | Real: reads the website server-side (title, description, headings), writes value prop + 3 ICPs with Claude when `ANTHROPIC_API_KEY` is set, otherwise a template that still uses the fetched text; creates the "{Company} creator brief" campaign; lands in AI Matching with the coach mark. |
+| Creator onboarding | Real 4-step flow with the live card; the LinkedIn read is **simulated** deterministically from the URL slug (no Apify); price recommendation from `src/lib/recommend-price.ts` (2,070 followers → €315 like naano). Professional info is stored, not enforced. |
+| Marketplace (brand) | Real: 300 creators ranked by `fitScore()` against the selected campaign, filters/sort/search/pagination in the URL, shortlist, profile modal with audience bars and reach chart, "Your selection" and "Make an offer" dialogs creating funded invitations. |
+| AI Matching (Nao) | Real ranking; rationale written by Claude (`claude-sonnet-5`) when the key is set, otherwise a template built from the fit signals — the UI labels which. |
+| Campaigns | Real: list, chooser, create-with-AI chat (history rail), start-from-link (URL stored, not fetched — says so), 4-step launch stepper with the pre-spend estimator (`src/lib/estimator.ts`, naano's Q2 2026 benchmarks), brief editor with naano's exact fields, detail tabs (collaborations, brief, shortlist, analytics from rows), delete. |
+| Collaborations | Real on both sides: apply, accept/decline, draft, review modal (approve / request changes, capped rounds), schedule, publish with post URL, pay; optimistic UI with rollback; timeline from `collaboration_events`. |
+| Messages | Real threads per accepted booking, both sides; NaanoBot is a static placeholder; reactions are visual. |
+| Tracking | Real: redirect, pixel, collector, results, per-creator CSV, campaign analytics, creator analytics. Post reach/impressions are the seeded public-post numbers; naano's own post-metrics import is not built. |
+| Billing / earnings | Real ledger: top-ups ("No card — demo top-up"), bookings, payouts, withdrawals; wallet chip is a cache of the ledger. No Stripe, no bank rail, no invoice PDFs. |
+| Settings, team, integrations, community, affiliate, tour | Real screens with real updates (profile, audience, creator profile, delete account). Team invites and the Slack community need email/Slack and say so; the MCP endpoint is documented, not served; affiliate counters stay at zero because referral attribution is not stored. |
+| Book a call | Fake slot picker on both the public page and the brand page; writes nothing (no calendar). |
+| EN / FR toggle | Visual only: FR re-renders the same English strings. Agency mode toggle: visual only. |
+| Public site | Landing page in naano's section order with their copy; for-creators, for-agencies, pricing, faq, case study, about, benchmarks; marketing figures are naano's published claims, labelled "est." where derived. Video testimonials are poster cards; logos are text. |
+
+Not built: email delivery, Stripe Connect, LinkedIn/Apify import, X/YouTube, real FR locale, `/api/mcp`, `llms.txt`,
+blog, free tools and selection-tool pages, cookie banner.
+
+## Environment
+
+See `.env.example`. `DATABASE_URL` is required for the product to have rows; `ANTHROPIC_API_KEY` is optional (AI briefs,
+Nao rationale and brand-onboarding profile fall back to templates without it). Vercel sets `VERCEL_GIT_COMMIT_SHA`.
