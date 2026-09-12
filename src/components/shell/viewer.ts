@@ -10,6 +10,7 @@ export type ShellViewer = {
   csrfToken: string;
   preview: boolean;
   notifications: ShellNotification[];
+  launchPlan: { explored: boolean; briefed: boolean; invited: boolean; stepsLeft: number } | null;
 };
 
 export type ShellNotification = { id: string; title: string; body: string; href: string; at: string };

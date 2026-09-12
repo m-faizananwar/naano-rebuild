@@ -4,12 +4,13 @@ import { isDbConfigured } from "@/db";
 import type { ShellViewer } from "@/components/shell/viewer";
 import { ROLE_HOME } from "../constants";
 import type { Role } from "../schemas";
+import { getLaunchPlan } from "@/features/campaigns/server/queries";
 import { getBrandNotifications, getCreatorNotifications } from "@/features/workspace/server/notifications";
 import { getViewer, type Viewer } from "./session";
 
 const PREVIEW: Record<Role, ShellViewer> = {
-  brand: { role: "brand", firstName: "Demo", lastName: "Brand", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [] },
-  creator: { role: "creator", firstName: "Demo", lastName: "Creator", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [] },
+  brand: { role: "brand", firstName: "Demo", lastName: "Brand", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [], launchPlan: null },
+  creator: { role: "creator", firstName: "Demo", lastName: "Creator", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [], launchPlan: null },
 };
 
 export async function toShellViewer(viewer: Viewer): Promise<ShellViewer> {
@@ -18,8 +19,10 @@ export async function toShellViewer(viewer: Viewer): Promise<ShellViewer> {
     : viewer.creator
       ? await getCreatorNotifications(viewer.creator.id, viewer.userId)
       : [];
+  const launchPlan = viewer.brand ? await getLaunchPlan(viewer.brand.id) : null;
   return {
     notifications,
+    launchPlan,
     role: viewer.role,
     firstName: viewer.firstName,
     lastName: viewer.lastName,

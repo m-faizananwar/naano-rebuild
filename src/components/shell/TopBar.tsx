@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatCents } from "@/lib/money";
 import { AccountMenu } from "./AccountMenu";
+import { LaunchPlanButton } from "./LaunchPlanButton";
 import { MobileNav } from "./MobileNav";
 import type { ShellViewer } from "./viewer";
 
@@ -21,6 +22,7 @@ export function TopBar({ viewer }: { viewer: ShellViewer }) {
     <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur lg:px-8">
       <MobileNav viewer={viewer} />
       <div className="ml-auto flex items-center gap-2">
+        {viewer.launchPlan ? <LaunchPlanButton plan={viewer.launchPlan} /> : null}
         <span className="inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-semibold" title="Wallet">
           <span className="size-2 rounded-full bg-brand" aria-hidden="true" />
           {formatCents(viewer.walletCents, "EUR")}
