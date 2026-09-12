@@ -1,6 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import { formatCompact, formatEuro } from "@/lib/format-euro";
+import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import { MATCHING_MAX_TOKENS, MATCHING_MODEL, MATCHING_TIMEOUT_MS } from "../constants";
 import type { CreatorDto } from "../schemas";
 
@@ -17,7 +17,8 @@ const TRADEOFF_PREFIX = "Trade-off:";
 const NAMED_IN_TEMPLATE = 3;
 
 function bestSignal(c: CreatorDto) {
-  return [...c.fit.signals].sort((a, b) => b.score * b.weight - a.score * a.weight)[0];
+  const detail = [...c.fit.signals].sort((a, b) => b.score * b.weight - a.score * a.weight)[0].detail;
+  return detail.charAt(0).toLowerCase() + detail.slice(1);
 }
 
 // Deterministic write-up from the fit signals and prices: what the grader
@@ -29,7 +30,7 @@ export function templateRationale(input: RationaleInput): Rationale {
   }
   const named = creators
     .slice(0, NAMED_IN_TEMPLATE)
-    .map((c) => `${c.name} (${c.fit.score}% fit — ${bestSignal(c).detail.toLowerCase()})`)
+    .map((c) => `${c.name} (${c.fit.score}% fit — ${bestSignal(c)})`)
     .join(", ");
   const prices = creators.map((c) => c.priceCents);
   const cheapest = creators.reduce((a, b) => (b.priceCents < a.priceCents ? b : a));
@@ -37,7 +38,7 @@ export function templateRationale(input: RationaleInput): Rationale {
   const rationale =
     `${named} lead the selection: their audiences overlap most with your ICPs and they already write about your categories. ` +
     `Post costs run from ${formatEuro(Math.min(...prices))} to ${formatEuro(Math.max(...prices))}` +
-    (creators.every((c) => c.cpmCents !== null) ? `, with CPMs between ${formatEuro(Math.min(...creators.map((c) => c.cpmCents ?? 0)))} and ${formatEuro(Math.max(...creators.map((c) => c.cpmCents ?? 0)))}.` : ".");
+    (creators.every((c) => c.cpmCents !== null) ? `, with CPMs between ${formatEuroWhole(Math.min(...creators.map((c) => c.cpmCents ?? 0)))} and ${formatEuroWhole(Math.max(...creators.map((c) => c.cpmCents ?? 0)))}.` : ".");
   const tradeoff =
     cheapest.id === widest.id
       ? `${TRADEOFF_PREFIX} ${widest.name} is both the widest reach (${formatCompact(widest.medianViews)} typical views) and the lowest price here, so there is little to give up — the rest of the list adds audience diversity rather than volume.`
@@ -47,7 +48,7 @@ export function templateRationale(input: RationaleInput): Rationale {
 
 function creatorSummary(c: CreatorDto, rank: number) {
   const signals = c.fit.signals.map((s) => `${s.label} ${s.score}/100 (${s.detail})`).join("; ");
-  return `${rank}. ${c.name} — ${c.industries.join(", ")} · ${c.country} · fit ${c.fit.score}% · ${formatCompact(c.medianViews)} median views · ${formatEuro(c.priceCents)} per post · CPM ${c.cpmCents === null ? "n/a" : formatEuro(c.cpmCents)} · ${signals}`;
+  return `${rank}. ${c.name} — ${c.industries.join(", ")} · ${c.country} · fit ${c.fit.score}% · ${formatCompact(c.medianViews)} median views · ${formatEuro(c.priceCents)} per post · CPM ${c.cpmCents === null ? "n/a" : formatEuroWhole(c.cpmCents)} · ${signals}`;
 }
 
 const SYSTEM_PROMPT =

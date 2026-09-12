@@ -1,4 +1,4 @@
-import { formatCompact, formatEuro } from "@/lib/format-euro";
+import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import type { CreatorDto } from "../../schemas";
 
 type Props = { creator: CreatorDto; columns?: 2 | 4 };
@@ -8,7 +8,7 @@ export function CreatorStats({ creator, columns = 2 }: Props) {
   const stats = [
     { label: "Followers", value: formatCompact(creator.followers) },
     { label: "Median views", value: formatCompact(creator.medianViews) },
-    { label: "CPM", value: creator.cpmCents === null ? "—" : formatEuro(creator.cpmCents) },
+    { label: "CPM", value: creator.cpmCents === null ? "—" : formatEuroWhole(creator.cpmCents) },
     { label: "Post cost", value: formatEuro(creator.priceCents) },
   ];
   return (

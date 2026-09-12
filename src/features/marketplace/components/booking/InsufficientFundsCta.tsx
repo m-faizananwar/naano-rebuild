@@ -1,5 +1,6 @@
 import { Wallet } from "lucide-react";
 import Link from "next/link";
+import { cn } from "cn";
 import { buttonVariants } from "@/components/ui/button";
 import { formatCents } from "@/lib/money";
 import { BILLING_PATH } from "../../constants";
@@ -18,7 +19,7 @@ export function InsufficientFundsCta({ topupCents, walletCents, feeCents }: Prop
           creator is paid on delivery.
         </span>
       </p>
-      <Link href={BILLING_PATH} className={buttonVariants({ size: "lg", className: "w-full bg-brand text-brand-foreground hover:bg-brand/90" })}>
+      <Link href={BILLING_PATH} className={cn(buttonVariants({ size: "lg" }), "w-full bg-brand text-brand-foreground hover:bg-brand/90")}>
         Add {formatCents(topupCents, "EUR")} and continue
       </Link>
     </div>

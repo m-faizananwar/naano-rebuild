@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { toCents } from "@/lib/money";
 import { useMarketplaceUrl } from "./useMarketplaceUrl";
 
 const CENTS = 100;
@@ -25,7 +24,7 @@ export function PriceFilter({ min, max, count }: Props) {
     const data = new FormData(event.currentTarget);
     const parse = (key: string) => {
       const raw = String(data.get(key) ?? "").trim();
-      return raw === "" ? undefined : toCents(Number(raw));
+      return raw === "" ? undefined : Math.max(0, Math.round(Number(raw)));
     };
     update({ min: parse("min"), max: parse("max") });
     setOpen(false);

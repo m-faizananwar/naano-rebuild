@@ -12,7 +12,15 @@ const csv = z
   .optional()
   .transform((v) => (v ? v.split(",").map((s) => s.trim()).filter(Boolean) : []));
 
-const cents = z.coerce.number().int().nonnegative().optional().catch(undefined);
+// Prices travel in the URL as whole euros ("?min=100&max=600"); queries take cents.
+const CENTS_PER_EURO = 100;
+const euros = z.coerce
+  .number()
+  .int()
+  .nonnegative()
+  .optional()
+  .catch(undefined)
+  .transform((v) => (v === undefined ? undefined : v * CENTS_PER_EURO));
 
 export const marketplaceQuerySchema = z.object({
   campaign: z.string().uuid().optional().catch(undefined),
@@ -21,8 +29,8 @@ export const marketplaceQuerySchema = z.object({
   sort: z.enum(SORT_KEYS).catch("best"),
   industry: csv,
   country: csv,
-  min: cents,
-  max: cents,
+  min: euros,
+  max: euros,
   page: z.coerce.number().int().min(1).max(MAX_PAGES).catch(1),
 });
 export type MarketplaceQuery = z.infer<typeof marketplaceQuerySchema>;

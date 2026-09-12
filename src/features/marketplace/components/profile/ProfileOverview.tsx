@@ -4,7 +4,7 @@ import { AudienceSnapshot } from "./AudienceSnapshot";
 import { ContentPerformance } from "./ContentPerformance";
 import { FitBreakdown } from "./FitBreakdown";
 
-type Props = { creator: CreatorDto; campaignName: string | null; icpTitles: string[] };
+type Props = { creator: CreatorDto; campaignName: string | null };
 
 function topAudienceChip(creator: CreatorDto) {
   const [top] = Object.entries(creator.audienceJobTitles).sort((a, b) => b[1] - a[1]);

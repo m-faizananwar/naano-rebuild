@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatCompact, formatEuro } from "@/lib/format-euro";
+import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import type { CreatorDto } from "../../schemas";
 import { BookButton } from "../cards/BookButton";
 import { CreatorIdentity } from "../cards/CreatorIdentity";
@@ -15,7 +15,7 @@ export function MatchingResultRow({ creator, rank }: { creator: CreatorDto; rank
   const { openProfile } = useMarketplace();
   const stats = [
     { label: "Median views", value: formatCompact(creator.medianViews) },
-    { label: "CPM", value: creator.cpmCents === null ? "—" : formatEuro(creator.cpmCents) },
+    { label: "CPM", value: creator.cpmCents === null ? "—" : formatEuroWhole(creator.cpmCents) },
     { label: "Post cost", value: formatEuro(creator.priceCents) },
   ];
   return (

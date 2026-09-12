@@ -2,7 +2,7 @@
 
 import { ShieldCheck } from "lucide-react";
 import { cn } from "cn";
-import { formatCompact, formatEuro } from "@/lib/format-euro";
+import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import type { CreatorDto } from "../../schemas";
 import { BookButton } from "../cards/BookButton";
 import { PricingPopover } from "./PricingPopover";
@@ -11,11 +11,11 @@ import { PricingPopover } from "./PricingPopover";
 export function BookingRail({ creator }: { creator: CreatorDto }) {
   const rows = [
     { label: "Typical reach", value: formatCompact(creator.medianViews) },
-    { label: "Estimated CPM", value: creator.cpmCents === null ? "—" : formatEuro(creator.cpmCents) },
+    { label: "Estimated CPM", value: creator.cpmCents === null ? "—" : formatEuroWhole(creator.cpmCents) },
     { label: "Posts analyzed", value: String(creator.posts.length) },
   ];
   return (
-    <aside className="rounded-2xl border bg-muted/30 p-4" aria-label="Book this creator">
+    <aside className="rounded-2xl border bg-muted/30 p-4 lg:sticky lg:top-5" aria-label="Book this creator">
       <h3 className="font-semibold">Book this creator</h3>
       <ul className="mt-3 grid gap-2">
         <li className={cn("flex items-center justify-between rounded-lg border-2 border-brand bg-background px-3 py-2 text-sm")}>

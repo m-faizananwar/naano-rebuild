@@ -36,3 +36,8 @@ export function formatCompact(value: number): string {
 function trimZero(text: string) {
   return text.replace(/\.0$/, "");
 }
+
+// CPMs are shown to the euro ("11 €"), never with cents.
+export function formatEuroWhole(cents: number): string {
+  return formatEuro(Math.round(cents / CENTS_PER_EURO) * CENTS_PER_EURO);
+}

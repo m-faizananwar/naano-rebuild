@@ -40,7 +40,7 @@ export function CreatorProfileDialog() {
                   <TabsTrigger value="content">Content</TabsTrigger>
                 </TabsList>
                 <TabsContent value="overview" className="mt-4">
-                  <ProfileOverview creator={creator} campaignName={campaignName} icpTitles={ctx.icpTitles} />
+                  <ProfileOverview creator={creator} campaignName={campaignName} />
                 </TabsContent>
                 <TabsContent value="audience" className="mt-4">
                   <AudienceSnapshot creator={creator} />

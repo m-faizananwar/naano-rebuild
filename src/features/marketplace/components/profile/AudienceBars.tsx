@@ -9,7 +9,7 @@ export function AudienceBars({ title, mix }: Props) {
       {rows.length === 0 ? <p className="text-sm text-muted-foreground">No data yet.</p> : null}
       <ul className="grid gap-2">
         {rows.map(([label, pct]) => (
-          <li key={label} className="grid grid-cols-[6.5rem_1fr_2.5rem] items-center gap-2 text-sm">
+          <li key={label} className="grid grid-cols-[8rem_1fr_2.5rem] items-center gap-2 text-sm">
             <span className="truncate" title={label}>{label}</span>
             <span className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
               <span className="block h-full rounded-full bg-brand" style={{ width: `${Math.min(100, pct)}%` }} />

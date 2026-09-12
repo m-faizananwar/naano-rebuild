@@ -147,7 +147,7 @@ export async function listCountries(): Promise<CountryOptionDto[]> {
 // Nao: every creator scored against the campaign, best first. Optional
 // industry hint narrows the pool when the prompt names one.
 export async function rankCreators(ctx: MarketplaceContextDto, industries: string[]): Promise<CreatorDto[]> {
-  const query: MarketplaceQuery = { tab: "all", sort: "best", industry: industries, country: [], page: 1 };
+  const query: MarketplaceQuery = { tab: "all", sort: "best", industry: industries, country: [], min: undefined, max: undefined, page: 1 };
   const list = await listCreators(ctx, query);
   return list.items;
 }

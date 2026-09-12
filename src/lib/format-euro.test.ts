@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCompact, formatEuro, formatEuroAmount } from "./format-euro";
+import { formatCompact, formatEuro, formatEuroAmount, formatEuroWhole } from "./format-euro";
 
 describe("formatEuro", () => {
   it("prints whole euros without decimals", () => {
@@ -21,5 +21,12 @@ describe("formatCompact", () => {
     expect(formatCompact(2070)).toBe("2.1K");
     expect(formatCompact(1_000_000)).toBe("1M");
     expect(formatCompact(950)).toBe("950");
+  });
+});
+
+describe("formatEuroWhole", () => {
+  it("rounds CPMs to the euro", () => {
+    expect(formatEuroWhole(1087)).toBe("11 €");
+    expect(formatEuroWhole(13454)).toBe("135 €");
   });
 });

@@ -147,9 +147,12 @@ function requestedCount(prompt: string) {
   return Math.min(MATCHING_MAX_COUNT, Math.max(1, n));
 }
 
+// Whole-word match only: "campaign" must not read as "AI".
 function mentionedIndustries(prompt: string) {
-  const lower = prompt.toLowerCase();
-  return INDUSTRIES.filter((industry) => lower.includes(industry.toLowerCase()));
+  return INDUSTRIES.filter((industry) => {
+    const escaped = industry.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&").replace(/\s+/g, "\\s*");
+    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(prompt);
+  });
 }
 
 export async function runMatching(input: unknown): Promise<ActionResult<MatchingResultDto>> {

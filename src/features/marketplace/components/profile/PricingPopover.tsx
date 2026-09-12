@@ -2,7 +2,7 @@
 
 import { Info } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { formatCompact, formatEuro } from "@/lib/format-euro";
+import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import type { CreatorDto } from "../../schemas";
 
 export function PricingPopover({ creator }: { creator: CreatorDto }) {
@@ -21,7 +21,7 @@ export function PricingPopover({ creator }: { creator: CreatorDto }) {
           the same basis.
         </p>
         <p className="rounded-lg bg-muted px-3 py-2 tabular-nums">
-          {formatCompact(creator.medianViews)} views × {creator.cpmCents === null ? "—" : formatEuro(creator.cpmCents)} / 1 000 ≈ {formatEuro(creator.priceCents)}
+          {formatCompact(creator.medianViews)} views × {creator.cpmCents === null ? "—" : formatEuroWhole(creator.cpmCents)} / 1 000 ≈ {formatEuro(creator.priceCents)}
         </p>
       </PopoverContent>
     </Popover>
