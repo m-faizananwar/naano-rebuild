@@ -8,13 +8,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type Props = { url: string; handle: string };
+type Props = { url: string; handle: string; label?: string; primary?: boolean; size?: "sm" | "default" };
 
 const SHARE_TEXT = "My Naano creator card — positioning, audience and price per post, in one link.";
 
 // "Copy or share my Deal Link": the public card URL with a real clipboard copy
 // and real share intents (LinkedIn share, X intent, mailto).
-export function DealLinkDialog({ url, handle }: Props) {
+export function DealLinkDialog({ url, handle, label = "Copy or share my Deal Link", primary = false, size = "default" }: Props) {
   const [copied, setCopied] = useState(false);
   const shares = [
     { label: "Share on LinkedIn", icon: MessageSquareShare, href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
@@ -34,8 +34,8 @@ export function DealLinkDialog({ url, handle }: Props) {
 
   return (
     <Dialog onOpenChange={(open) => !open && setCopied(false)}>
-      <DialogTrigger render={<Button />}>
-        <Share2 aria-hidden="true" /> Copy or share my Deal Link
+      <DialogTrigger render={<Button size={size} className={primary ? "bg-brand text-brand-foreground hover:bg-brand/90" : undefined} />}>
+        <Share2 aria-hidden="true" /> {label}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

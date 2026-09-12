@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays, Package } from "lucide-react";
 import { NaanoWordmark } from "@/components/NaanoWordmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { countryFlag, countryName } from "@/lib/country-flag";
@@ -56,24 +56,31 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
         <p key={model.name} className="animate-fade mt-4 text-2xl font-bold tracking-tight">{model.name}</p>
         {model.industries.length > 0 ? <p key={model.industries.join("|")} className="animate-fade mt-1 text-xs font-semibold uppercase tracking-wider text-brand">{model.industries.join(" · ")}</p> : null}
         <p key={model.headline} className="animate-fade mt-2 line-clamp-2 text-muted-foreground">{model.headline || "Your LinkedIn headline and topics will appear here."}</p>
-        <div className="mt-6 flex w-full items-center gap-3 text-xs text-muted-foreground">
+        {model.hasPostData === false ? (
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+            <CalendarDays className="size-3.5" aria-hidden="true" /> No post data available
+          </span>
+        ) : null}
+        <div className="mt-5 flex w-full items-center gap-3 text-xs text-muted-foreground">
           <span>Data</span>
           <span className="h-1 flex-1 overflow-hidden rounded-full bg-muted" aria-hidden="true">
             <span className="animate-fill block h-1 rounded-full bg-brand transition-[width] duration-500" style={{ width: `${model.progress}%` }} />
           </span>
           <span className="font-semibold text-foreground">{pending ? "Pending" : "Ready"}</span>
         </div>
-        {model.bundle ? (
-          <span className="mt-4 inline-flex rounded-full border border-brand/30 bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
-            {model.bundle.posts}-post bundle · {formatEuro(model.bundle.totalCents)}
-          </span>
-        ) : null}
       </div>
       <dl className="mt-5 grid grid-cols-3 divide-x border-t bg-muted/40">
         <Stat label="Followers" value={model.followers === null ? "—" : model.followers.toLocaleString("en-US")} />
-        <Stat label="Est. impressions" value={model.medianViews === null ? "—" : model.medianViews.toLocaleString("en-US")} />
-        <Stat label="Potential cost" value={model.priceCents === null ? "—" : formatEuro(model.priceCents)} />
+        <Stat label="Est. impressions" value={model.medianViews === null || model.hasPostData === false ? "—" : model.medianViews.toLocaleString("en-US")} />
+        <Stat label={model.costLabel ?? "Potential cost"} value={model.priceCents === null ? "—" : formatEuro(model.priceCents)} />
       </dl>
+      {model.bundle ? (
+        <div className="flex justify-center border-t bg-card py-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
+            <Package className="size-3.5" aria-hidden="true" /> {model.bundle.posts}-post bundle · {formatEuro(model.bundle.totalCents)}
+          </span>
+        </div>
+      ) : null}
       <div className="flex justify-center border-t bg-muted/40 py-3">
         <button
           type="button"

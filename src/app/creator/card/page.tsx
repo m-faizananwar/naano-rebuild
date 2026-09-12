@@ -5,9 +5,8 @@ import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/features/auth/server/session";
-import { CardBack } from "@/features/workspace/components/CardBack";
 import { DealLinkDialog } from "@/features/workspace/components/card/DealLinkDialog";
-import { CreatorCardPreview } from "@/features/workspace/components/overview/CreatorCardPreview";
+import { WorkspaceCard } from "@/features/workspace/components/card/WorkspaceCard";
 import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT } from "@/features/workspace/constants";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
 
@@ -30,7 +29,7 @@ export default async function CreatorCardPage() {
       />
       <div className="grid gap-4 lg:grid-cols-[22rem_1fr]">
         <div className="grid gap-4">
-          <CreatorCardPreview card={card} />
+          <WorkspaceCard card={card} />
           <div className="flex flex-wrap gap-2">
             <DealLinkDialog url={link} handle={card.handle} />
             <Link href={`/c/${card.handle}`} target="_blank" className={buttonVariants({ variant: "outline" })}>Open card</Link>
@@ -47,7 +46,6 @@ export default async function CreatorCardPage() {
             <p className="mt-3 text-sm"><span className="font-semibold">Your share {AFFILIATE_SHARE_PERCENT}%</span> · reward period {AFFILIATE_MONTHS} months</p>
             <p className="mt-2 break-all rounded-lg bg-muted px-3 py-2 font-mono text-xs">{link}</p>
           </section>
-          <CardBack card={card} />
         </div>
       </div>
     </>

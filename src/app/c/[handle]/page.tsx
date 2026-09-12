@@ -3,8 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NaanoWordmark } from "@/components/NaanoWordmark";
 import { buttonVariants } from "@/components/ui/button";
-import { CardBack } from "@/features/workspace/components/CardBack";
-import { CreatorCardPreview } from "@/features/workspace/components/overview/CreatorCardPreview";
+import { WorkspaceCard } from "@/features/workspace/components/card/WorkspaceCard";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
 
 export const dynamic = "force-dynamic";
@@ -26,8 +25,7 @@ export default async function PublicCardPage({ params }: { params: Promise<{ han
         <Link href="/register/brand" className={buttonVariants({ size: "sm" })}>Book {card.name.split(" ")[0]} on Naano</Link>
       </div>
       <div className="grid gap-6 lg:grid-cols-[22rem_1fr]">
-        <CreatorCardPreview card={card} />
-        <CardBack card={card} />
+        <WorkspaceCard card={card} />
       </div>
     </main>
   );

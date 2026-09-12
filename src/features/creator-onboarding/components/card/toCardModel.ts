@@ -17,6 +17,10 @@ export type CardModel = {
   reading: boolean;
   // 0–100: how much of the card is filled in. "Pending" until it reaches 100.
   progress: number;
+  // Workspace variants: naano labels the third stat "Chosen cost" once the
+  // profile exists, and shows a "No post data available" chip until posts are imported.
+  costLabel?: "Potential cost" | "Chosen cost";
+  hasPostData?: boolean;
 };
 
 export type CardOverrides = Partial<Omit<CardModel, "progress">>;
