@@ -9,7 +9,10 @@ export type ShellViewer = {
   walletCents: number;
   csrfToken: string;
   preview: boolean;
+  notifications: ShellNotification[];
 };
+
+export type ShellNotification = { id: string; title: string; body: string; href: string; at: string };
 
 export function initialsOf(viewer: Pick<ShellViewer, "firstName" | "lastName">) {
   return `${viewer.firstName.charAt(0)}${viewer.lastName.charAt(0)}`.toUpperCase() || "N";

@@ -4,15 +4,22 @@ import { isDbConfigured } from "@/db";
 import type { ShellViewer } from "@/components/shell/viewer";
 import { ROLE_HOME } from "../constants";
 import type { Role } from "../schemas";
+import { getBrandNotifications, getCreatorNotifications } from "@/features/workspace/server/notifications";
 import { getViewer, type Viewer } from "./session";
 
 const PREVIEW: Record<Role, ShellViewer> = {
-  brand: { role: "brand", firstName: "Demo", lastName: "Brand", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true },
-  creator: { role: "creator", firstName: "Demo", lastName: "Creator", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true },
+  brand: { role: "brand", firstName: "Demo", lastName: "Brand", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [] },
+  creator: { role: "creator", firstName: "Demo", lastName: "Creator", workspace: "Preview workspace", avatarUrl: null, walletCents: 0, csrfToken: "", preview: true, notifications: [] },
 };
 
-export function toShellViewer(viewer: Viewer): ShellViewer {
+export async function toShellViewer(viewer: Viewer): Promise<ShellViewer> {
+  const notifications = viewer.brand
+    ? await getBrandNotifications(viewer.brand.id, viewer.userId)
+    : viewer.creator
+      ? await getCreatorNotifications(viewer.creator.id, viewer.userId)
+      : [];
   return {
+    notifications,
     role: viewer.role,
     firstName: viewer.firstName,
     lastName: viewer.lastName,
@@ -32,5 +39,5 @@ export async function resolveShellViewer(role: Role, pathname: string) {
   const viewer = await getViewer();
   if (!viewer) redirect(`/login?next=${encodeURIComponent(pathname)}`);
   if (viewer.role !== role) redirect(ROLE_HOME[viewer.role]);
-  return { mode: "ok" as const, shell: toShellViewer(viewer), viewer };
+  return { mode: "ok" as const, shell: await toShellViewer(viewer), viewer };
 }

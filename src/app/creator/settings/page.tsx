@@ -1,18 +1,57 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/page/EmptyState";
+import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getViewer } from "@/features/auth/server/session";
+import { CreatorProfileForm } from "@/features/workspace/components/settings/CreatorProfileForm";
+import { DeleteAccountButton } from "@/features/workspace/components/settings/DeleteAccountButton";
+import { getCreatorSettings } from "@/features/workspace/server/settings-queries";
+import type { CreatorProfileInput } from "@/features/workspace/schemas";
 
 export const metadata: Metadata = { title: "Settings · naano" };
 
-export default function CreatorSettingsPage() {
+export default async function CreatorSettingsPage() {
+  const viewer = await getViewer();
+  if (!viewer?.creator) redirect("/login");
+  const settings = await getCreatorSettings(viewer.creator.id);
+  if (!settings) redirect("/login");
+  const defaults = {
+    firstName: settings.firstName,
+    lastName: settings.lastName,
+    headline: settings.headline,
+    linkedinUrl: settings.linkedinUrl,
+    industries: settings.industries,
+    priceCents: settings.priceCents,
+  } as CreatorProfileInput;
   return (
     <>
-      <PageHeader title="Settings" description="Profile · Payments · Account." />
-      <EmptyState
-        title="Editors land with onboarding"
-        body="Display name, LinkedIn URL, industries and payout method will be editable here."
-        cta={{ href: "/creator/card", label: "Open my card" }}
-      />
+      <PageHeader title="Settings" description="Profile · Payments · Account" />
+      <Tabs defaultValue="profile">
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
+          <TabsTrigger value="account">Account</TabsTrigger>
+        </TabsList>
+        <TabsContent value="profile" className="rounded-2xl border bg-background p-5">
+          <CreatorProfileForm defaults={defaults} />
+        </TabsContent>
+        <TabsContent value="payments" className="rounded-2xl border bg-background p-5">
+          <h2 className="font-semibold">Payout method</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Withdrawals go through the demo rail on the Earnings page. Stripe Connect and bank details are not part of this build; the
+            ledger is real.
+          </p>
+        </TabsContent>
+        <TabsContent value="account" className="grid gap-4 rounded-2xl border bg-background p-5">
+          <div>
+            <h2 className="font-semibold">Account</h2>
+            <p className="text-sm text-muted-foreground">Signed in as {settings.email} · card handle @{settings.handle}</p>
+          </div>
+          <div>
+            <DeleteAccountButton isDemo={settings.email.endsWith("@demo.naano")} />
+          </div>
+        </TabsContent>
+      </Tabs>
     </>
   );
 }

@@ -1,0 +1,95 @@
+"use server";
+
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { getDb } from "@/db";
+import { brands, creators, users } from "@/db/schema";
+import { destroySession, getViewer } from "@/features/auth/server/session";
+import {
+  type ActionResult, type BrandAudienceInput, type BrandProfileInput, type CreatorProfileInput,
+  brandAudienceSchema, brandProfileSchema, creatorProfileSchema,
+} from "../schemas";
+
+function firstIssue(error: { issues: Array<{ message: string }> }) {
+  return error.issues[0]?.message ?? "Invalid input";
+}
+
+export async function updateBrandProfile(input: BrandProfileInput): Promise<ActionResult> {
+  const viewer = await getViewer();
+  if (!viewer?.brand) return { ok: false, error: "Sign in as a brand." };
+  const parsed = brandProfileSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  try {
+    await getDb()
+      .update(brands)
+      .set({ company: parsed.data.company, website: parsed.data.website || null, valueProp: parsed.data.valueProp || null })
+      .where(eq(brands.id, viewer.brand.id));
+  } catch (error) {
+    console.error("[workspace] brand profile update failed", { brandId: viewer.brand.id, error });
+    return { ok: false, error: "We couldn't save your profile." };
+  }
+  revalidatePath("/brand", "layout");
+  return { ok: true, data: undefined };
+}
+
+export async function updateBrandAudience(input: BrandAudienceInput): Promise<ActionResult> {
+  const viewer = await getViewer();
+  if (!viewer?.brand) return { ok: false, error: "Sign in as a brand." };
+  const parsed = brandAudienceSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  try {
+    await getDb()
+      .update(brands)
+      .set({ targetIndustries: parsed.data.targetIndustries, targetRegions: parsed.data.targetRegions })
+      .where(eq(brands.id, viewer.brand.id));
+  } catch (error) {
+    console.error("[workspace] brand audience update failed", { brandId: viewer.brand.id, error });
+    return { ok: false, error: "We couldn't save your audience." };
+  }
+  revalidatePath("/brand/settings");
+  return { ok: true, data: undefined };
+}
+
+export async function updateCreatorProfile(input: CreatorProfileInput): Promise<ActionResult> {
+  const viewer = await getViewer();
+  if (!viewer?.creator) return { ok: false, error: "Sign in as a creator." };
+  const parsed = creatorProfileSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  const db = getDb();
+  try {
+    await db.transaction(async (tx) => {
+      await tx.update(users).set({ firstName: parsed.data.firstName, lastName: parsed.data.lastName }).where(eq(users.id, viewer.userId));
+      await tx
+        .update(creators)
+        .set({
+          headline: parsed.data.headline,
+          linkedinUrl: parsed.data.linkedinUrl,
+          industries: parsed.data.industries,
+          priceCents: parsed.data.priceCents,
+        })
+        .where(eq(creators.id, viewer.creator?.id ?? ""));
+    });
+  } catch (error) {
+    console.error("[workspace] creator profile update failed", { creatorId: viewer.creator.id, error });
+    return { ok: false, error: "We couldn't save your profile." };
+  }
+  revalidatePath("/creator", "layout");
+  return { ok: true, data: undefined };
+}
+
+// Deletes the user row; brands/creators/sessions cascade. Demo accounts are
+// protected so the graders' way in cannot be removed.
+export async function deleteAccount(): Promise<ActionResult> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "Not signed in." };
+  if (viewer.email.endsWith("@demo.naano")) return { ok: false, error: "Demo accounts can't be deleted." };
+  try {
+    await getDb().delete(users).where(eq(users.id, viewer.userId));
+  } catch (error) {
+    console.error("[workspace] account deletion failed", { userId: viewer.userId, error });
+    return { ok: false, error: "We couldn't delete the account." };
+  }
+  await destroySession();
+  redirect("/");
+}

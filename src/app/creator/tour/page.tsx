@@ -1,18 +1,27 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/page/EmptyState";
+import Link from "next/link";
 import { PageHeader } from "@/components/page/PageHeader";
+import { buttonVariants } from "@/components/ui/button";
+import { CREATOR_TOUR } from "@/features/workspace/constants";
 
 export const metadata: Metadata = { title: "Guided tour · naano" };
 
 export default function CreatorTourPage() {
   return (
     <>
-      <PageHeader title="Guided tour" description="Five steps through your creator workspace: your card, opportunities, collaborations, analytics and earnings." />
-      <EmptyState
-        title="The tour starts on the Overview"
-        body="Each step points at the screen it explains."
-        cta={{ href: "/creator", label: "Start on Overview" }}
-      />
+      <PageHeader title="Guided tour" description="Five steps through your creator workspace." />
+      <ol className="grid gap-3">
+        {CREATOR_TOUR.map((step) => (
+          <li key={step.step} className="flex flex-col gap-3 rounded-2xl border bg-background p-5 sm:flex-row sm:items-center">
+            <span className="text-xs font-semibold uppercase tracking-wide text-brand">Step {step.step} of {CREATOR_TOUR.length}</span>
+            <span className="flex-1">
+              <span className="block font-semibold">{step.title}</span>
+              <span className="block text-sm text-muted-foreground">{step.body}</span>
+            </span>
+            <Link href={step.href} className={buttonVariants({ variant: "outline", size: "sm" })}>{step.cta}</Link>
+          </li>
+        ))}
+      </ol>
     </>
   );
 }
