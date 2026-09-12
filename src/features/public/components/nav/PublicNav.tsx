@@ -5,8 +5,13 @@ import { MobilePublicNav } from "./MobilePublicNav";
 
 import { BRAND } from "@/config/brand";
 const PILL = "inline-flex h-10 items-center rounded-full px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50";
+// The scroll hero's pill (docs/reference/scroll-hero-spec.md §5): 40px, 21px sides,
+// 14.5px medium, ink background, hairline border, inset highlight, lifts 2px on hover.
+const HERO_PILL =
+  "inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full border border-foreground/10 bg-foreground px-[21px] text-[14.5px] font-medium tracking-[-0.008em] text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.10)] transition-[transform,background-color] duration-300 ease-[cubic-bezier(.22,.61,.36,1)] hover:-translate-y-0.5 hover:bg-black focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
-// Top bar of every public page. Transparent so the hero sky shows through.
+// Top bar of every public page. Sits over the scroll hero on the landing:
+// translucent paper-ish bar, so the video shows through underneath.
 export function PublicNav() {
   return (
     <header className="sticky top-0 z-40 w-full bg-background/70 backdrop-blur-md supports-backdrop-filter:bg-background/50">
@@ -32,7 +37,7 @@ export function PublicNav() {
           <Link href="/login" className={`${PILL} bg-background text-foreground shadow-sm ring-1 ring-border hover:bg-muted`}>
             Sign in
           </Link>
-          <Link href="/register" className={`${PILL} bg-foreground text-background hover:bg-foreground/85`}>
+          <Link href="/register" className={HERO_PILL}>
             Sign up
           </Link>
         </div>
