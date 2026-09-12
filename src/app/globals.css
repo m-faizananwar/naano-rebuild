@@ -7,6 +7,10 @@
 @theme inline {
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-sky: var(--brand-sky);
+  --color-linkedin: var(--linkedin);
+  --color-success: var(--success);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -53,6 +57,11 @@
 :root {
   --brand: #3b5bff;
   --brand-foreground: #ffffff;
+  /* public site: hero sky gradient + tints (light blue → white) */
+  --brand-soft: #eaf4ff;
+  --brand-sky: #bfe0fb;
+  --linkedin: #0a66c2;
+  --success: #15803d;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -90,6 +99,10 @@
 .dark {
   --brand: #5b78ff;
   --brand-foreground: #ffffff;
+  --brand-soft: oklch(0.25 0.03 255);
+  --brand-sky: oklch(0.35 0.06 250);
+  --linkedin: #4c9ae8;
+  --success: #4ade80;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
