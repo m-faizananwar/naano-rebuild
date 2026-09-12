@@ -159,8 +159,10 @@ export default defineConfig([
       "max-params": "off",
       "max-depth": "off",
       "no-restricted-syntax": "off",
-      // the primitive is the generic wrapper; the control is passed at the call site
+      // generated primitives: the semantics are supplied at the call site
       "jsx-a11y/label-has-associated-control": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-noninteractive-element-interactions": "off",
     },
   },
 ]);

@@ -1,4 +1,4 @@
-import { index, integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { baseColumns } from "../columns";
 import { campaigns } from "./campaigns";
 import { creators } from "./creators";
@@ -34,6 +34,13 @@ export const collaborations = pgTable(
     origin: collaborationOrigin("origin").notNull(),
     status: collaborationStatus("status").notNull(),
     feeCents: integer("fee_cents").notNull(),
+    // Offer terms from the "Make an offer" dialog. listPriceCents is the creator's
+    // rate when the offer was made; feeCents is what was actually offered.
+    listPriceCents: integer("list_price_cents"),
+    discountPercent: integer("discount_percent").notNull().default(0),
+    approveBeforePublish: boolean("approve_before_publish").notNull().default(true),
+    acceptBy: timestamp("accept_by", { withTimezone: true }),
+    offerNote: text("offer_note"),
     dueDate: timestamp("due_date", { withTimezone: true }),
     revisionRound: integer("revision_round").notNull().default(0),
     draftText: text("draft_text"),

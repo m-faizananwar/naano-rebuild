@@ -2,13 +2,9 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { collaborationEvents, collaborations } from "@/db/schema";
-import {
-  type Actor,
-  type CollaborationEvent,
-  IllegalTransitionError,
-  nextStatus,
-} from "@/lib/collaboration-status";
+import { type Actor, type CollaborationEvent, IllegalTransitionError, nextStatus } from "@/lib/collaboration-status";
 import { MAX_REVISION_ROUNDS } from "../constants";
+import { ensureTrackingLink, holdBookingFee, recordPayout, releaseBookingFee } from "./side-effects";
 
 type Patch = Partial<
   Pick<typeof collaborations.$inferInsert, "draftText" | "reviewNote" | "postUrl" | "scheduledAt" | "dueDate">
@@ -23,8 +19,9 @@ export type TransitionInput = {
 };
 
 // The only code path that changes collaborations.status. Validates the move
-// against the pure state machine, writes the new status and the audit event
-// in one transaction, and throws IllegalTransitionError on anything else.
+// against the pure state machine, writes the new status, the audit event and
+// the money/tracking side effects in one transaction, and throws
+// IllegalTransitionError (or InsufficientFundsError) on anything else.
 export async function transition(input: TransitionInput) {
   const db = getDb();
   return db.transaction(async (tx) => {
@@ -57,6 +54,15 @@ export async function transition(input: TransitionInput) {
       actor: input.actor,
       note: input.note,
     });
+
+    // Money and tracking follow the status; nothing else writes these.
+    if (to === "accepted") {
+      if (current.status === "applied") await holdBookingFee(tx, updated);
+      await ensureTrackingLink(tx, updated);
+    }
+    if (to === "declined" && current.status === "invited") await releaseBookingFee(tx, updated);
+    if (to === "live") await recordPayout(tx, updated, "pending");
+    if (to === "paid") await recordPayout(tx, updated, "completed");
 
     return updated;
   });

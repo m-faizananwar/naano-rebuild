@@ -4,6 +4,7 @@ import { brands } from "./brands";
 import { creators } from "./creators";
 
 export const campaignStatus = pgEnum("campaign_status", ["draft", "active", "completed"]);
+export const campaignSource = pgEnum("campaign_source", ["manual", "ai", "link", "team"]);
 
 // The brief editor's exact field set (product map, "Brief EDITOR fields").
 export type BriefAngle = { angle: string; hook: string; direction: string; example: string };
@@ -32,6 +33,10 @@ export const campaigns = pgTable(
     postDeadline: timestamp("post_deadline", { withTimezone: true }),
     defaultFeeCents: integer("default_fee_cents").notNull().default(0),
     brief: jsonb("brief").$type<Brief>().notNull(),
+    // How the campaign was created (the chooser's three cards) and what fed it.
+    source: campaignSource("source").notNull().default("manual"),
+    sourcePrompt: text("source_prompt"),
+    sourceUrl: text("source_url"),
   },
   (t) => [index("campaigns_brand_id_idx").on(t.brandId), index("campaigns_status_idx").on(t.status)],
 );

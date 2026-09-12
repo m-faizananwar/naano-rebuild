@@ -51,37 +51,50 @@ function brief(company: string, partial: Partial<Brief> & Pick<Brief, "whatToTel
   };
 }
 
-// The demo brand. Value prop and ICPs are written in the shape the brand
-// onboarding produces (product map, step 2 of 3) — assumed copy, replace freely.
+// The demo brand. Value prop and ICPs are naano's real onboarding output for
+// zune (product map, "Zune — the real onboarding output"), verbatim.
 const zune: BrandFixture = {
   key: "zune",
   slug: "zune",
   company: "Zune",
   website: "https://zune.dev",
   valueProp:
-    "Zune is an AI outbound workspace for early-stage B2B SaaS teams. It researches accounts, drafts personalised " +
-    "sequences in the founder's voice and books meetings straight into the calendar, so a two-person team can run " +
-    "outbound like a ten-person SDR org. Teams switch from generic sequencers because replies go up and the admin " +
-    "goes away. It plugs into HubSpot, Attio and Pipedrive in one click.",
+    "Zune is an AI product studio that designs, builds, and hands over high-performance websites, web applications, and AI " +
+    "systems for ambitious companies. A senior in-house team—based in Islamabad and serving UK and EU clients—takes projects " +
+    "from discovery through production launch, with no subcontractors or handoffs. The studio combines brand strategy, product " +
+    "design, and modern engineering (React, Next.js, RAG pipelines, LLM features) to create scalable digital products that " +
+    "compound over time. Clients own 100% of the code and infrastructure on day one, avoiding vendor lock-in. Typical " +
+    "engagements are scoped after discovery and delivered in 6-week fixed-price builds, starting from £4k for websites to " +
+    "£12k+ for web applications and AI systems.",
   icps: [
     {
-      title: "Founder / CEO of early-stage SaaS",
+      title: "Founder / CEO of Early-Stage SaaS",
       description:
-        "Pre-seed to Series A, doing founder-led sales, no SDR yet. Wants meetings without hiring; distrusts tools that spam.",
+        "Leads a 10–50 person SaaS company or venture-backed startup that has outgrown its initial MVP and needs a cohesive " +
+        "product redesign, AI-powered features, or a new customer-facing application. Frustrated by fragmented agency work, " +
+        "scope creep, and lack of ownership over code and design systems. Zune's fixed-price discovery-to-launch model, senior " +
+        "team continuity, and full code handover align with the need for speed, quality, and long-term product control.",
     },
     {
-      title: "Head of Growth / GTM at a 10–50 person SaaS",
+      title: "Product Director at Mid-Market B2B Company",
       description:
-        "Owns pipeline targets, runs outbound + content, measured on qualified meetings. Cares about reply rate and CRM hygiene.",
+        "Owns digital transformation or product modernization at a 100–500 person established company (fintech, healthtech, " +
+        "logistics, or enterprise SaaS). Needs to rebuild internal tools, dashboards, or customer portals with modern UX and " +
+        "AI-driven automation, but internal teams lack design and full-stack engineering capacity. Values a single accountable " +
+        "partner who can diagnose problems, deliver production-grade code, and train the team to maintain it post-launch.",
     },
     {
-      title: "First sales hire / AE at a seed-stage startup",
+      title: "Marketing / Growth Leader at B2B Service Firm",
       description:
-        "Alone on the sales side, needs research and first drafts done for them so the day goes to conversations, not tabs.",
+        "Responsible for brand presence and lead generation at a consulting, agency, or professional services firm (50–200 " +
+        "people) that has outgrown its website and needs a redesigned marketing site, SEO-optimized content platform, or " +
+        "AI-powered lead qualification system. Seeks a partner who understands brand strategy, can deliver a site that reflects " +
+        "studio quality, and can integrate automation (e.g., AI chatbots, retrieval-based search) to improve conversion and " +
+        "customer experience.",
     },
   ],
-  targetIndustries: ["B2B", "SaaS", "AI", "Sales", "Growth / GTM"],
-  targetRegions: ["Europe", "North America"],
+  targetIndustries: ["B2B", "SaaS", "AI"],
+  targetRegions: ["Europe"],
   pixelSiteKey: `nn_${hex(32)}`,
   owner: { firstName: "Demo", lastName: "Brand", email: "brand@demo.naano" },
   topupCents: 1_000_000,
@@ -89,7 +102,7 @@ const zune: BrandFixture = {
     {
       key: "zune-main",
       name: "Zune creator brief",
-      description: "Founder-led outbound without the admin. Creators show what changes when research and drafts are done for you.",
+      description: "Senior product studio, fixed-price builds, full code handover. Creators show what changes when one team owns discovery to launch.",
       status: "active",
       openToApplications: true,
       postDeadline: daysFromNow(12),
@@ -97,30 +110,31 @@ const zune: BrandFixture = {
       createdAt: daysAgo(31),
       brief: brief("Zune", {
         whatToTell:
-          "Zune does the research and the first draft for founder-led outbound, so small SaaS teams book meetings without hiring SDRs. Show a concrete before/after from your own experience with outbound.",
-        targetIndustries: ["B2B", "SaaS", "AI", "Sales", "Growth / GTM"],
-        links: ["https://zune.dev", "https://zune.dev/docs/getting-started"],
+          "Zune is described by the company as an AI product studio that designs, builds, and hands over high-performance websites, web applications, and AI systems for ambitious companies, delivered by a senior in-house team in 6-week fixed-price builds with full code handover. The intended audience is professionals connected to B2B, SaaS, AI in Europe. Introduce the product through your own expertise, adapt the angle to your audience, and keep every claim grounded in the confirmed company profile.",
+        targetIndustries: ["B2B", "SaaS", "AI"],
+        targetGeos: ["Europe"],
+        links: ["https://zune.dev"],
         angles: [
           {
             angle: "A practical introduction",
-            hook: "Founder-led outbound dies at the research step, not the writing step.",
-            direction: "Walk through what a week of outbound looks like with research and drafts done for you. Keep it concrete: accounts, hours, replies.",
+            hook: "Most SaaS redesigns fail before the first screen: nobody owns the outcome.",
+            direction: "Walk through what a discovery-to-launch build looks like when one senior team owns it end to end. Keep it concrete: weeks, deliverables, what the client keeps.",
             example:
-              "I used to spend Sunday nights building lists. This week the list, the context and the first draft were waiting on Monday. I only did the conversations. Here's what changed in the numbers.",
+              "Six weeks, one team, fixed price, and on day one the client owns every line of code. That's the whole pitch, and it's rarer than it should be.",
           },
           {
-            angle: "The two-person SDR org",
-            hook: "You don't need an SDR. You need the SDR's Tuesday.",
-            direction: "Contrast hiring a first SDR with keeping outbound founder-led but tooled. No dunking on SDRs.",
+            angle: "Own your code on day one",
+            hook: "Vendor lock-in is the tax you pay for not asking one question.",
+            direction: "Contrast agency retainers where the client rents its own product with full code and infrastructure handover. No dunking on agencies.",
             example:
-              "Hiring an SDR at seed is a €60K bet on a process you haven't proven. We proved it first with two people and a tool that does the boring half. Then we hired.",
+              "Ask any agency: 'if we leave tomorrow, what do we keep?' The good ones answer 'everything'. Zune's model is built around that answer.",
           },
           {
-            angle: "Reply rate over volume",
-            hook: "We sent 70% fewer emails and booked more meetings.",
-            direction: "Explain why personalised research beats volume, with one real anecdote. Disclose the partnership in the first three lines.",
+            angle: "AI features that ship",
+            hook: "Every SaaS roadmap has 'add AI' on it. Almost none have a shipping date.",
+            direction: "Explain what it takes to get a RAG or LLM feature into production, with one real anecdote. Disclose the partnership in the first three lines.",
             example:
-              "Sponsored, and I'd say this anyway: the fastest way to fix reply rate is to stop sending to people you haven't read about. Zune reads first. We sent fewer, better emails.",
+              "Sponsored, and I'd say this anyway: the difference between an AI demo and an AI feature is the boring engineering around it. Zune does the boring part.",
           },
         ],
       }),
@@ -128,19 +142,19 @@ const zune: BrandFixture = {
     {
       key: "zune-q4",
       name: "Zune — Q4 founders push",
-      description: "Second wave targeting founders in DACH and the Nordics.",
+      description: "Second wave targeting SaaS founders in DACH and the Nordics.",
       status: "draft",
       openToApplications: false,
       postDeadline: null,
       defaultFeeCents: 40_000,
       createdAt: daysAgo(3),
       brief: brief("Zune", {
-        whatToTell: "Same product story, angled at founders raising or just raised who need pipeline before the next round.",
+        whatToTell: "Same studio story, angled at founders who just raised and need a product rebuild before the next round.",
         targetGeos: ["Europe"],
         angles: [
           {
-            angle: "Pipeline before the round",
-            hook: "Investors don't fund outbound plans. They fund outbound results.",
+            angle: "Rebuild before the round",
+            hook: "Investors don't fund a roadmap slide. They fund the product they can click.",
             direction: "Draft — to be completed with AI.",
             example: "",
           },

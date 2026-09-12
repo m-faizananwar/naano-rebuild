@@ -273,3 +273,29 @@ limited to once a week", industries, X handle) · Payments · Account.
 - Nao-style matching = a chat box that returns a ranked list with a written rationale + trade-off. One LLM call over the fit-scored
   top-N. Optional, after the core loop.
 - Stretch (only if everything else is done): /api/mcp with 2–3 read tools. Nobody else will have it.
+
+## Zune — the real onboarding output (use verbatim for the demo brand seed)
+VALUE PROPOSITION (naano wrote this from zune's site): "Zune is an AI product studio that designs, builds, and hands over
+high-performance websites, web applications, and AI systems for ambitious companies. A senior in-house team—based in Islamabad and
+serving UK and EU clients—takes projects from discovery through production launch, with no subcontractors or handoffs. The studio
+combines brand strategy, product design, and modern engineering (React, Next.js, RAG pipelines, LLM features) to create scalable
+digital products that compound over time. Clients own 100% of the code and infrastructure on day one, avoiding vendor lock-in.
+Typical engagements are scoped after discovery and delivered in 6-week fixed-price builds, starting from £4k for websites to £12k+
+for web applications and AI systems."
+ICP 1 — Founder / CEO of Early-Stage SaaS: "Leads a 10–50 person SaaS company or venture-backed startup that has outgrown its
+initial MVP and needs a cohesive product redesign, AI-powered features, or a new customer-facing application. Frustrated by
+fragmented agency work, scope creep, and lack of ownership over code and design systems. Zune's fixed-price discovery-to-launch
+model, senior team continuity, and full code handover align with the need for speed, quality, and long-term product control."
+ICP 2 — Product Director at Mid-Market B2B Company: "Owns digital transformation or product modernization at a 100–500 person
+established company (fintech, healthtech, logistics, or enterprise SaaS). Needs to rebuild internal tools, dashboards, or customer
+portals with modern UX and AI-driven automation, but internal teams lack design and full-stack engineering capacity. Values a
+single accountable partner who can diagnose problems, deliver production-grade code, and train the team to maintain it post-launch."
+ICP 3 — Marketing / Growth Leader at B2B Service Firm: "Responsible for brand presence and lead generation at a consulting,
+agency, or professional services firm (50–200 people) that has outgrown its website and needs a redesigned marketing site,
+SEO-optimized content platform, or AI-powered lead qualification system. Seeks a partner who understands brand strategy, can
+deliver a site that reflects studio quality, and can integrate automation (e.g., AI chatbots, retrieval-based search) to improve
+conversion and customer experience."
+Starter brief "what creators should tell" (naano's generated text): "Zune is described by the company as … [value prop] … The
+intended audience is professionals connected to B2B, SaaS, AI in Europe. Introduce the product through your own expertise, adapt
+the angle to your audience, and keep every claim grounded in the confirmed company profile."
+Settings › Audience after onboarding: target industries B2B · SaaS · AI; target regions Europe.

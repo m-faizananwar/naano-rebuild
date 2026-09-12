@@ -8,6 +8,13 @@
       "when": 1789221732372,
       "tag": "0000_pink_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789223757521,
+      "tag": "0001_colorful_power_man",
+      "breakpoints": true
     }
   ]
 }
