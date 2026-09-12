@@ -3,7 +3,7 @@ import { parseMarketplaceQuery, sendOfferSchema } from "./schemas";
 
 describe("parseMarketplaceQuery", () => {
   it("applies defaults for an empty URL", () => {
-    expect(parseMarketplaceQuery({})).toEqual({ tab: "all", sort: "best", industry: [], country: [], min: undefined, max: undefined, page: 1 });
+    expect(parseMarketplaceQuery({})).toEqual({ tab: "all", sort: "best", industry: [], country: [], min: undefined, max: undefined, page: 1, activity: "any" });
   });
 
   it("reads csv filters, euro prices and the page", () => {

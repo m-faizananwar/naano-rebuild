@@ -11,6 +11,7 @@ export async function GET() {
   const body = {
     ok: db.ok,
     db: db.ok ? "ok" : db.reason,
+    dbEnv: db.via,
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local",
   };
   return NextResponse.json(body, { status: db.ok ? 200 : HTTP_SERVICE_UNAVAILABLE });

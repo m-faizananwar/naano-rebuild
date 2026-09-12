@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
+import { resolveDatabaseUrl } from "@/lib/database-url";
 
 const CONNECT_TIMEOUT_SECONDS = 5;
 
@@ -16,15 +17,15 @@ export type Db = ReturnType<typeof createDb>["db"];
 let cached: Db | undefined;
 
 export function isDbConfigured() {
-  return Boolean(process.env.DATABASE_URL);
+  return resolveDatabaseUrl(process.env) !== null;
 }
 
 // Lazy so importing this module never fails at build time on a machine
 // without DATABASE_URL; the first query is what needs it.
 export function getDb(): Db {
   if (cached) return cached;
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not set");
-  cached = createDb(url).db;
+  const resolved = resolveDatabaseUrl(process.env);
+  if (!resolved) throw new Error("No database URL set (DATABASE_URL or a Vercel/Neon-prefixed equivalent)");
+  cached = createDb(resolved.url).db;
   return cached;
 }

@@ -5,7 +5,7 @@ fixed price per post, creators write in their own voice, and every post's clicks
 back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn,
 Drizzle + Postgres, deployed on Vercel.
 
-Live: https://naano-rebuild-ashy.vercel.app · Demo logins on `/login`: **Explore as demo brand** (Zune) / **Explore as
+Live: deployed automatically from `main` on Vercel (URL in the hand-in) · Demo logins on `/login`: **Explore as demo brand** (Zune) / **Explore as
 demo creator** — one click, no typing. Password for both seeded accounts is `demo1234` if you prefer the form.
 
 ## Run
@@ -29,9 +29,11 @@ pnpm dev                          # http://localhost:3000
 | `pnpm db:migrate`  | Apply migrations to `DATABASE_URL`                                |
 | `pnpm db:seed`     | Reset and reseed (`scripts/seed/*`, fixed faker seed)             |
 | `pnpm db:reset`    | down + up + migrate + seed                                        |
+| `pnpm db:migrate:remote` / `db:seed:remote` | same, against the `DATABASE_URL` in a gitignored `.env.remote.local` |
 
 CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push. Smoke test after every deploy:
-`GET /api/health` → `{ ok, db, commit }` (503 with `db: "not configured"` until `DATABASE_URL` is set).
+`GET /api/health` → `{ ok, db, dbEnv, commit }` (503 with `db: "not configured"` until a database URL is set; `dbEnv` names
+the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`).
 
 **Without a database** every page still renders: the app shells show an honest "Database not configured" state on every
 tab, the public pages fall back to static content, `/api/health` is the only thing that reports the reason. The

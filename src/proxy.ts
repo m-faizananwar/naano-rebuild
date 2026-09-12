@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { resolveDatabaseUrl } from "@/lib/database-url";
 import { SESSION_COOKIE } from "@/features/auth/constants";
 
 // Optimistic guard: a session cookie must exist to enter either app shell.
@@ -9,7 +10,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const guarded = pathname.startsWith("/brand") || pathname.startsWith("/creator");
   const hasSession = Boolean(request.cookies.get(SESSION_COOKIE)?.value);
-  const dbConfigured = Boolean(process.env.DATABASE_URL);
+  const dbConfigured = resolveDatabaseUrl(process.env) !== null;
 
   if (guarded && dbConfigured && !hasSession) {
     const url = new URL("/login", request.url);

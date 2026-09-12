@@ -2,6 +2,7 @@ import { loadEnvConfig } from "@next/env";
 import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
+import { resolveDatabaseUrl } from "@/lib/database-url";
 import {
   brands, campaigns, creatorPosts, creators, ledgerEntries, shortlist, users,
 } from "@/db/schema";
@@ -197,9 +198,10 @@ async function syncWallets(db: Db) {
 }
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not set");
-  const { db, close } = createDb(url);
+  const resolved = resolveDatabaseUrl(process.env);
+  if (!resolved) throw new Error("No database URL set (DATABASE_URL or a Vercel/Neon-prefixed equivalent)");
+  console.log(`seed: connecting via ${resolved.name}`);
+  const { db, close } = createDb(resolved.url);
   try {
     const passwordHash = await bcrypt.hash(DEMO_PASSWORD, BCRYPT_COST);
     await reset(db);
