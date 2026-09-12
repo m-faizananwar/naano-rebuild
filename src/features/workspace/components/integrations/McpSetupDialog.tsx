@@ -4,9 +4,10 @@ import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MCP_ENDPOINT, type MCP_SETUPS } from "../../constants";
+import { MCP_ENDPOINT } from "../../constants";
+import type { McpClientSetup } from "./mcpClientsFor";
 
-export function McpSetupDialog({ setup }: { setup: (typeof MCP_SETUPS)[number] }) {
+export function McpSetupDialog({ setup }: { setup: McpClientSetup }) {
   async function copy() {
     try {
       await navigator.clipboard.writeText(MCP_ENDPOINT);
@@ -17,7 +18,7 @@ export function McpSetupDialog({ setup }: { setup: (typeof MCP_SETUPS)[number] }
   }
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="outline" size="sm" />}>View setup</DialogTrigger>
+      <DialogTrigger render={<Button variant="outline" size="sm" />}>{setup.triggerLabel}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{setup.title}</DialogTitle>
@@ -31,6 +32,7 @@ export function McpSetupDialog({ setup }: { setup: (typeof MCP_SETUPS)[number] }
             </li>
           ))}
         </ol>
+        <p className="rounded-lg bg-muted px-3 py-2 font-mono text-xs break-all">{MCP_ENDPOINT}</p>
         <div className="flex flex-wrap gap-2">
           <Button type="button" onClick={copy}>
             <Copy aria-hidden="true" /> Copy MCP URL
