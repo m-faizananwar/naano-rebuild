@@ -33,7 +33,7 @@ function website(url: string | null) {
 export function BriefDrawer({ brief, open, onOpenChange }: Props) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" showCloseButton={false} className="w-full gap-0 overflow-y-auto bg-muted/40 p-0 sm:max-w-2xl">
+      <SheetContent side="right" showCloseButton={false} className="w-full gap-0 overflow-y-auto bg-background p-0 data-[side=right]:w-full data-[side=right]:sm:max-w-2xl">
         <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background px-6 py-4">
           <BrandMark initial={brief.brandInitial} name={brief.brandCompany} size="lg" />
           <div className="min-w-0 flex-1">
@@ -52,7 +52,7 @@ export function BriefDrawer({ brief, open, onOpenChange }: Props) {
           </SheetClose>
         </header>
 
-        <div className="space-y-4 p-6">
+        <div className="min-h-full space-y-4 bg-muted/40 p-6">
           <div className="sm:hidden">
             <CopyMarkdownButton brief={brief} />
           </div>
