@@ -55,7 +55,7 @@ function joinNatural(items: string[], fallback: string): string {
 }
 
 function truncate(text: string, max: number): string {
-  const clean = text.replace(/\s+/g, " ").trim();
+  const clean = text.replace(/\s+/g, " ").replace(/[.!?\s]+$/, "").trim();
   return clean.length <= max ? clean : `${clean.slice(0, max - 1).trimEnd()}…`;
 }
 
@@ -110,7 +110,7 @@ function campaignName(input: TemplateInput): string {
 
 function description(input: TemplateInput): string {
   const prompt = input.prompt?.trim();
-  if (prompt) return truncate(`Creators introduce ${input.company} to ${lowerFirst(prompt.replace(/^i want to\s+/i, ""))}.`, NAME_MAX_CHARS * ANGLE_COUNT);
+  if (prompt) return `${truncate(`Creators introduce ${input.company} to ${lowerFirst(prompt.replace(/^i want to\s+/i, ""))}`, NAME_MAX_CHARS * ANGLE_COUNT)}.`;
   return `Creators introduce ${input.company} to ${joinNatural(input.targetIndustries, "B2B")} professionals in ${joinNatural(input.targetRegions, "Europe")}.`;
 }
 

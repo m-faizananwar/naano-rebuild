@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ErrorState } from "@/components/page/ErrorState";
-import { isGeneratedWith } from "@/features/campaigns/components/create/GeneratedWithBanner";
-import { LaunchStepper } from "@/features/campaigns/components/create/LaunchStepper";
+import { isGeneratedWith } from "@/features/campaigns/components/launch/GeneratedWithBanner";
+import { LaunchStepper } from "@/features/campaigns/components/launch/LaunchStepper";
 import { CampaignNotFound } from "@/features/campaigns/components/detail/CampaignNotFound";
 import { LAUNCH_STEPS, type LaunchStepKey } from "@/features/campaigns/constants";
 import { getCampaignShell, getLaunchStepData } from "@/features/campaigns/server/queries";

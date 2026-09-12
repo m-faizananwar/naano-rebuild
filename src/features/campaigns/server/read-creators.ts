@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 import { getDb } from "@/db";
 import { collaborations, creators, shortlist, users } from "@/db/schema";
 import { estimate, verticalFor } from "@/lib/estimator";
@@ -73,14 +73,15 @@ export function estimateFor(campaign: CampaignDto, picks: CreatorPickDto[]): Est
   return estimate(picks, verticalFor(campaign.brief.targetIndustries));
 }
 
-// Creators already on an active campaign, for the "Projected vs actual" header.
+// Creators on an active campaign (declined ones never post), for the
+// "Projected vs actual" header.
 export async function listCampaignCreators(campaign: CampaignDto, brand: BrandProfile): Promise<CreatorPickDto[]> {
   const rows = await getDb()
     .select(creatorSelect)
     .from(collaborations)
     .innerJoin(creators, eq(creators.id, collaborations.creatorId))
     .innerJoin(users, eq(users.id, creators.userId))
-    .where(and(eq(collaborations.campaignId, campaign.id)));
+    .where(and(eq(collaborations.campaignId, campaign.id), ne(collaborations.status, "declined")));
   const invited = new Set(rows.map((r) => r.creator.id));
   return rows.map((r) => toPick(r, { campaign, brand, invitedIds: invited }));
 }

@@ -45,7 +45,8 @@ describe("buildTemplateDraft", () => {
   it("names the campaign from the prompt when there is one", () => {
     expect(buildTemplateDraft(zune).name).toBe("Zune creator brief");
     const prompted = buildTemplateDraft({ ...zune, prompt: "I want to reach VP Sales in B2B SaaS in France." });
-    expect(prompted.name).toBe("Zune — reach VP Sales in B2B SaaS in France.");
+    expect(prompted.name).toBe("Zune — reach VP Sales in B2B SaaS in France");
+    expect(prompted.description).toBe("Creators introduce Zune to reach VP Sales in B2B SaaS in France.");
     expect(prompted.brief.whatToTell).toContain("Campaign focus: I want to reach VP Sales");
   });
 
