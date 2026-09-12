@@ -16,9 +16,12 @@ export function EarningsTiles({ summary }: { summary: EarningsSummary }) {
         </p>
       </div>
       <div className="rounded-2xl border bg-background p-5">
-        <p className="text-xs font-semibold text-muted-foreground">Awaiting release</p>
-        <p className="mt-2 text-3xl font-semibold tracking-tight"><CountUp value={summary.awaitingReleaseCents} format="eur" /></p>
-        <p className="mt-1 text-xs text-muted-foreground">{summary.awaitingReleaseCount} live posts · released when the brand pays</p>
+        <p className="text-xs font-semibold text-muted-foreground">In transit</p>
+        <p className="mt-2 text-3xl font-semibold tracking-tight"><CountUp value={summary.inTransitCents} format="eur" /></p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          International transfers usually arrive within 1–7 days, depending on the destination and banking network.
+          {summary.awaitingReleaseCents > 0 ? ` ${formatCents(summary.awaitingReleaseCents, "EUR")} more is awaiting release on ${summary.awaitingReleaseCount} live post${summary.awaitingReleaseCount === 1 ? "" : "s"}.` : ""}
+        </p>
       </div>
       <WithdrawDialog
         availableCents={summary.availableCents}

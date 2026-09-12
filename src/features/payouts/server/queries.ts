@@ -12,6 +12,8 @@ export type EarningsSummary = {
   awaitingReleaseCents: number;
   awaitingReleaseCount: number;
   withdrawnCents: number;
+  // Bank withdrawals sit "in transit" (pending) until they settle; Stripe is instant.
+  inTransitCents: number;
   availableCents: number;
 };
 export type MonthPoint = { month: string; label: string; cents: number };
@@ -40,7 +42,10 @@ export async function getEarningsSummary(creatorId: string): Promise<EarningsSum
     .from(ledgerEntries)
     .where(and(eq(ledgerEntries.creatorId, creatorId), eq(ledgerEntries.type, "payout"), eq(ledgerEntries.status, "pending")));
   const [withdrawn] = await db
-    .select({ cents: sql<number>`coalesce(-sum(${ledgerEntries.amountCents}), 0)::int` })
+    .select({
+      cents: sql<number>`coalesce(-sum(${ledgerEntries.amountCents}), 0)::int`,
+      inTransit: sql<number>`coalesce(-sum(${ledgerEntries.amountCents}) filter (where ${ledgerEntries.status} = 'pending'), 0)::int`,
+    })
     .from(ledgerEntries)
     .where(and(eq(ledgerEntries.creatorId, creatorId), eq(ledgerEntries.type, "withdrawal")));
   const totalEarnedCents = paid?.cents ?? 0;
@@ -52,6 +57,7 @@ export async function getEarningsSummary(creatorId: string): Promise<EarningsSum
     awaitingReleaseCents: pending?.cents ?? 0,
     awaitingReleaseCount: pending?.n ?? 0,
     withdrawnCents: withdrawn?.cents ?? 0,
+    inTransitCents: withdrawn?.inTransit ?? 0,
     availableCents: totalEarnedCents - (withdrawn?.cents ?? 0),
   };
 }

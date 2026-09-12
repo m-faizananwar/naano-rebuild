@@ -52,6 +52,11 @@ export function CreatorProfileForm({ defaults }: { defaults: CreatorProfileInput
         {errors.linkedinUrl ? <p className="text-sm text-destructive">{errors.linkedinUrl.message}</p> : null}
         <p className="text-xs text-muted-foreground">Refresh profile — limited to once a week (import not part of this build).</p>
       </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor="xHandle">X handle</Label>
+        <Input id="xHandle" placeholder="@you" {...form.register("xHandle")} />
+        {errors.xHandle ? <p className="text-sm text-destructive">{errors.xHandle.message}</p> : null}
+      </div>
       <Controller
         control={form.control}
         name="industries"

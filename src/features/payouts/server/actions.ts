@@ -32,7 +32,8 @@ export async function withdrawEarnings(input: WithdrawInput): Promise<ActionResu
     await getDb().insert(ledgerEntries).values({
       creatorId: viewer.creator.id,
       type: "withdrawal",
-      status: "completed",
+      // Bank transfers take 1-7 days and show as "In transit"; Stripe settles instantly.
+      status: parsed.data.method === "bank" ? "pending" : "completed",
       amountCents: -parsed.data.amountCents,
       reference: reference("WD"),
       description: parsed.data.method === "stripe" ? "Withdrawal · Stripe (instant)" : "Withdrawal · Bank transfer",

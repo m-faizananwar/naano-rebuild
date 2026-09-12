@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { brands, campaigns, clicks, collaborations, creatorPosts, creators, trackingLinks } from "@/db/schema";
 
@@ -30,8 +30,17 @@ export type TrackedLinkPerformance = {
   publishedAt: string | null;
 };
 
-export async function getPublicSnapshot(creatorId: string): Promise<PublicSnapshot> {
+export const ANALYTICS_RANGES = ["all", "30", "90"] as const;
+export type AnalyticsRange = (typeof ANALYTICS_RANGES)[number];
+const DAY_MS = 86_400_000;
+
+function sinceFor(range: AnalyticsRange) {
+  return range === "all" ? null : new Date(Date.now() - Number(range) * DAY_MS);
+}
+
+export async function getPublicSnapshot(creatorId: string, range: AnalyticsRange = "all"): Promise<PublicSnapshot> {
   const db = getDb();
+  const since = sinceFor(range);
   const [creator] = await db.select({ followers: creators.followers }).from(creators).where(eq(creators.id, creatorId));
   const [agg] = await db
     .select({
@@ -41,7 +50,7 @@ export async function getPublicSnapshot(creatorId: string): Promise<PublicSnapsh
       withReach: sql<number>`count(*) filter (where ${creatorPosts.impressions} > 0)::int`,
     })
     .from(creatorPosts)
-    .where(eq(creatorPosts.creatorId, creatorId));
+    .where(and(eq(creatorPosts.creatorId, creatorId), since ? gte(creatorPosts.postedAt, since) : undefined));
   return {
     followers: creator?.followers ?? 0,
     posts: agg?.posts ?? 0,
@@ -51,8 +60,13 @@ export async function getPublicSnapshot(creatorId: string): Promise<PublicSnapsh
   };
 }
 
-export async function getPublicPosts(creatorId: string): Promise<PublicPostDto[]> {
-  const rows = await getDb().select().from(creatorPosts).where(eq(creatorPosts.creatorId, creatorId)).orderBy(desc(creatorPosts.postedAt));
+export async function getPublicPosts(creatorId: string, range: AnalyticsRange = "all"): Promise<PublicPostDto[]> {
+  const since = sinceFor(range);
+  const rows = await getDb()
+    .select()
+    .from(creatorPosts)
+    .where(and(eq(creatorPosts.creatorId, creatorId), since ? gte(creatorPosts.postedAt, since) : undefined))
+    .orderBy(desc(creatorPosts.postedAt));
   return rows.map((r) => ({
     id: r.id,
     url: r.url,

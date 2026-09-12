@@ -40,6 +40,8 @@ export type CreatorSettings = {
   industries: string[];
   priceCents: number;
   handle: string;
+  xHandle: string;
+  payout: { method: "stripe" | "bank" | null; accountHolder: string; ibanLast4: string };
 };
 
 export async function getCreatorSettings(creatorId: string): Promise<CreatorSettings | null> {
@@ -58,5 +60,11 @@ export async function getCreatorSettings(creatorId: string): Promise<CreatorSett
     industries: row.creator.industries,
     priceCents: row.creator.priceCents,
     handle: row.creator.handle,
+    xHandle: row.creator.xHandle ?? "",
+    payout: {
+      method: row.creator.payoutMethod === "stripe" || row.creator.payoutMethod === "bank" ? row.creator.payoutMethod : null,
+      accountHolder: row.creator.payoutAccountHolder ?? "",
+      ibanLast4: row.creator.payoutIbanLast4 ?? "",
+    },
   };
 }

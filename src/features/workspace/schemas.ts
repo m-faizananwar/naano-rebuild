@@ -21,7 +21,22 @@ export const creatorProfileSchema = z.object({
   linkedinUrl: z.string().trim().url().max(200).or(z.literal("")),
   industries: z.array(z.enum(INDUSTRIES)).max(3, "Pick up to 3 industries"),
   priceCents: z.number().int().min(2000, "Minimum €20 per post").max(150000, "Platform limit is €1,500 per post"),
+  xHandle: z.string().trim().max(40).regex(/^@?[A-Za-z0-9_]*$/, "Letters, digits and underscores only").or(z.literal("")),
 });
 export type CreatorProfileInput = z.infer<typeof creatorProfileSchema>;
+
+const IBAN_MIN = 15;
+const IBAN_MAX = 34;
+export const payoutDetailsSchema = z.object({
+  method: z.enum(["stripe", "bank"]),
+  accountHolder: z.string().trim().max(120).or(z.literal("")),
+  // Only the last 4 characters are stored; the rest never leaves the form.
+  iban: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/\s+/g, ""))
+    .pipe(z.string().min(IBAN_MIN, "That IBAN looks too short").max(IBAN_MAX).or(z.literal(""))),
+});
+export type PayoutDetailsInput = z.infer<typeof payoutDetailsSchema>;
 
 export type ActionResult<T = undefined> = { ok: true; data: T } | { ok: false; error: string };

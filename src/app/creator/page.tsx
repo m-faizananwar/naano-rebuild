@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/features/auth/server/session";
 import { TourOverlay } from "@/features/creator-onboarding/components/TourOverlay";
+import { DealLinkDialog } from "@/features/workspace/components/card/DealLinkDialog";
+import { CopyLinkButton } from "@/features/workspace/components/CopyLinkButton";
 import { CreatorCardPreview } from "@/features/workspace/components/overview/CreatorCardPreview";
 import { ActiveCollaborations, RecommendedOpportunities } from "@/features/workspace/components/overview/CreatorOverviewPanels";
 import { StatTile } from "@/features/workspace/components/overview/StatTile";
@@ -16,6 +19,8 @@ export default async function CreatorOverviewPage({ searchParams }: { searchPara
   const viewer = await getViewer();
   if (!viewer?.creator) redirect("/login");
   const overview = await getCreatorOverview(viewer.creator.id);
+  const h = await headers();
+  const cardLink = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}/c/${viewer.creator.handle}`;
   const { tour } = await searchParams;
   return (
     <>
@@ -36,8 +41,10 @@ export default async function CreatorOverviewPage({ searchParams }: { searchPara
             </div>
             <CreatorCardPreview card={overview.card} />
             <div className="flex flex-wrap gap-2">
-              <Link href="/creator/card" className={buttonVariants({ size: "sm" })}>Open card</Link>
-              <Link href="/creator/settings" className={buttonVariants({ variant: "outline", size: "sm" })}>Edit profile</Link>
+              <Link href={`/c/${viewer.creator.handle}`} target="_blank" className={buttonVariants({ size: "sm" })}>Open card</Link>
+              <CopyLinkButton value={cardLink} label="Copy card link" variant="outline" />
+              <DealLinkDialog url={cardLink} handle={viewer.creator.handle} />
+              <Link href="/creator/settings" className={buttonVariants({ variant: "ghost", size: "sm" })}>Edit profile</Link>
             </div>
           </section>
           <div className="grid gap-4">

@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getViewer } from "@/features/auth/server/session";
 import { CreatorProfileForm } from "@/features/workspace/components/settings/CreatorProfileForm";
 import { DeleteAccountButton } from "@/features/workspace/components/settings/DeleteAccountButton";
+import { PayoutDetailsForm } from "@/features/workspace/components/settings/PayoutDetailsForm";
 import { getCreatorSettings } from "@/features/workspace/server/settings-queries";
 import type { CreatorProfileInput } from "@/features/workspace/schemas";
 
@@ -22,6 +23,7 @@ export default async function CreatorSettingsPage() {
     linkedinUrl: settings.linkedinUrl,
     industries: settings.industries,
     priceCents: settings.priceCents,
+    xHandle: settings.xHandle,
   } as CreatorProfileInput;
   return (
     <>
@@ -36,11 +38,7 @@ export default async function CreatorSettingsPage() {
           <CreatorProfileForm defaults={defaults} />
         </TabsContent>
         <TabsContent value="payments" className="rounded-2xl border bg-background p-5">
-          <h2 className="font-semibold">Payout method</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Withdrawals go through the demo rail on the Earnings page. Stripe Connect and bank details are not part of this build; the
-            ledger is real.
-          </p>
+          <PayoutDetailsForm defaults={settings.payout} />
         </TabsContent>
         <TabsContent value="account" className="grid gap-4 rounded-2xl border bg-background p-5">
           <div>

@@ -7,8 +7,8 @@ import { getDb } from "@/db";
 import { brands, creators, users } from "@/db/schema";
 import { destroySession, getViewer } from "@/features/auth/server/session";
 import {
-  type ActionResult, type BrandAudienceInput, type BrandProfileInput, type CreatorProfileInput,
-  brandAudienceSchema, brandProfileSchema, creatorProfileSchema,
+  type ActionResult, type BrandAudienceInput, type BrandProfileInput, type CreatorProfileInput, type PayoutDetailsInput,
+  brandAudienceSchema, brandProfileSchema, creatorProfileSchema, payoutDetailsSchema,
 } from "../schemas";
 
 function firstIssue(error: { issues: Array<{ message: string }> }) {
@@ -67,6 +67,7 @@ export async function updateCreatorProfile(input: CreatorProfileInput): Promise<
           linkedinUrl: parsed.data.linkedinUrl,
           industries: parsed.data.industries,
           priceCents: parsed.data.priceCents,
+          xHandle: parsed.data.xHandle ? parsed.data.xHandle.replace(/^@/, "") : null,
         })
         .where(eq(creators.id, viewer.creator?.id ?? ""));
     });
@@ -75,6 +76,31 @@ export async function updateCreatorProfile(input: CreatorProfileInput): Promise<
     return { ok: false, error: "We couldn't save your profile." };
   }
   revalidatePath("/creator", "layout");
+  return { ok: true, data: undefined };
+}
+
+const IBAN_LAST = 4;
+
+export async function updatePayoutDetails(input: PayoutDetailsInput): Promise<ActionResult> {
+  const viewer = await getViewer();
+  if (!viewer?.creator) return { ok: false, error: "Sign in as a creator." };
+  const parsed = payoutDetailsSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+  try {
+    await getDb()
+      .update(creators)
+      .set({
+        payoutMethod: parsed.data.method,
+        payoutAccountHolder: parsed.data.accountHolder || null,
+        payoutIbanLast4: parsed.data.iban ? parsed.data.iban.slice(-IBAN_LAST) : null,
+      })
+      .where(eq(creators.id, viewer.creator.id));
+  } catch (error) {
+    console.error("[workspace] payout details update failed", { creatorId: viewer.creator.id, error });
+    return { ok: false, error: "We couldn't save your payout details." };
+  }
+  revalidatePath("/creator/settings");
+  revalidatePath("/creator/earnings");
   return { ok: true, data: undefined };
 }
 
