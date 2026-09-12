@@ -5,8 +5,17 @@ fixed price per post, creators write in their own voice, and every post's clicks
 back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn,
 Drizzle + Postgres, deployed on Vercel.
 
-Live: deployed automatically from `main` on Vercel (URL in the hand-in) · Demo logins on `/login`: **Explore as demo brand** (Zune) / **Explore as
-demo creator** — one click, no typing. Password for both seeded accounts is `demo1234` if you prefer the form.
+**Live: https://naano-rebuild-opal.vercel.app** (auto-deployed from `main`; Postgres on Neon). Demo logins on `/login`:
+**Explore as demo brand** (Zune) / **Explore as demo creator** — one click, no typing. Accounts `brand@demo.naano` /
+`creator@demo.naano`, password `demo1234`, if you prefer the form. Smoke test: `/api/health`.
+
+## How this was built
+
+Two Claude Code sessions, one repo. One session mapped naano.com screen by screen (`docs/reference/`), wrote the brief for
+each build step and evaluated the result; the other built. Every prompt and every final reply of the building session
+is captured automatically by a `Stop`/`UserPromptSubmit` hook into `.agent-logs/` (see `CAPTURE-TEST.md`), committed
+alongside the code it produced. Two rounds of work were fanned out to parallel subagents in git worktrees; their exact
+prompts and reports are in `docs/agent-streams.md`. The plan the build followed is `docs/plan.md`.
 
 ## Run
 
@@ -67,8 +76,8 @@ releases it, acceptance creates the tracked link, going live creates a pending p
 
 **Attribution is real.** `/r/{code}` is one insert + one 302; the click id rides on a cookie and a `?nn=` param.
 `/n.js` is a pixel with naano's API (`naano('track', 'signup', { email })`); `/api/pixel` stores the event against the
-click. `/demo/landing` is a stand-in customer site with the pixel installed — the demo brand's tracked links point at it,
-so on the live site you can click a creator's link, sign up, and watch Results move. Every number on every dashboard is a
+click. `/demo/landing` is a stand-in customer site with the pixel installed — every seeded tracked link lands there (with the
+brand's own site key), so on the live site you can click a creator's link, sign up, and watch Results move. Every number on every dashboard is a
 query over rows; the click log exports to CSV per creator.
 
 ## What's real vs stubbed
