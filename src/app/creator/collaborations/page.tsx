@@ -7,7 +7,8 @@ import { CreatorCollaborationsView } from "@/features/collaborations/components/
 import { listCreatorCollaborations } from "@/features/collaborations/server/queries";
 import { COPY } from "@/features/collaborations/ui-constants";
 
-export const metadata: Metadata = { title: "Collaborations · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Collaborations · ${BRAND.wordmark}` };
 
 export default async function CreatorCollaborationsPage() {
   const viewer = await getViewer();

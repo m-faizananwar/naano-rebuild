@@ -1,8 +1,10 @@
+import { BRAND } from "@/config/brand";
 import { CLICK_COOKIE, CLICK_QUERY_PARAM } from "@/features/tracking/constants";
 
 export const dynamic = "force-static";
 
-// The pixel, same API as naano's: window.naano('track', 'signup', { email }).
+// The pixel, same API as naano's, under our own global (BRAND.pixelGlobal):
+// window.amplio('track', 'signup', { email }).
 // Visits attribute themselves on load; the click id comes from the ?nn= param
 // the tracked link appended, or the cookie it set.
 const SCRIPT = `(function(){
@@ -13,9 +15,9 @@ const SCRIPT = `(function(){
   function param(name){ var m = w.location.search.match(new RegExp('[?&]' + name + '=([^&]+)')); return m ? decodeURIComponent(m[1]) : null; }
   function cookie(name){ var m = d.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : null; }
   var clickId = param('${CLICK_QUERY_PARAM}') || cookie('${CLICK_COOKIE}');
-  if (clickId) { try { w.localStorage.setItem('naano_click', clickId); } catch (e) {} }
-  else { try { clickId = w.localStorage.getItem('naano_click'); } catch (e) {} }
-  var visitorId; try { visitorId = w.localStorage.getItem('naano_vid'); if (!visitorId) { visitorId = Math.random().toString(36).slice(2) + Date.now().toString(36); w.localStorage.setItem('naano_vid', visitorId); } } catch (e) {}
+  if (clickId) { try { w.localStorage.setItem('${BRAND.key}_click', clickId); } catch (e) {} }
+  else { try { clickId = w.localStorage.getItem('${BRAND.key}_click'); } catch (e) {} }
+  var visitorId; try { visitorId = w.localStorage.getItem('${BRAND.key}_vid'); if (!visitorId) { visitorId = Math.random().toString(36).slice(2) + Date.now().toString(36); w.localStorage.setItem('${BRAND.key}_vid', visitorId); } } catch (e) {}
   function send(type, props){
     if (!site) return;
     props = props || {};
@@ -24,9 +26,9 @@ const SCRIPT = `(function(){
     try { fetch(endpoint, { method: 'POST', body: body, headers: { 'Content-Type': 'application/json' }, keepalive: true }); } catch (e) {}
   }
   function handle(args){ if (args[0] === 'track' && args[1]) send(args[1], args[2]); }
-  var queued = (w.naano && w.naano.q) || [];
-  w.naano = function(){ handle(arguments); };
-  w.naano.q = [];
+  var queued = (w.${BRAND.pixelGlobal} && w.${BRAND.pixelGlobal}.q) || [];
+  w.${BRAND.pixelGlobal} = function(){ handle(arguments); };
+  w.${BRAND.pixelGlobal}.q = [];
   for (var i = 0; i < queued.length; i++) handle(queued[i]);
   send('visit');
 })();`;

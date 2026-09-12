@@ -5,7 +5,8 @@ import { DemoLoginButtons } from "@/features/auth/components/DemoLoginButtons";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons";
 
-export const metadata: Metadata = { title: "Sign in · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Sign in · ${BRAND.wordmark}` };
 
 function Divider({ label }: { label: string }) {
   return (

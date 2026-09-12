@@ -6,6 +6,7 @@ import { ICP_COUNT, PROFILE_AI_MAX_TOKENS, PROFILE_AI_MODEL, PROFILE_AI_TIMEOUT_
 import { type GeneratedProfile, generatedProfileSchema } from "../schemas";
 import { buildTemplateProfile, inferIndustries, type ProfileSource, textForInference } from "./profile-template";
 
+import { BRAND } from "@/config/brand";
 export type GeneratedBrandProfile = { profile: GeneratedProfile; industries: string[]; generatedWith: "ai" | "template" };
 
 // Wire schema for the model: no limits or transforms (JSON Schema cannot
@@ -16,7 +17,7 @@ const aiOutputSchema = z.object({
   icps: z.array(z.object({ title: z.string(), description: z.string() })),
 });
 
-const SYSTEM_PROMPT = `You write the onboarding profile for a brand joining naano, a B2B LinkedIn creator marketplace. You get what was read from the company's website (title, meta description, main headings) plus the name it registered with. You return the company name, a value proposition and ${ICP_COUNT} ideal customer profiles (ICPs).
+const SYSTEM_PROMPT = `You write the onboarding profile for a brand joining ${BRAND.name}, a B2B LinkedIn creator marketplace. You get what was read from the company's website (title, meta description, main headings) plus the name it registered with. You return the company name, a value proposition and ${ICP_COUNT} ideal customer profiles (ICPs).
 
 Rules:
 - Use only what the website text and the registration say. Never invent customers, figures, awards or features. If the text is thin, stay general and say what the site states.

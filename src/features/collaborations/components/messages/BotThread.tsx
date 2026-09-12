@@ -1,10 +1,11 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { ViewerRole } from "../../schemas";
-import { NAANOBOT } from "../../ui-constants";
+import { SUPPORT_BOT } from "../../ui-constants";
 
+import { BRAND } from "@/config/brand";
 // Static helper thread: the bot's greeting and one canned reply.
-export function NaanoBotThread({ role }: { role: ViewerRole }) {
+export function BotThread({ role }: { role: ViewerRole }) {
   return (
     <>
       <header className="flex items-center gap-3 border-b px-4 py-3">
@@ -15,16 +16,16 @@ export function NaanoBotThread({ role }: { role: ViewerRole }) {
           n
         </span>
         <div>
-          <h2 className="font-semibold">{NAANOBOT.name}</h2>
-          <p className="text-xs text-muted-foreground">Naano support</p>
+          <h2 className="font-semibold">{SUPPORT_BOT.name}</h2>
+          <p className="text-xs text-muted-foreground">{BRAND.name} support</p>
         </div>
       </header>
       <div className="flex-1 space-y-3 p-4">
-        <p className="inline-block max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2 text-sm">{NAANOBOT.preview}</p>
+        <p className="inline-block max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2 text-sm">{SUPPORT_BOT.preview}</p>
         <br />
-        <p className="inline-block max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2 text-sm">{NAANOBOT.reply}</p>
+        <p className="inline-block max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2 text-sm">{SUPPORT_BOT.reply}</p>
       </div>
-      <p className="border-t p-3 text-center text-xs text-muted-foreground">NaanoBot does not take replies in this build.</p>
+      <p className="border-t p-3 text-center text-xs text-muted-foreground">{BRAND.bot} does not take replies in this build.</p>
     </>
   );
 }

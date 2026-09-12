@@ -7,7 +7,8 @@ import { MatchingView } from "@/features/marketplace/components/matching/Matchin
 import { parseMarketplaceQuery, type RawSearchParams } from "@/features/marketplace/schemas";
 import { loadMatchingPage } from "@/features/marketplace/server/queries";
 
-export const metadata: Metadata = { title: "AI Matching · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `AI Matching · ${BRAND.wordmark}` };
 
 type Props = { searchParams: Promise<RawSearchParams> };
 

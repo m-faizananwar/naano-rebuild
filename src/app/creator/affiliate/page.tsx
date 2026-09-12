@@ -12,7 +12,8 @@ import { IntroducedBrands } from "@/features/workspace/components/IntroducedBran
 import { getAffiliateSummary } from "@/features/workspace/server/affiliate-queries";
 import { formatCents } from "@/lib/money";
 
-export const metadata: Metadata = { title: "Affiliate program · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Affiliate program · ${BRAND.wordmark}` };
 
 export default async function CreatorAffiliatePage() {
   const viewer = await getViewer();
@@ -25,8 +26,8 @@ export default async function CreatorAffiliatePage() {
     <>
       <PageHeader
         eyebrow={`Creator affiliation · ${AFFILIATE_SHARE_PERCENT}% for ${AFFILIATE_MONTHS} months`}
-        title="Recommend Naano. Earn for 3 months."
-        description={`Share your personal link with a company. If it joins Naano and launches paid campaigns, you receive ${AFFILIATE_SHARE_PERCENT}% of Naano's commission for three months.`}
+        title={`Recommend ${BRAND.name}. Earn for 3 months.`}
+        description={`Share your personal link with a company. If it joins ${BRAND.name} and launches paid campaigns, you receive ${AFFILIATE_SHARE_PERCENT}% of ${BRAND.name}'s commission for three months.`}
       />
       <Tabs defaultValue="brands" className="mb-4">
         <TabsList>
@@ -41,7 +42,7 @@ export default async function CreatorAffiliatePage() {
       <div className="grid gap-4">
         <section className="grid gap-4 rounded-2xl border bg-background p-5 lg:grid-cols-2">
           <div>
-            <h2 className="font-semibold">Introduce a company to Naano</h2>
+            <h2 className="font-semibold">Introduce a company to {BRAND.name}</h2>
             <p className="text-sm text-muted-foreground">Your link identifies you automatically.</p>
             <p className="mt-3 rounded-lg border bg-muted/40 px-3 py-2 font-mono text-xs">{link}</p>
             <div className="mt-3">
@@ -49,7 +50,7 @@ export default async function CreatorAffiliatePage() {
             </div>
           </div>
           <div className="rounded-xl bg-brand/5 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Your share of Naano&apos;s commission</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Your share of {BRAND.name}&apos;s commission</p>
             <p className="text-3xl font-semibold">{AFFILIATE_SHARE_PERCENT}%</p>
             <p className="text-sm text-muted-foreground">Reward period · {AFFILIATE_MONTHS} months</p>
             <p className="mt-2 text-xs text-muted-foreground">The three-month reward period starts after the company&apos;s first completed paid campaign.</p>
@@ -64,14 +65,14 @@ export default async function CreatorAffiliatePage() {
         <section className="rounded-2xl border bg-background p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-brand">Two ways to introduce a brand</p>
           <h2 className="mt-1 text-2xl font-semibold tracking-tight">Choose the link that fits the conversation.</h2>
-          <p className="text-sm text-muted-foreground">Both options are tracked and pay you {AFFILIATE_SHARE_PERCENT}% of Naano&apos;s commission for three months.</p>
+          <p className="text-sm text-muted-foreground">Both options are tracked and pay you {AFFILIATE_SHARE_PERCENT}% of {BRAND.name}&apos;s commission for three months.</p>
           <ul className="mt-4 grid gap-3">
             <li className="flex flex-col gap-2 rounded-xl border p-4 sm:flex-row sm:items-center">
               <span className="flex-1">
-                <span className="font-medium">Recommend Naano</span> <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase text-brand">Most common</span>
-                <span className="block text-sm text-muted-foreground">Use your Naano link when a company wants to discover creators or start influencer marketing.</span>
+                <span className="font-medium">Recommend {BRAND.name}</span> <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase text-brand">Most common</span>
+                <span className="block text-sm text-muted-foreground">Use your {BRAND.name} link when a company wants to discover creators or start influencer marketing.</span>
               </span>
-              <CopyLinkButton value={link} label="Copy Naano link" variant="outline" />
+              <CopyLinkButton value={link} label={`Copy ${BRAND.name} link`} variant="outline" />
             </li>
             <li className="flex flex-col gap-2 rounded-xl border p-4 sm:flex-row sm:items-center">
               <span className="flex-1">
@@ -83,7 +84,7 @@ export default async function CreatorAffiliatePage() {
           </ul>
         </section>
         <p className="text-xs text-muted-foreground">
-          Brands that sign up through your link are attributed to you. Rewards assume a {PLATFORM_COMMISSION_PERCENT}% platform commission (naano does not publish its take rate); you receive {AFFILIATE_SHARE_PERCENT}% of it for {AFFILIATE_MONTHS} months from the brand&apos;s first paid campaign.
+          Brands that sign up through your link are attributed to you. Rewards assume a {PLATFORM_COMMISSION_PERCENT}% platform commission (naano, the reference product, does not publish its take rate); you receive {AFFILIATE_SHARE_PERCENT}% of it for {AFFILIATE_MONTHS} months from the brand&apos;s first paid campaign.
         </p>
       </div>
     </>

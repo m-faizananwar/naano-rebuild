@@ -3,6 +3,7 @@
 import { Bot, Play, RotateCcw, Sparkles, Square, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { BRAND } from "@/config/brand";
 type Props = {
   onNewResearch: () => void;
   onRetry?: () => void;
@@ -16,15 +17,15 @@ type Props = {
 // "Nao · Creator intelligence" — New research / Retry this search / Undo / Stop / Apply request.
 export function NaoRail({ onNewResearch, onRetry, onApply, onStop, onUndo, pending, hasResult }: Props) {
   return (
-    <aside className="rounded-2xl border bg-background p-4" aria-label="Nao">
+    <aside className="rounded-2xl border bg-background p-4" aria-label={`${BRAND.copilot}`}>
       <p className="flex items-center gap-2 text-sm font-semibold">
         <span className="flex size-8 items-center justify-center rounded-full bg-brand/10 text-brand">
           <Bot className="size-4" aria-hidden="true" />
         </span>
-        Nao <span className="font-normal text-muted-foreground">· Creator intelligence</span>
+        {BRAND.copilot} <span className="font-normal text-muted-foreground">· Creator intelligence</span>
       </p>
       <p className="mt-3 text-xs text-muted-foreground">
-        Nao ranks every creator against your campaign brief — audience overlap first, then category, engagement and consistency — and writes up
+        {BRAND.copilot} ranks every creator against your campaign brief — audience overlap first, then category, engagement and consistency — and writes up
         the selection.
       </p>
       <div className="mt-4 grid gap-2">

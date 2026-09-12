@@ -4,6 +4,7 @@ import { and, eq, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import { brands, campaigns, collaborations, ledgerEntries, trackingLinks } from "@/db/schema";
 
+import { BRAND } from "@/config/brand";
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 type Collab = typeof collaborations.$inferSelect;
 
@@ -63,7 +64,7 @@ export async function ensureTrackingLink(tx: Tx, collab: Collab) {
   const brand = await brandForCollab(tx, collab);
   await tx
     .insert(trackingLinks)
-    .values({ collaborationId: collab.id, code: randomBytes(CODE_BYTES).toString("hex"), destination: brand.website ?? "https://naano.com" })
+    .values({ collaborationId: collab.id, code: randomBytes(CODE_BYTES).toString("hex"), destination: brand.website ?? `https://${BRAND.wordmark}.example` })
     .onConflictDoNothing();
 }
 

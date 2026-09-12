@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { CREATOR_TOUR } from "@/features/workspace/constants";
 
-export const metadata: Metadata = { title: "Guided tour · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Guided tour · ${BRAND.wordmark}` };
 
 export default function CreatorTourPage() {
   return (

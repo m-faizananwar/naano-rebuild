@@ -11,6 +11,7 @@ import { ActionPanel } from "./ActionPanel";
 import { DecisionButtons } from "./DecisionButtons";
 import type { useCollaborationAction } from "./useCollaborationAction";
 
+import { BRAND } from "@/config/brand";
 type Props = { collaboration: CollaborationDto; csrfToken: string; action: ReturnType<typeof useCollaborationAction> };
 
 // The brand's allowed moves: accept/decline an application, review a draft,
@@ -69,7 +70,7 @@ export function BrandActions({ collaboration: c, csrfToken, action }: Props) {
 
   if (can("pay")) {
     return (
-      <ActionPanel title="The post is live" description="Release the held fee to the creator. Naano handles the invoice and the payout.">
+      <ActionPanel title="The post is live" description={`Release the held fee to the creator. ${BRAND.name} handles the invoice and the payout.`}>
         <Button
           type="button"
           className="bg-brand text-brand-foreground hover:bg-brand/90"

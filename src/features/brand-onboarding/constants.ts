@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // Brand onboarding: the 3 steps after "register as brand" (product map,
 // "Brand onboarding after email + 6-digit code").
 
@@ -88,7 +89,7 @@ export const COPY = {
   },
   profile: {
     title: "Value prop & ICP",
-    sub: "Review these details once. Naano turns them into a brief for your creators.",
+    sub: `Review these details once. ${BRAND.name} turns them into a brief for your creators.`,
     valuePropLabel: "Value proposition",
     valuePropHint: "What the company does, for whom, how — 4 to 6 sentences. Edit if needed.",
     icpsLabel: "3 ideal customers (ICP)",
@@ -103,8 +104,8 @@ export const COPY = {
     submitting: "Opening AI Matching…",
   },
   coachMark: {
-    title: "Nao is using your campaign brief",
-    body: "Your starter brief is attached. Tell Nao what matters most, open profiles, and save the creators you want to invite.",
+    title: `${BRAND.copilot} is using your campaign brief`,
+    body: `Your starter brief is attached. Tell ${BRAND.copilot} what matters most, open profiles, and save the creators you want to invite.`,
     gotIt: "Got it",
     backToCampaign: "Back to campaign",
   },

@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // The brief drawer's two copy buttons: "Copy as Markdown" and "Copy for my AI".
 // Pure text builders over the brief document the queries assemble.
 
@@ -38,7 +39,7 @@ function heading(level: number, text: string) {
 
 export function primaryCta(doc: BriefDoc) {
   const link = doc.trackedUrl ?? doc.links[0] ?? doc.brandWebsite ?? "";
-  const suffix = doc.trackedUrl ? " (your tracked Naano link)" : "";
+  const suffix = doc.trackedUrl ? ` (your tracked ${BRAND.name} link)` : "";
   return link ? `Send readers to ${link}${suffix}` : "Send readers to the brand's site";
 }
 

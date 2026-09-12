@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { TypingDots } from "@/components/motion/TypingDots";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
+import { BRAND } from "@/config/brand";
 const THINKING_MS = 2000;
 
 type Props = { intro: string; children: React.ReactNode };
@@ -22,7 +23,7 @@ export function StagedResults({ intro, children }: Props) {
   return (
     <>
       <p className="text-muted-foreground">{intro}</p>
-      {show ? <div className="animate-fade grid gap-3">{children}</div> : <TypingDots label="Nao is thinking" />}
+      {show ? <div className="animate-fade grid gap-3">{children}</div> : <TypingDots label={`${BRAND.copilot} is thinking`} />}
     </>
   );
 }

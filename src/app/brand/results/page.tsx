@@ -11,11 +11,12 @@ import { PixelCard } from "@/features/tracking/components/results/PixelCard";
 import { PublishedPostsTable } from "@/features/tracking/components/results/PublishedPostsTable";
 import { ResultsTiles } from "@/features/tracking/components/results/ResultsTiles";
 import { SERIES_DAYS, type SeriesRange } from "@/features/tracking/constants";
+import { BRAND } from "@/config/brand";
 import {
   getAttributionByCreator, getAttributionDetails, getClicksSeries, getPixelStatus, getPublishedPosts, getResultsSummary,
 } from "@/features/tracking/server/queries";
 
-export const metadata: Metadata = { title: "Results · naano" };
+export const metadata: Metadata = { title: `Results · ${BRAND.wordmark}` };
 
 async function currentOrigin() {
   const h = await headers();

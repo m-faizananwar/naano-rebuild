@@ -3,6 +3,7 @@ import { FOR_CREATORS } from "../../../page-copy";
 import { CreatorAvatar } from "../../shared/CreatorAvatar";
 import { LinkedInMark } from "../../shared/LinkedInMark";
 
+import { BRAND } from "@/config/brand";
 const M = FOR_CREATORS.monetize;
 const BARS = [20, 45, 20, 90, 30, 100];
 const CARD = "flex flex-col rounded-[1.75rem] bg-linear-to-b from-card to-brand-soft/40 p-5 ring-1 ring-border/60";
@@ -75,7 +76,7 @@ function Payment() {
 function Network() {
   return (
     <div className={CARD}>
-      <ul className="mx-auto grid w-full max-w-60 grid-cols-3 gap-3" aria-label="Brands on Naano">
+      <ul className="mx-auto grid w-full max-w-60 grid-cols-3 gap-3" aria-label={`Brands on ${BRAND.name}`}>
         {M.network.logos.map((logo, index) => (
           <li key={logo} className={`flex aspect-square items-center justify-center rounded-xl text-xs font-bold shadow-md ring-1 ring-border/60 ${index === M.network.logos.length - 1 ? "bg-brand text-brand-foreground" : "bg-card"}`}>
             {logo}

@@ -1,9 +1,10 @@
 import { Globe } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 import { CreatorCardPreview } from "./CreatorCardPreview";
 
+import { BRAND } from "@/config/brand";
 type Props = {
   children: ReactNode;
   panelTitle: string;
@@ -44,8 +45,8 @@ export function AuthSplitLayout({ children, panelVariant = "brand", ...panel }: 
         <div className="flex flex-1 flex-col justify-center py-10">
           <div className="w-full max-w-md">
             <div className="flex items-center justify-between">
-              <Link href="/" aria-label="naano home" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
-                <NaanoWordmark />
+              <Link href="/" aria-label={`${BRAND.wordmark} home`} className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
+                <BrandWordmark />
               </Link>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/80">
                 <Globe className="size-3.5" aria-hidden="true" />

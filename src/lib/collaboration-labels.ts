@@ -3,6 +3,7 @@
 // detail page and the tab counts can never disagree.
 import type { CollaborationStatus } from "./collaboration-status";
 
+import { BRAND } from "@/config/brand";
 export const STATUS_LABELS: Record<CollaborationStatus, string> = {
   invited: "Invited",
   applied: "Applied",
@@ -210,7 +211,7 @@ export function brandNextAction(input: NextActionInput): string {
 
 // ---- timeline -----------------------------------------------------------------
 
-const ACTOR_NAMES = { brand: "The brand", creator: "The creator", system: "Naano" } as const;
+const ACTOR_NAMES = { brand: "The brand", creator: "The creator", system: `${BRAND.name}` } as const;
 
 const EVENT_VERBS: Record<string, string> = {
   invite: "sent the invitation",

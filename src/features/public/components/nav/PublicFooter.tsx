@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 import { FOOTER_COLUMNS, FOOTER_TAGLINE } from "../../constants";
 import { LinkedInMark } from "../shared/LinkedInMark";
 
+import { BRAND } from "@/config/brand";
 const YEAR = 2026;
 
 export function PublicFooter() {
@@ -11,13 +12,13 @@ export function PublicFooter() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_repeat(5,minmax(0,1fr))]">
           <div>
-            <NaanoWordmark />
+            <BrandWordmark />
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">{FOOTER_TAGLINE}</p>
             <a
-              href="https://www.linkedin.com/company/naano"
+              href={`https://www.linkedin.com/company/${BRAND.wordmark}`}
               target="_blank"
               rel="noreferrer"
-              aria-label="naano on LinkedIn"
+              aria-label={`${BRAND.wordmark} on LinkedIn`}
               className="mt-6 inline-flex size-9 items-center justify-center rounded-lg bg-foreground text-background hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
             >
               <LinkedInMark className="size-5 bg-transparent text-base text-background" />
@@ -39,7 +40,7 @@ export function PublicFooter() {
           ))}
         </div>
         <div className="mt-14 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {YEAR} naano. All rights reserved.</p>
+          <p>© {YEAR} {BRAND.wordmark}. All rights reserved.</p>
           <p>Rebuild for demonstration · not affiliated with naano.com</p>
         </div>
       </div>

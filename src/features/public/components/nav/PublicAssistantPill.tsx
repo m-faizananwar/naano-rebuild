@@ -6,9 +6,10 @@ import { useState } from "react";
 import { CyclingText } from "@/components/motion/CyclingText";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
+import { BRAND } from "@/config/brand";
 const PHRASES = ["What would you like to see?", "What can I help you find?", "What would you like to know?"] as const;
 const LINKS = [
-  { href: "/#how-it-works", label: "How Naano works" },
+  { href: "/#how-it-works", label: `How ${BRAND.name} works` },
   { href: "/pricing", label: "Pricing" },
   { href: "/for-creators", label: "For creators" },
   { href: "/benchmarks", label: "Benchmarks" },
@@ -35,7 +36,7 @@ export function PublicAssistantPill() {
       <SheetContent side="bottom" className="mx-auto w-full rounded-t-2xl p-6 sm:max-w-lg sm:inset-x-0">
         <SheetHeader className="p-0 text-left">
           <SheetTitle>What would you like to see?</SheetTitle>
-          <SheetDescription>Jump to the part of Naano you&apos;re looking for.</SheetDescription>
+          <SheetDescription>Jump to the part of {BRAND.name} you&apos;re looking for.</SheetDescription>
         </SheetHeader>
         <ul className="mt-4 grid gap-2">
           {LINKS.map((l) => (

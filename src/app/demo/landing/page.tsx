@@ -4,6 +4,7 @@ import { EmptyState } from "@/components/page/EmptyState";
 import { DemoLandingActions } from "@/features/tracking/components/demo/DemoLandingActions";
 import { getDemoSite } from "@/features/tracking/server/demo-queries";
 
+import { BRAND } from "@/config/brand";
 export const metadata: Metadata = { title: "Demo landing page · pixel test" };
 
 // A stand-in for a customer's website with the naano pixel installed. Arrive
@@ -14,19 +15,19 @@ export default async function DemoLandingPage({ searchParams }: { searchParams: 
   if (!demo) {
     return (
       <main className="mx-auto max-w-2xl p-8">
-        <EmptyState title="Demo site unavailable" body="This page needs the database (or a valid site key) to load a brand's pixel." cta={{ href: "/", label: "Back to naano" }} />
+        <EmptyState title="Demo site unavailable" body="This page needs the database (or a valid site key) to load a brand's pixel." cta={{ href: "/", label: `Back to ${BRAND.wordmark}` }} />
       </main>
     );
   }
   return (
     <main className="mx-auto grid max-w-5xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center">
-      <Script id="naano-queue" strategy="beforeInteractive">
-        {"window.naano = window.naano || function(){ (window.naano.q = window.naano.q || []).push(arguments); };"}
+      <Script id={`${BRAND.key}-queue`} strategy="beforeInteractive">
+        {`window.${BRAND.pixelGlobal} = window.${BRAND.pixelGlobal} || function(){ (window.${BRAND.pixelGlobal}.q = window.${BRAND.pixelGlobal}.q || []).push(arguments); };`}
       </Script>
       <Script src="/n.js" data-site={demo.siteKey} strategy="afterInteractive" />
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Demo landing page · {demo.company}</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight">This is {demo.company}&apos;s website, with the naano pixel installed.</h1>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">This is {demo.company}&apos;s website, with the {BRAND.wordmark} pixel installed.</h1>
         <p className="mt-4 text-muted-foreground">
           {demo.valueProp ?? "A product page like any other."} Land here from a creator&apos;s tracked link and every action below is
           attributed to that creator — same snippet, same API as naano&apos;s.

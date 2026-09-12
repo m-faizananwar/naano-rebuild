@@ -8,7 +8,8 @@ import { countCollaborationsByTab, getCampaignShell, listCollaborationRows } fro
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Campaign · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Campaign · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ campaignId: string }>; searchParams: Promise<{ status?: string; per?: string; page?: string }> };
 

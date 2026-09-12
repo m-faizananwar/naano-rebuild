@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BRIEF_PROMPT_MAX_CHARS } from "../../constants";
 import { createCampaignFromAi } from "../../server/actions";
 
+import { BRAND } from "@/config/brand";
 // "AI asks the right questions and prepares a fully editable brief": three
 // questions, then the answers become the prompt the brief is drafted from.
 const QUESTIONS = [
@@ -18,7 +19,7 @@ const QUESTIONS = [
 ] as const;
 const ANSWER_MAX_CHARS = Math.floor(BRIEF_PROMPT_MAX_CHARS / QUESTIONS.length) - 20;
 
-type Turn = { role: "nao" | "you"; text: string };
+type Turn = { role: "copilot" | "you"; text: string };
 
 function composePrompt(answers: string[]) {
   const [selling, buyer, goal] = answers;
@@ -36,7 +37,7 @@ export function AiComposer() {
   const current = QUESTIONS[step];
 
   const turns: Turn[] = QUESTIONS.slice(0, answers.length + 1).flatMap((q, i) => {
-    const t: Turn[] = [{ role: "nao", text: q.ask }];
+    const t: Turn[] = [{ role: "copilot", text: q.ask }];
     if (answers[i]) t.push({ role: "you", text: answers[i] });
     return t;
   });
@@ -74,8 +75,8 @@ export function AiComposer() {
     >
       <ol className="grid gap-2" aria-live="polite">
         {turns.map((turn, i) => (
-          <li key={i} className={turn.role === "nao" ? "animate-fade flex items-start gap-2" : "animate-fade flex justify-end"}>
-            {turn.role === "nao" ? (
+          <li key={i} className={turn.role === "copilot" ? "animate-fade flex items-start gap-2" : "animate-fade flex justify-end"}>
+            {turn.role === "copilot" ? (
               <>
                 <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
                   <Bot className="size-3.5" aria-hidden="true" />

@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 export const ONBOARDING_ROOT = "/onboarding/creator";
 export const ONBOARDING_STEPS = {
   linkedin: { path: `${ONBOARDING_ROOT}/linkedin`, step: 2, title: "Add your public LinkedIn profile" },
@@ -34,15 +35,15 @@ export const PANEL_COPY = {
 export const LINKEDIN_COPY = {
   intro: "No extension is needed. We'll retrieve only the minimum public information required to create your Basic card.",
   consent:
-    "By clicking below, you authorize Naano to read your public profile once: name, photo, headline, country and follower count. We do not import your posts, engagement or private analytics.",
+    `By clicking below, you authorize ${BRAND.name} to read your public profile once: name, photo, headline, country and follower count. We do not import your posts, engagement or private analytics.`,
   reading: "Reading your profile…",
   submit: "Read my public profile",
 } as const;
 
 export const PRICE_COPY = {
   eyebrow: "Our recommendation",
-  intro: "Naano recommends this starting price from the public audience and performance information currently available. You can change it now or later.",
-  net: "This is your net price per post. You can change it at any time from your Naano profile.",
+  intro: `${BRAND.name} recommends this starting price from the public audience and performance information currently available. You can change it now or later.`,
+  net: `This is your net price per post. You can change it at any time from your ${BRAND.name} profile.`,
   create: "Create my marketplace profile",
   addBundle: "Add a bundle (optional)",
   addAnother: "+ Add another bundle",
@@ -51,15 +52,15 @@ export const PRICE_COPY = {
 
 export const PROFESSIONAL_COPY = {
   eu: {
-    lead: "To invoice brands and withdraw your earnings, Naano needs a registered professional activity (auto-entrepreneur, company or equivalent) in your country.",
+    lead: `To invoice brands and withdraw your earnings, ${BRAND.name} needs a registered professional activity (auto-entrepreneur, company or equivalent) in your country.`,
     detail: "This is required before applying to paid campaigns, accepting bookings, invoicing or withdrawing. You can fill it in now or later from Settings.",
   },
   outside: {
     lead: "Outside the EU you can continue as an individual. We only need the details brands will see on their invoices.",
     detail: "This is required before applying to paid campaigns, accepting bookings, invoicing or withdrawing. You can fill it in now or later from Settings.",
   },
-  tax: "I confirm that I am solely responsible for declaring and paying taxes on the earnings I receive through Naano.",
-  invoicing: "I authorize Naano to issue invoices in my name to the brands I work with on the platform.",
+  tax: `I confirm that I am solely responsible for declaring and paying taxes on the earnings I receive through ${BRAND.name}.`,
+  invoicing: `I authorize ${BRAND.name} to issue invoices in my name to the brands I work with on the platform.`,
   save: "Save my information",
   later: "Go to my workspace — finish later",
 } as const;

@@ -6,7 +6,8 @@ import { BillingView } from "@/features/payouts/components/billing/BillingView";
 import { getBillingSummary, getBrandLedger } from "@/features/payouts/server/queries";
 import { parseTopupParam } from "@/features/payouts/schemas";
 
-export const metadata: Metadata = { title: "Billing · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Billing · ${BRAND.wordmark}` };
 
 type Props = { searchParams: Promise<{ topup?: string }> };
 

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
+import { BRAND } from "@/config/brand";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -12,7 +13,7 @@ const inter = Inter({
 const TOAST_MS = 3000;
 
 export const metadata: Metadata = {
-  title: "naano",
+  title: `${BRAND.wordmark}`,
   description: "Creator marketplace — rebuild",
 };
 

@@ -15,6 +15,7 @@ import {
 import { writeRationale } from "./matching-rationale";
 import { getMarketplaceContext, rankCreators } from "./queries";
 
+import { BRAND } from "@/config/brand";
 const UNAUTHORIZED: ActionError = { ok: false, error: "Sign in as a brand to do this.", code: "unauthorized" };
 
 async function brandViewer(): Promise<{ viewer: Viewer; brandId: string } | null> {
@@ -165,7 +166,7 @@ export async function runMatching(input: unknown): Promise<ActionResult<Matching
 
   try {
     const ctx = await getMarketplaceContext(auth.viewer, campaignId);
-    if (!ctx?.selectedCampaign) return { ok: false, error: "Create a campaign first so Nao has a brief to work from.", code: "invalid" };
+    if (!ctx?.selectedCampaign) return { ok: false, error: `Create a campaign first so ${BRAND.copilot} has a brief to work from.`, code: "invalid" };
     const requested = requestedCount(prompt);
     const industries = mentionedIndustries(prompt);
     let ranked = industries.length ? await rankCreators(ctx, industries) : [];
@@ -186,7 +187,7 @@ export async function runMatching(input: unknown): Promise<ActionResult<Matching
     };
   } catch (error) {
     console.error("[marketplace] matching failed", { brandId: auth.brandId, campaignId, error });
-    return { ok: false, error: "Nao could not run this search. Please try again.", code: "unknown" };
+    return { ok: false, error: `${BRAND.copilot} could not run this search. Please try again.`, code: "unknown" };
   }
 }
 
@@ -201,7 +202,7 @@ export async function recordNaoFeedback(input: unknown): Promise<ActionResult<{ 
     await getDb().insert(naoFeedback).values({ brandId: auth.brandId, prompt: parsed.data.prompt, kind: parsed.data.kind, creatorIds: parsed.data.creatorIds });
     return { ok: true, data: { saved: true } };
   } catch (error) {
-    console.error("[marketplace] nao feedback failed", { brandId: auth.brandId, error });
+    console.error("[marketplace] copilot feedback failed", { brandId: auth.brandId, error });
     return { ok: false, error: "We couldn't save that feedback.", code: "unknown" };
   }
 }

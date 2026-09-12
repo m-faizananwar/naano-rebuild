@@ -9,7 +9,8 @@ import { NewCreatorsList } from "@/features/workspace/components/overview/NewCre
 import { StatTile } from "@/features/workspace/components/overview/StatTile";
 import { getBrandOverview } from "@/features/workspace/server/overview-queries";
 
-export const metadata: Metadata = { title: "Overview · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Overview · ${BRAND.wordmark}` };
 
 export default async function BrandOverviewPage() {
   const viewer = await getViewer();
@@ -19,7 +20,7 @@ export default async function BrandOverviewPage() {
     <>
       <PageHeader
         title={`Hello ${viewer.firstName} 👋`}
-        description={`Here is what is happening for ${viewer.brand.company} on Naano.`}
+        description={`Here is what is happening for ${viewer.brand.company} on ${BRAND.name}.`}
         actions={
           <Link href="/brand/campaigns/new" className={buttonVariants()}>
             New campaign
@@ -55,9 +56,9 @@ export default async function BrandOverviewPage() {
             </p>
           </div>
           <div>
-            <h2 className="font-semibold">Naano experts available</h2>
+            <h2 className="font-semibold">{BRAND.name} experts available</h2>
             <p className="text-sm text-muted-foreground">
-              Need an expert eye? 15 minutes with a Naano expert, no commitment.{" "}
+              Need an expert eye? 15 minutes with a {BRAND.name} expert, no commitment.{" "}
               <Link href="/brand/book-a-call" className="font-medium text-brand hover:underline">Book a free call</Link>
             </p>
           </div>

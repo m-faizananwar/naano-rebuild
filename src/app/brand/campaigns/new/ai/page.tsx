@@ -9,7 +9,8 @@ import { listAiHistory } from "@/features/campaigns/server/queries";
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Create with AI · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Create with AI · ${BRAND.wordmark}` };
 
 export default async function CreateWithAiPage() {
   const viewer = await requireBrand("/brand/campaigns/new/ai");

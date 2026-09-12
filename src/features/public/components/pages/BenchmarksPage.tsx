@@ -6,6 +6,7 @@ import { StatTile } from "../shared/StatTile";
 import { BenchmarksCaveats } from "./BenchmarksCaveats";
 import { BenchmarksMethodology } from "./BenchmarksMethodology";
 
+import { BRAND } from "@/config/brand";
 function Block({ title, body, children }: { title: string; body: string; children: React.ReactNode }) {
   return (
     <section className="border-t py-12">
@@ -44,7 +45,7 @@ export function BenchmarksPage() {
         </section>
         <BenchmarksMethodology />
         <Block title={b.vsAds.title} body={b.vsAds.body}>
-          <DataTable columns={b.vsAds.columns} rows={b.vsAds.rows} caption="Naano versus LinkedIn Ads benchmarks" />
+          <DataTable columns={b.vsAds.columns} rows={b.vsAds.rows} caption={`${BRAND.name} versus LinkedIn Ads benchmarks`} />
           <p className="mt-4 text-sm text-muted-foreground">{b.vsAds.footnote}</p>
         </Block>
         <Block title={b.ctrByTier.title} body={b.ctrByTier.body}>

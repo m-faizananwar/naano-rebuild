@@ -8,6 +8,7 @@ import { VoiceMic } from "@/features/voice/components/VoiceMic";
 import { BrandAssistantSheet } from "./BrandAssistantSheet";
 import { CreatorAssistantSheet } from "./CreatorAssistantSheet";
 
+import { BRAND } from "@/config/brand";
 type Props = { role: "brand" | "creator"; workspace: string; csrfToken: string };
 
 // naano's placeholder rotation, every 4s with localeIn.
@@ -55,7 +56,7 @@ export function AssistantPill({ role, workspace, csrfToken }: Props) {
         <SheetHeader className="p-0 text-left">
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>
-            {role === "brand" ? `Nao · Creator intelligence for ${workspace}` : "Jump straight to the part of your workspace you need."}
+            {role === "brand" ? `${BRAND.copilot} · Creator intelligence for ${workspace}` : "Jump straight to the part of your workspace you need."}
           </SheetDescription>
         </SheetHeader>
         {role === "brand" ? <BrandAssistantSheet workspace={workspace} onNavigate={() => setOpen(false)} /> : <CreatorAssistantSheet onNavigate={() => setOpen(false)} />}

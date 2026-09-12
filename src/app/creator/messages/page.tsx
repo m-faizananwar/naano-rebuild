@@ -6,7 +6,8 @@ import { MessagesLayout } from "@/features/collaborations/components/messages/Me
 import { ThreadPlaceholder } from "@/features/collaborations/components/messages/ThreadPlaceholder";
 import { listThreads, threadScopeFor } from "@/features/collaborations/server/messages-queries";
 
-export const metadata: Metadata = { title: "Messages · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Messages · ${BRAND.wordmark}` };
 
 export default async function CreatorMessagesPage() {
   const viewer = await getViewer();

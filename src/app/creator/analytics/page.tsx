@@ -8,7 +8,8 @@ import { TrackedLinksTable } from "@/features/tracking/components/analytics/Trac
 import { RangeSelect } from "@/features/tracking/components/analytics/RangeSelect";
 import { ANALYTICS_RANGES, type AnalyticsRange, getPublicPosts, getPublicSnapshot, getTrackedLinkPerformance } from "@/features/tracking/server/creator-queries";
 
-export const metadata: Metadata = { title: "Analytics · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Analytics · ${BRAND.wordmark}` };
 
 export default async function CreatorAnalyticsPage({ searchParams }: { searchParams: Promise<{ range?: string }> }) {
   const viewer = await getViewer();

@@ -12,6 +12,7 @@ import { seedCollaboration, type CollabSpec } from "./collaborations";
 import { buildCreators, type CreatorFixture } from "./creators";
 import { daysAgo, faker, hex } from "./random";
 
+import { BRAND } from "@/config/brand";
 loadEnvConfig(process.cwd());
 
 export const DEMO_PASSWORD = "demo1234";
@@ -217,7 +218,7 @@ async function main() {
     console.log(
       `seed: ${seededCreators.length} creators, ${BRANDS.length} brands, ${seededCampaigns.length} campaigns, ` +
         `${collabCount} collaborations, ${counts.clicks} clicks, ${counts.signups} signups. ` +
-        `Demo logins: brand@demo.naano / creator@demo.naano (password ${DEMO_PASSWORD}).`,
+        `Demo logins: brand@${BRAND.demoDomain} / creator@${BRAND.demoDomain} (password ${DEMO_PASSWORD}).`,
     );
   } finally {
     await close();

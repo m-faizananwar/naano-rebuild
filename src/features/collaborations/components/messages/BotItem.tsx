@@ -1,14 +1,15 @@
 import { cn } from "cn";
 import Link from "next/link";
 import type { ViewerRole } from "../../schemas";
-import { NAANOBOT, NAANOBOT_THREAD_ID } from "../../ui-constants";
+import { SUPPORT_BOT, BOT_THREAD_ID } from "../../ui-constants";
 
+import { BRAND } from "@/config/brand";
 // Pinned helper thread at the top of the list, like naano's NaanoBot.
-export function NaanoBotItem({ role, active }: { role: ViewerRole; active: boolean }) {
+export function BotItem({ role, active }: { role: ViewerRole; active: boolean }) {
   return (
     <li>
       <Link
-        href={`/${role}/messages/${NAANOBOT_THREAD_ID}`}
+        href={`/${role}/messages/${BOT_THREAD_ID}`}
         aria-current={active ? "page" : undefined}
         className={cn(
           "flex items-center gap-3 border-b px-4 py-3 transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-ring",
@@ -20,10 +21,10 @@ export function NaanoBotItem({ role, active }: { role: ViewerRole; active: boole
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <span className="text-sm font-semibold">{NAANOBOT.name}</span>
+            <span className="text-sm font-semibold">{SUPPORT_BOT.name}</span>
             <span className="text-xs text-muted-foreground">Now</span>
           </div>
-          <p className="truncate text-xs text-muted-foreground">{NAANOBOT.preview}</p>
+          <p className="truncate text-xs text-muted-foreground">{SUPPORT_BOT.preview}</p>
         </div>
         <span className="flex size-5 items-center justify-center rounded-full bg-brand text-[0.625rem] font-bold text-brand-foreground" aria-label="1 unread">
           1

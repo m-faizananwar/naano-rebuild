@@ -4,8 +4,9 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
+import { BRAND } from "@/config/brand";
 // Per shell: the brand and creator rails remember their own state.
-const STORAGE_PREFIX = "naano.sidebar.collapsed.";
+const STORAGE_PREFIX = `${BRAND.key}.sidebar.collapsed.`;
 
 // Desktop sidebar that collapses to an icon rail: 0.2s width transition,
 // labels fade (see .side-label in globals.css). Remembered per browser.

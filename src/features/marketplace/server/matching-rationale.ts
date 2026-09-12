@@ -4,6 +4,7 @@ import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import { MATCHING_MAX_TOKENS, MATCHING_MODEL, MATCHING_TIMEOUT_MS } from "../constants";
 import type { CreatorDto } from "../schemas";
 
+import { BRAND } from "@/config/brand";
 export type RationaleInput = {
   company: string;
   campaignName: string;
@@ -52,7 +53,7 @@ function creatorSummary(c: CreatorDto, rank: number) {
 }
 
 const SYSTEM_PROMPT =
-  "You are Nao, naano's creator intelligence. A B2B brand asked you to pick LinkedIn creators for a sponsored-post campaign. " +
+  `You are ${BRAND.copilot}, ${BRAND.name}'s creator intelligence. A B2B brand asked you to pick LinkedIn creators for a sponsored-post campaign. ` +
   "You are given the ranked selection with its fit signals and prices; do not invent creators, numbers or results. " +
   "Write exactly two paragraphs of plain text, no headings, no lists, no markdown. " +
   "Paragraph 1 (at most 90 words): why these creators, naming at least two of them and citing the fit signals and prices given. " +
@@ -99,7 +100,7 @@ export async function writeRationale(input: RationaleInput): Promise<Rationale> 
     return (await claudeRationale(input)) ?? templateRationale(input);
   } catch (error) {
     const detail = error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : String(error);
-    console.error("[marketplace] Nao rationale fell back to the template", { company: input.company, detail });
+    console.error(`[marketplace] ${BRAND.copilot} rationale fell back to the template`, { company: input.company, detail });
     return templateRationale(input);
   }
 }

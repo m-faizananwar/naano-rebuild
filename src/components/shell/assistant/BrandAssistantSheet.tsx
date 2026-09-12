@@ -7,6 +7,7 @@ import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+import { BRAND } from "@/config/brand";
 const SHORTCUTS = [
   { href: "/brand/creators", label: "Find creators", icon: Users },
   { href: "/brand/campaigns/new", label: "New campaign", icon: Briefcase },
@@ -36,12 +37,12 @@ export function BrandAssistantSheet({ workspace, onNavigate }: { workspace: stri
         }}
       >
         <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Ask Nao
+          Ask {BRAND.copilot}
         </label>
         <Textarea id={id} value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={3} className="resize-none" />
         <div className="flex justify-end">
           <Button type="submit" disabled={!prompt.trim()} className="bg-brand text-brand-foreground hover:bg-brand/90">
-            <Send aria-hidden="true" /> Ask Nao
+            <Send aria-hidden="true" /> Ask {BRAND.copilot}
           </Button>
         </div>
       </form>

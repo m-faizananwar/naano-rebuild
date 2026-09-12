@@ -7,7 +7,8 @@ import { getCampaignShell, listShortlistCreators } from "@/features/campaigns/se
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Shortlist · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Shortlist · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ campaignId: string }> };
 

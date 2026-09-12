@@ -7,7 +7,8 @@ import { OpportunitiesView } from "@/features/collaborations/components/opportun
 import { listOpportunities } from "@/features/collaborations/server/opportunities-queries";
 import { COPY } from "@/features/collaborations/ui-constants";
 
-export const metadata: Metadata = { title: "Opportunities · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Opportunities · ${BRAND.wordmark}` };
 
 export default async function CreatorOpportunitiesPage() {
   const viewer = await getViewer();

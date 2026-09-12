@@ -11,7 +11,8 @@ import { StatTile } from "@/features/workspace/components/overview/StatTile";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
 import { getCreatorOverview } from "@/features/workspace/server/overview-queries";
 
-export const metadata: Metadata = { title: "Creator workspace · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Creator workspace · ${BRAND.wordmark}` };
 
 // Layout follows the reference overview: tiles, card block + launch guide,
 // then recommended opportunities + active collaborations.

@@ -3,6 +3,7 @@ import { SectionHeading } from "../shared/SectionHeading";
 import { PublicCreatorCard } from "./PublicCreatorCard";
 import { ShowcaseStatCard } from "./ShowcaseStatCard";
 
+import { BRAND } from "@/config/brand";
 export function MarketplaceShowcase({ creators }: { creators: PublicCreator[] }) {
   const list = creators.length > 0 ? creators : STATIC_SHOWCASE_CREATORS;
   const illustrative = creators.length === 0;
@@ -18,7 +19,7 @@ export function MarketplaceShowcase({ creators }: { creators: PublicCreator[] })
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
               </span>
-              <span className="mx-auto rounded-md bg-muted px-3 py-1 text-[0.7rem] text-muted-foreground">naano.co/marketplace</span>
+              <span className="mx-auto rounded-md bg-muted px-3 py-1 text-[0.7rem] text-muted-foreground">{BRAND.wordmark}.co/marketplace</span>
             </div>
             <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 sm:p-6">
               {list.map((creator, index) => (

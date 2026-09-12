@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // Tools the voice layer can run. Anything that moves money or changes a
 // collaboration status is confirmation-gated: the assistant asks "confirm?"
 // and only runs it after a yes.
@@ -18,7 +19,7 @@ export const NO_PATTERN = /^(no|nope|cancel|stop|never mind|nevermind|don't|do n
 export const ROUTES: Record<"brand" | "creator", Record<string, string>> = {
   brand: {
     overview: "/brand", home: "/brand", dashboard: "/brand", creators: "/brand/creators", marketplace: "/brand/creators",
-    matching: "/brand/creators/matching", nao: "/brand/creators/matching", campaigns: "/brand/campaigns",
+    matching: "/brand/creators/matching", [BRAND.copilot.toLowerCase()]: "/brand/creators/matching", campaigns: "/brand/campaigns",
     collaborations: "/brand/collaborations", results: "/brand/results", messages: "/brand/messages", billing: "/brand/billing",
     wallet: "/brand/billing", invite: "/brand/invite", "book a call": "/brand/book-a-call", integrations: "/brand/integrations",
     settings: "/brand/settings",
@@ -31,7 +32,7 @@ export const ROUTES: Record<"brand" | "creator", Record<string, string>> = {
   },
 };
 
-export const VAPI_ASSISTANT_NAME = "Naano voice";
+export const VAPI_ASSISTANT_NAME = `${BRAND.name} voice`;
 export const VAPI_API_URL = "https://api.vapi.ai";
 
 

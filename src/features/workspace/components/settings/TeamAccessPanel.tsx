@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { BRAND } from "@/config/brand";
 // Copy verbatim from the inventory. Invitations need email delivery, which
 // this build does not have, so the form validates and says so honestly.
 export function TeamAccessPanel({ owner }: { owner: { name: string; email: string } }) {
@@ -16,7 +17,7 @@ export function TeamAccessPanel({ owner }: { owner: { name: string; email: strin
         className="grid gap-3"
         onSubmit={(e) => {
           e.preventDefault();
-          setNote(`No email provider in this build, so ${email} did not receive a link. Existing Naano users would get access immediately.`);
+          setNote(`No email provider in this build, so ${email} did not receive a link. Existing ${BRAND.name} users would get access immediately.`);
         }}
       >
         <div>
@@ -28,7 +29,7 @@ export function TeamAccessPanel({ owner }: { owner: { name: string; email: strin
           <Input id="invite-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="colleague@company.com" />
           <Button type="submit">Send invitation</Button>
         </div>
-        <p className="text-xs text-muted-foreground">New users create their account from the private email link. Existing Naano users get access immediately.</p>
+        <p className="text-xs text-muted-foreground">New users create their account from the private email link. Existing {BRAND.name} users get access immediately.</p>
         {note ? <p className="rounded-lg bg-muted px-3 py-2 text-sm" role="status">{note}</p> : null}
       </form>
       <div>

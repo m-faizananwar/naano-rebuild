@@ -5,7 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { LinkForm } from "@/features/campaigns/components/create/LinkForm";
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 
-export const metadata: Metadata = { title: "Start from your link · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Start from your link · ${BRAND.wordmark}` };
 
 export default async function CreateFromLinkPage() {
   await requireBrand("/brand/campaigns/new/link");
@@ -17,7 +18,7 @@ export default async function CreateFromLinkPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Start from your link</h1>
-          <p className="mt-1 text-muted-foreground">Paste an influence campaign you already ran: Naano reuses the brief and structure.</p>
+          <p className="mt-1 text-muted-foreground">Paste an influence campaign you already ran: {BRAND.name} reuses the brief and structure.</p>
         </div>
       </div>
       <LinkForm />

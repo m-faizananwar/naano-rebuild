@@ -1,8 +1,9 @@
 import { Banknote, CreditCard, LayoutGrid, MessagesSquare, User } from "lucide-react";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 import { FOR_CREATORS } from "../../../page-copy";
 import { SectionHeading } from "../../shared/SectionHeading";
 
+import { BRAND } from "@/config/brand";
 const P = FOR_CREATORS.platform;
 const SIDEBAR = [
   { icon: LayoutGrid, label: "Overview", active: true },
@@ -21,11 +22,11 @@ function DashboardMock() {
           <span className="size-2 rounded-full bg-amber-400" />
           <span className="size-2 rounded-full bg-success/60" />
         </span>
-        naano.com/overview
+        {BRAND.wordmark}.com/overview
       </div>
       <div className="grid sm:grid-cols-[10rem_1fr]">
         <div className="hidden border-r p-4 sm:block">
-          <NaanoWordmark className="text-sm" />
+          <BrandWordmark className="text-sm" />
           <ul className="mt-5 space-y-1">
             {SIDEBAR.map((item) => (
               <li key={item.label} className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs ${item.active ? "bg-brand-soft font-semibold text-brand" : "text-muted-foreground"}`}>

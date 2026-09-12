@@ -5,11 +5,12 @@ import type { CollaborationStatus } from "@/lib/collaboration-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { TrackedLinkPerformance } from "../../server/creator-queries";
 
+import { BRAND } from "@/config/brand";
 export function TrackedLinksTable({ rows }: { rows: TrackedLinkPerformance[] }) {
   return (
     <section className="rounded-2xl border bg-background p-5">
       <h2 className="font-semibold">Tracked link performance</h2>
-      <p className="text-sm text-muted-foreground">Clicks on the naano link in each sponsored post. Real time, one row per click.</p>
+      <p className="text-sm text-muted-foreground">Clicks on the {BRAND.wordmark} link in each sponsored post. Real time, one row per click.</p>
       {rows.length === 0 ? (
         <p className="mt-6 text-center text-sm text-muted-foreground">No tracked links yet — they are created when a booking is accepted.</p>
       ) : (

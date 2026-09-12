@@ -4,7 +4,8 @@ import { ProfessionalStep } from "@/features/creator-onboarding/components/steps
 import { ONBOARDING_STEPS } from "@/features/creator-onboarding/constants";
 import { requireOnboardingCreator } from "@/features/creator-onboarding/server/viewer";
 
-export const metadata: Metadata = { title: "Complete your professional information · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Complete your professional information · ${BRAND.wordmark}` };
 
 export default async function ProfessionalStepPage() {
   const state = await requireOnboardingCreator(ONBOARDING_STEPS.professional.path);

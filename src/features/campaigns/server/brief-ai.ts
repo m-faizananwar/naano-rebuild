@@ -6,6 +6,7 @@ import { BRIEF_AI_MAX_TOKENS, BRIEF_AI_MODEL, BRIEF_AI_TIMEOUT_MS, GEOGRAPHIES, 
 import { z } from "zod";
 import { type BrandProfile, type CampaignDraft, campaignDraftSchema } from "../schemas";
 
+import { BRAND } from "@/config/brand";
 // The wire schema for the model: the shared campaignDraftSchema has zod
 // transforms, which JSON Schema cannot express. The response is validated
 // against the shared schema afterwards, so the shared one stays the truth.
@@ -28,7 +29,7 @@ export type GeneratedDraft = { draft: CampaignDraft; generatedWith: "ai" | "temp
 
 export type GenerateInput = { brand: BrandProfile; prompt: string | null };
 
-const SYSTEM_PROMPT = `You write creator briefs for naano, a B2B LinkedIn creator marketplace. A brand gives you its confirmed profile and a campaign goal; you return a campaign name, a one-line description and a brief that creators will post from.
+const SYSTEM_PROMPT = `You write creator briefs for ${BRAND.name}, a B2B LinkedIn creator marketplace. A brand gives you its confirmed profile and a campaign goal; you return a campaign name, a one-line description and a brief that creators will post from.
 
 Rules:
 - Use only the confirmed information about the company. Never invent customers, results, figures or features.

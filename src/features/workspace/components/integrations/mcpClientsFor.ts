@@ -1,5 +1,6 @@
 import { MCP_SETUPS } from "../../constants";
 
+import { BRAND } from "@/config/brand";
 export type McpClientSetup = {
   key: string;
   client: string;
@@ -21,7 +22,7 @@ const byKey = (key: (typeof MCP_SETUPS)[number]["key"]) => {
 // steps with the client's name; Claude / ChatGPT keep their own text.
 function generic(key: string, client: string): McpClientSetup {
   const other = byKey("other");
-  return { key, client, title: `Set up Naano in ${client}`, lead: other.lead, steps: other.steps, secondary: `Open ${client}`, triggerLabel: `Connect ${client}` };
+  return { key, client, title: `Set up ${BRAND.name} in ${client}`, lead: other.lead, steps: other.steps, secondary: `Open ${client}`, triggerLabel: `Connect ${client}` };
 }
 
 // Brand: naano's three cards with "View setup". Creator: the six-client grid

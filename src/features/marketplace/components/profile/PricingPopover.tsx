@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import type { CreatorDto } from "../../schemas";
 
+import { BRAND } from "@/config/brand";
 export function PricingPopover({ creator }: { creator: CreatorDto }) {
   return (
     <Popover>
@@ -17,7 +18,7 @@ export function PricingPopover({ creator }: { creator: CreatorDto }) {
       <PopoverContent align="end" className="w-72 text-sm">
         <p className="font-semibold">Typical reach × CPM</p>
         <p className="text-muted-foreground">
-          The creator sets the post price. Naano divides it by their median views to show a CPM, so you can compare creators of different sizes on
+          The creator sets the post price. {BRAND.name} divides it by their median views to show a CPM, so you can compare creators of different sizes on
           the same basis.
         </p>
         <p className="rounded-lg bg-muted px-3 py-2 tabular-nums">

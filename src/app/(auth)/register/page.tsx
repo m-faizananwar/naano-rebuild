@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
 import { RoleChoiceCards } from "@/features/auth/components/RoleChoiceCards";
 
-export const metadata: Metadata = { title: "Create your account · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Create your account · ${BRAND.wordmark}` };
 
 export default function RegisterPage() {
   return (

@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // Numbers and copy shared by the collaboration screens (constants.ts is owned
 // by the state-machine stream; this file holds everything the views need).
 
@@ -18,12 +19,12 @@ export const TRACKED_LINK_PATH = "/r";
 
 export const QUICK_REACTIONS = ["👍", "🙏", "🔥", "🎉", "💯", "👏", "😂", "❤️", "🚀", "👀", "✅", "🤝"] as const;
 
-export const NAANOBOT_THREAD_ID = "naanobot";
-export const NAANOBOT = {
-  name: "NaanoBot",
+export const BOT_THREAD_ID = "support-bot";
+export const SUPPORT_BOT = {
+  name: `${BRAND.bot}`,
   preview: "Have a question or need help? Click here.",
   reply:
-    "Hi! I'm NaanoBot. I can't answer yet in this build, but your bookings, briefs and payouts are all a click away in the sidebar. A human from Naano replies to real questions within a business day.",
+    `Hi! I'm ${BRAND.bot}. I can't answer yet in this build, but your bookings, briefs and payouts are all a click away in the sidebar. A human from ${BRAND.name} replies to real questions within a business day.`,
 } as const;
 
 export const COPY = {

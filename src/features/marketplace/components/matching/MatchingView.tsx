@@ -13,6 +13,7 @@ import { MatchingResults } from "./MatchingResults";
 import { NaoRail } from "./NaoRail";
 import { SuggestedChips } from "./SuggestedChips";
 
+import { BRAND } from "@/config/brand";
 type Props = { ctx: MarketplaceContextDto };
 
 function defaultPrompt(ctx: MarketplaceContextDto) {
@@ -107,8 +108,8 @@ export function MatchingView({ ctx }: Props) {
   if (!ctx.selectedCampaign) {
     return (
       <EmptyState
-        title="Nao needs a campaign brief"
-        body="Create a campaign so Nao can rank creators against its audience and angles."
+        title={`${BRAND.copilot} needs a campaign brief`}
+        body={`Create a campaign so ${BRAND.copilot} can rank creators against its audience and angles.`}
         cta={{ href: "/brand/campaigns", label: "Create a campaign" }}
       />
     );

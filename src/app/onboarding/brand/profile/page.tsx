@@ -7,7 +7,8 @@ import { COPY, ONBOARDING_ROUTES } from "@/features/brand-onboarding/constants";
 import { loadOnboardingProfile } from "@/features/brand-onboarding/server/queries";
 import { requireOnboardingBrand } from "@/features/brand-onboarding/server/require-onboarding-brand";
 
-export const metadata: Metadata = { title: "Value prop & ICP · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Value prop & ICP · ${BRAND.wordmark}` };
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 

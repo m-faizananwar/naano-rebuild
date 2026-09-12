@@ -13,9 +13,10 @@ import { type RegisterInput, type Role, registerSchema } from "../schemas";
 import { register } from "../server/actions";
 import { FormField } from "./FormField";
 
+import { BRAND } from "@/config/brand";
 const COPY: Record<Role, { eyebrow?: string; title: string; sub: string }> = {
-  brand: { title: "Join Naano", sub: "The #1 platform to run LinkedIn creator campaigns that drive real business." },
-  creator: { eyebrow: "Step 1 of 4", title: "Join Naano", sub: "Get paid to create LinkedIn content for B2B brands you actually use." },
+  brand: { title: `Join ${BRAND.name}`, sub: "The #1 platform to run LinkedIn creator campaigns that drive real business." },
+  creator: { eyebrow: "Step 1 of 4", title: `Join ${BRAND.name}`, sub: "Get paid to create LinkedIn content for B2B brands you actually use." },
 };
 
 const INPUT = "h-12 rounded-xl px-4";

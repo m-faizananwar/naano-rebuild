@@ -9,7 +9,8 @@ import { getCampaignShell } from "@/features/campaigns/server/queries";
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Campaign brief · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Campaign brief · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ campaignId: string }> };
 

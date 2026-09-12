@@ -4,10 +4,11 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import type { CampaignOption, ThreadDto, ViewerRole } from "../../schemas";
-import { COPY, NAANOBOT_THREAD_ID } from "../../ui-constants";
-import { NaanoBotItem } from "./NaanoBotItem";
+import { COPY, BOT_THREAD_ID } from "../../ui-constants";
+import { BotItem } from "./BotItem";
 import { ThreadListItem } from "./ThreadListItem";
 
+import { BRAND } from "@/config/brand";
 type Props = { threads: ThreadDto[]; role: ViewerRole; activeId: string | null; campaigns: CampaignOption[] };
 
 export function ThreadList({ threads, role, activeId, campaigns }: Props) {
@@ -47,7 +48,7 @@ export function ThreadList({ threads, role, activeId, campaigns }: Props) {
         ) : null}
       </div>
       <ul className="flex-1 overflow-y-auto">
-        <NaanoBotItem role={role} active={activeId === NAANOBOT_THREAD_ID} />
+        <BotItem role={role} active={activeId === BOT_THREAD_ID} />
         {visible.map((t) => (
           <ThreadListItem key={t.collaborationId} thread={t} role={role} active={activeId === t.collaborationId} />
         ))}

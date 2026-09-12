@@ -6,7 +6,8 @@ import { TeamAccessPanel } from "@/features/workspace/components/settings/TeamAc
 import { getViewer } from "@/features/auth/server/session";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "Invite creators · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Invite creators · ${BRAND.wordmark}` };
 
 export default async function BrandInvitePage() {
   const viewer = await getViewer();

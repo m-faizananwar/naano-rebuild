@@ -4,6 +4,7 @@ import { CampaignCard } from "./CampaignCard";
 import { CreateCampaignCard } from "./CreateCampaignCard";
 import { LaunchPlanCard } from "./LaunchPlanCard";
 
+import { BRAND } from "@/config/brand";
 type Props = { campaigns: CampaignCardDto[]; plan: LaunchPlanDto };
 
 export function CampaignsList({ campaigns, plan }: Props) {
@@ -14,7 +15,7 @@ export function CampaignsList({ campaigns, plan }: Props) {
           <div className="md:col-span-2">
             <EmptyState
               title="No campaigns yet"
-              body="Create a campaign to get a brief your creators can work from. AI, the Naano team, or a link you already have."
+              body={`Create a campaign to get a brief your creators can work from. AI, the ${BRAND.name} team, or a link you already have.`}
               cta={{ href: "/brand/campaigns/new", label: "Create a campaign" }}
             />
           </div>

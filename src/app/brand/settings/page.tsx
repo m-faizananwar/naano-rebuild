@@ -12,7 +12,8 @@ import { TeamAccessPanel } from "@/features/workspace/components/settings/TeamAc
 import { getBrandSettings } from "@/features/workspace/server/settings-queries";
 import type { BrandAudienceInput } from "@/features/workspace/schemas";
 
-export const metadata: Metadata = { title: "Settings · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Settings · ${BRAND.wordmark}` };
 
 export default async function BrandSettingsPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const viewer = await getViewer();
@@ -22,7 +23,7 @@ export default async function BrandSettingsPage({ searchParams }: { searchParams
   const { tab } = await searchParams;
   return (
     <>
-      <PageHeader eyebrow="Naano workspace" title="Settings" description="Manage your company profile and the audience you want to reach." />
+      <PageHeader eyebrow={`${BRAND.name} workspace`} title="Settings" description="Manage your company profile and the audience you want to reach." />
       <Tabs defaultValue={tab === "audience" || tab === "team" || tab === "integrations" ? tab : "profile"}>
         <TabsList className="h-auto max-w-full flex-wrap">
           <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -54,7 +55,7 @@ export default async function BrandSettingsPage({ searchParams }: { searchParams
       <section className="mt-6 rounded-2xl border border-destructive/30 bg-background p-5">
         <h2 className="font-semibold">Delete account</h2>
         <p className="mb-3 text-sm text-muted-foreground">Removes the workspace, its campaigns, collaborations and ledger. Demo accounts are protected.</p>
-        <DeleteAccountButton isDemo={viewer.email.endsWith("@demo.naano")} />
+        <DeleteAccountButton isDemo={viewer.email.endsWith(`@${BRAND.demoDomain}`)} />
       </section>
     </>
   );

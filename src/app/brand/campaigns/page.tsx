@@ -6,7 +6,8 @@ import { getLaunchPlan, listCampaignCards } from "@/features/campaigns/server/qu
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Campaigns · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Campaigns · ${BRAND.wordmark}` };
 
 export default async function BrandCampaignsPage() {
   const viewer = await requireBrand("/brand/campaigns");

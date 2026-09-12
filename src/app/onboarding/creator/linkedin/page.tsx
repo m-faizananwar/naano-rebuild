@@ -3,7 +3,8 @@ import { LinkedinStep } from "@/features/creator-onboarding/components/steps/Lin
 import { ONBOARDING_STEPS } from "@/features/creator-onboarding/constants";
 import { requireOnboardingCreator } from "@/features/creator-onboarding/server/viewer";
 
-export const metadata: Metadata = { title: "Add your public LinkedIn profile · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Add your public LinkedIn profile · ${BRAND.wordmark}` };
 
 export default async function LinkedinStepPage() {
   const state = await requireOnboardingCreator(ONBOARDING_STEPS.linkedin.path);

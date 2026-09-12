@@ -9,6 +9,7 @@ import { recordNaoFeedback } from "../../server/actions";
 import { MatchingResultRow } from "./MatchingResultRow";
 import { StagedResults } from "./StagedResults";
 
+import { BRAND } from "@/config/brand";
 type Props = { prompt: string; result: MatchingResultDto };
 
 export function MatchingResults({ prompt, result }: Props) {
@@ -21,7 +22,7 @@ export function MatchingResults({ prompt, result }: Props) {
       toast.error(saved.error);
       return;
     }
-    toast.success(kind === "copy" ? "Copied — and noted" : kind === "up" ? "Thanks — Nao will favour this kind of shortlist" : "Thanks — Nao will steer away from this");
+    toast.success(kind === "copy" ? "Copied — and noted" : kind === "up" ? `Thanks — ${BRAND.copilot} will favour this kind of shortlist` : `Thanks — ${BRAND.copilot} will steer away from this`);
   }
   return (
     <div className="grid gap-4">
@@ -32,7 +33,7 @@ export function MatchingResults({ prompt, result }: Props) {
         <p>{result.rationale}</p>
         <p className="text-muted-foreground">{result.tradeoff}</p>
         <div className="flex items-center gap-1 text-muted-foreground [&>button]:opacity-70 [&>button:hover]:opacity-100">
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Copy Nao's answer" onClick={() => feedback("copy")}>
+          <Button type="button" variant="ghost" size="icon-xs" aria-label={`Copy ${BRAND.copilot}'s answer`} onClick={() => feedback("copy")}>
             <Copy aria-hidden="true" />
           </Button>
           <Button type="button" variant="ghost" size="icon-xs" aria-label="Good answer" onClick={() => feedback("up")}>
@@ -41,12 +42,12 @@ export function MatchingResults({ prompt, result }: Props) {
           <Button type="button" variant="ghost" size="icon-xs" aria-label="Bad answer" onClick={() => feedback("down")}>
             <ThumbsDown aria-hidden="true" />
           </Button>
-          <span className="ml-auto text-[10px] uppercase tracking-wider">{result.source === "claude" ? "Written by Nao" : "Template rationale"}</span>
+          <span className="ml-auto text-[10px] uppercase tracking-wider">{result.source === "claude" ? `Written by ${BRAND.copilot}` : "Template rationale"}</span>
         </div>
         </StagedResults>
       </div>
       <section className="rounded-2xl border bg-background p-4">
-        <h3 className="font-semibold">Nao&apos;s selection</h3>
+        <h3 className="font-semibold">{BRAND.copilot}&apos;s selection</h3>
         <p className="text-xs text-muted-foreground">Creators selected for your request</p>
         {result.creators.length === 0 ? (
           <p className="mt-4 text-sm text-muted-foreground">No creator matched. Try a broader request.</p>

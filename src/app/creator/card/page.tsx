@@ -10,7 +10,8 @@ import { WorkspaceCard } from "@/features/workspace/components/card/WorkspaceCar
 import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT } from "@/features/workspace/constants";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
 
-export const metadata: Metadata = { title: "My card · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `My card · ${BRAND.wordmark}` };
 
 export default async function CreatorCardPage() {
   const viewer = await getViewer();
@@ -23,7 +24,7 @@ export default async function CreatorCardPage() {
     <>
       <PageHeader
         eyebrow="Your creator storefront"
-        title="Your Naano card, ready to travel."
+        title={`Your ${BRAND.name} card, ready to travel.`}
         description="Share clear proof of your positioning, audience and offers."
         actions={<Link href="/creator/settings" className={buttonVariants({ variant: "outline" })}>Edit</Link>}
       />

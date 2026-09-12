@@ -3,12 +3,13 @@ import { notFound, redirect } from "next/navigation";
 import { ErrorState } from "@/components/page/ErrorState";
 import { getViewer } from "@/features/auth/server/session";
 import { MessagesLayout } from "@/features/collaborations/components/messages/MessagesLayout";
-import { NaanoBotThread } from "@/features/collaborations/components/messages/NaanoBotThread";
+import { BotThread } from "@/features/collaborations/components/messages/BotThread";
 import { ThreadView } from "@/features/collaborations/components/messages/ThreadView";
 import { getThread, listThreads, threadScopeFor } from "@/features/collaborations/server/messages-queries";
-import { NAANOBOT_THREAD_ID } from "@/features/collaborations/ui-constants";
+import { BOT_THREAD_ID } from "@/features/collaborations/ui-constants";
 
-export const metadata: Metadata = { title: "Messages · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Messages · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ collaborationId: string }> };
 
@@ -17,7 +18,7 @@ export default async function CreatorThreadPage({ params }: Props) {
   const viewer = await getViewer();
   const scope = viewer && threadScopeFor(viewer);
   if (!viewer || !scope) redirect(`/login?next=/creator/messages/${collaborationId}`);
-  const isBot = collaborationId === NAANOBOT_THREAD_ID;
+  const isBot = collaborationId === BOT_THREAD_ID;
 
   let data;
   try {
@@ -40,7 +41,7 @@ export default async function CreatorThreadPage({ params }: Props) {
           senderAvatarUrl={viewer.creator?.avatarUrl ?? null}
         />
       ) : (
-        <NaanoBotThread role="creator" />
+        <BotThread role="creator" />
       )}
     </MessagesLayout>
   );

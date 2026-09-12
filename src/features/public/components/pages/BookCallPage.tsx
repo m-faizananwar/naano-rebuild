@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { SlotPicker } from "./SlotPicker";
 
+import { BRAND } from "@/config/brand";
 const BULLETS = ["Creator angles tailored to your market", "Recommended campaign format and budget", "A clear launch plan for your next campaign"];
 const TRUSTED = ["lemlist", "folk.", "ringover", "attio", "gojiberry"];
 
@@ -36,7 +37,7 @@ export function BookCallPage() {
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="text-muted-foreground">You&apos;ll receive a Google Calendar invite instantly — in the real product. Here nothing is written.</span>
-          <a href="mailto:hello@naano.example" className="font-medium text-brand hover:underline">Prefer email? Contact us →</a>
+          <a href={`mailto:${BRAND.supportEmail}`} className="font-medium text-brand hover:underline">Prefer email? Contact us →</a>
         </div>
       </section>
       <p className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">

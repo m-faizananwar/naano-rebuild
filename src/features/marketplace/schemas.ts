@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { FitResult } from "@/lib/fit-score";
+import { BRAND } from "@/config/brand";
 import {
   ACTIVITY_WINDOWS, CREATOR_TABS, DISCOUNT_PRESETS, MATCHING_PROMPT_MAX_LENGTH, MAX_PAGES, MIN_OFFER_CENTS, OFFER_NOTE_MAX_LENGTH,
   PLATFORM_MAX_POST_CENTS, SEARCH_MAX_LENGTH, SORT_KEYS, TOP_RANKED_FEEDBACK_MAX,
@@ -151,7 +152,7 @@ export const discountPresetSchema = z.enum(DISCOUNT_PRESETS.map(String) as [stri
 
 export const runMatchingSchema = z.object({
   campaignId: z.string().uuid(),
-  prompt: z.string().trim().min(1, "Tell Nao what you are looking for.").max(MATCHING_PROMPT_MAX_LENGTH),
+  prompt: z.string().trim().min(1, `Tell ${BRAND.copilot} what you are looking for.`).max(MATCHING_PROMPT_MAX_LENGTH),
 });
 export type RunMatchingInput = z.infer<typeof runMatchingSchema>;
 

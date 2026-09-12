@@ -6,7 +6,8 @@ import { MarketplaceView } from "@/features/marketplace/components/MarketplaceVi
 import { parseMarketplaceQuery, type RawSearchParams } from "@/features/marketplace/schemas";
 import { loadMarketplacePage } from "@/features/marketplace/server/queries";
 
-export const metadata: Metadata = { title: "Creators · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Creators · ${BRAND.wordmark}` };
 
 type Props = { searchParams: Promise<RawSearchParams> };
 

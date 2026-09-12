@@ -6,9 +6,10 @@ import type { Role } from "../schemas";
 import { RegisterForm } from "./RegisterForm";
 import { SocialAuthButtons } from "./SocialAuthButtons";
 
+import { BRAND } from "@/config/brand";
 const COPY: Record<Role, { eyebrow?: string; title: string; sub: string }> = {
-  brand: { title: "Join Naano", sub: "The #1 platform to run LinkedIn creator campaigns that drive real business." },
-  creator: { eyebrow: "Step 1 of 4", title: "Join Naano", sub: "Get paid to create LinkedIn content for B2B brands you actually use." },
+  brand: { title: `Join ${BRAND.name}`, sub: "The #1 platform to run LinkedIn creator campaigns that drive real business." },
+  creator: { eyebrow: "Step 1 of 4", title: `Join ${BRAND.name}`, sub: "Get paid to create LinkedIn content for B2B brands you actually use." },
 };
 
 // Step 1 of naano's sign-up: pick LinkedIn / Google / email. Email reveals

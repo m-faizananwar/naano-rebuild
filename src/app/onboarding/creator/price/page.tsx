@@ -4,7 +4,8 @@ import { PriceStep } from "@/features/creator-onboarding/components/steps/PriceS
 import { ONBOARDING_STEPS } from "@/features/creator-onboarding/constants";
 import { requireOnboardingCreator } from "@/features/creator-onboarding/server/viewer";
 
-export const metadata: Metadata = { title: "Set your price · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Set your price · ${BRAND.wordmark}` };
 
 export default async function PriceStepPage() {
   const state = await requireOnboardingCreator(ONBOARDING_STEPS.price.path);

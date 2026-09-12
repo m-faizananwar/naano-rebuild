@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { COLLABORATION_STATUSES } from "./collaboration-status";
+import { BRAND } from "@/config/brand";
 import {
   BRAND_TABS,
   CREATOR_TABS,
@@ -98,7 +99,7 @@ describe("eventLabel", () => {
     const { eventLabel } = await import("./collaboration-labels");
     expect(eventLabel("accept", "creator", "invited")).toBe("The creator accepted the invitation");
     expect(eventLabel("accept", "brand", "applied")).toBe("The brand accepted the application");
-    expect(eventLabel("pay", "system", "live")).toBe("Naano released the payment");
+    expect(eventLabel("pay", "system", "live")).toBe(`${BRAND.name} released the payment`);
     expect(eventLabel("request_changes", "brand", "draft_submitted")).toBe("The brand requested changes");
   });
 });

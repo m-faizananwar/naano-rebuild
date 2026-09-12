@@ -2,10 +2,11 @@ import { CalendarClock, Link2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
+import { BRAND } from "@/config/brand";
 const OPTIONS = [
   {
     icon: CalendarClock,
-    title: "Launch free with the Naano team",
+    title: `Launch free with the ${BRAND.name} team`,
     body: "A campaign manager turns your selection into a ready-to-launch campaign. You validate, they handle the rest.",
     meta: "Today · 14:30 · 15 min",
     cta: "Book my onboarding →",
@@ -25,7 +26,7 @@ const OPTIONS = [
   {
     icon: Link2,
     title: "Start from your link",
-    body: "Paste an influence campaign you already ran: Naano reuses the brief and structure.",
+    body: `Paste an influence campaign you already ran: ${BRAND.name} reuses the brief and structure.`,
     meta: "1 min",
     example: "Brief link (Notion, Docs, PDF…) → Brief recovered",
     cta: "Start from a link →",

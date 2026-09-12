@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 import { PageHeader } from "@/components/page/PageHeader";
 import { IntegrationsPanel } from "@/features/workspace/components/integrations/IntegrationsPanel";
 
-export const metadata: Metadata = { title: "Connect your AI assistant · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Connect your AI assistant · ${BRAND.wordmark}` };
 
 export default async function CreatorIntegrationsPage() {
   const h = await headers();

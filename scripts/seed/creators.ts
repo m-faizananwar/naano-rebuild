@@ -1,5 +1,6 @@
 import type { AudienceMix, CreatorBundle } from "@/db/schema";
 import { daysAgo, faker, jitter, lognormal, pickWeighted, toPercentMix } from "./random";
+import { BRAND } from "@/config/brand";
 import {
   COUNTRY_WEIGHTS, CPM_EUR, FORMER_EMPLOYERS, HEADLINE_TEMPLATES, INDUSTRIES, INDUSTRY_AUDIENCE, type Industry,
   JOB_TITLES, POST_BODIES, POST_OPENERS, SENIORITY, tierFor,
@@ -154,7 +155,7 @@ export function buildDemoCreator(): CreatorFixture {
     handle: "faizan-anwar",
     firstName: "Faizan",
     lastName: "Anwar",
-    email: "creator@demo.naano",
+    email: `creator@${BRAND.demoDomain}`,
     country: "PK",
     industries: ["AI", "SaaS", "Productivity"],
     headline: "Building AI workflows for small SaaS teams · notes on productivity that actually ships",

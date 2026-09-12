@@ -9,7 +9,8 @@ import { getCampaignShell, getLaunchStepData } from "@/features/campaigns/server
 import { requireBrand } from "@/features/campaigns/server/require-brand";
 import { safeQuery } from "@/features/campaigns/server/safe-query";
 
-export const metadata: Metadata = { title: "Launch campaign · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Launch campaign · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ campaignId: string }>; searchParams: Promise<{ step?: string; creators?: string; generated?: string }> };
 

@@ -9,7 +9,8 @@ import { RecentActivity } from "@/features/payouts/components/earnings/RecentAct
 import { WithdrawDialog } from "@/features/payouts/components/earnings/WithdrawDialog";
 import { getCreatorLedger, getEarningsByMonth, getEarningsSummary } from "@/features/payouts/server/queries";
 
-export const metadata: Metadata = { title: "Earnings · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Earnings · ${BRAND.wordmark}` };
 
 export default async function CreatorEarningsPage() {
   const viewer = await getViewer();

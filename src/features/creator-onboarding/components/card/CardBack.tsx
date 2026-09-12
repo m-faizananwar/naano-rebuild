@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { countryName } from "@/lib/country-flag";
 import type { CardModel } from "./toCardModel";
 
+import { BRAND } from "@/config/brand";
 const PERCENT = 100;
 const RATE_DECIMALS = 1;
 // Public reactions vs comments split of the engagements we estimate.
@@ -68,11 +69,11 @@ export function CardBack({ model, onBack }: { model: CardModel; onBack: () => vo
       </dl>
       <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand">
         <ShieldCheck className="size-3.5" aria-hidden="true" />
-        Public LinkedIn data estimated by Naano
+        Public LinkedIn data estimated by {BRAND.name}
       </p>
       <div className="mt-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">About</p>
-        <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{model.bio || model.headline || "Your bio will appear here once you add one from your Naano profile."}</p>
+        <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{model.bio || model.headline || `Your bio will appear here once you add one from your ${BRAND.name} profile.`}</p>
       </div>
       <Target model={model} />
       <div className="mt-5 flex items-center justify-between gap-3">

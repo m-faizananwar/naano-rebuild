@@ -2,6 +2,7 @@ import { MCP_ENDPOINT_PATH } from "../../constants";
 import { mcpClientsFor } from "./mcpClientsFor";
 import { McpSetupDialog } from "./McpSetupDialog";
 
+import { BRAND } from "@/config/brand";
 const READ_ACCESS = {
   brand: ["Your active workspace, wallet and campaigns", "Available creators, posts and campaign fit", "Applications, bookings and content status"],
   creator: ["Briefs and deadlines", "Draft history and post status", "Your conversations with brands"],
@@ -17,7 +18,7 @@ export function IntegrationsPanel({ role, origin }: { role: "brand" | "creator";
   return (
     <div className="grid gap-4">
       <section className="rounded-2xl border bg-background p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">NAANO://MCP · <span className="text-muted-foreground">Documented</span></p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{BRAND.name.toUpperCase()}://MCP · <span className="text-muted-foreground">Documented</span></p>
         <h2 className="mt-1 text-xl font-semibold">Remote MCP endpoint</h2>
         <p className="mt-2 font-mono text-sm">{endpoint}</p>
         <p className="mt-1 text-xs text-muted-foreground">Streamable HTTP · OAuth 2.1 · No API key · <span className="font-medium text-foreground">documented, not served in this build</span></p>
@@ -52,7 +53,7 @@ export function IntegrationsPanel({ role, origin }: { role: "brand" | "creator";
         </div>
       </section>
       <p className="text-xs text-muted-foreground">
-        The assistant only sees the active Naano workspace your account can access. Naano rechecks identity, workspace permissions,
+        The assistant only sees the active {BRAND.name} workspace your account can access. {BRAND.name} rechecks identity, workspace permissions,
         rate limits and every write confirmation on the server.
       </p>
     </div>

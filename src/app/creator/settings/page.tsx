@@ -9,7 +9,8 @@ import { PayoutDetailsForm } from "@/features/workspace/components/settings/Payo
 import { getCreatorSettings } from "@/features/workspace/server/settings-queries";
 import type { CreatorProfileInput } from "@/features/workspace/schemas";
 
-export const metadata: Metadata = { title: "Settings · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Settings · ${BRAND.wordmark}` };
 
 export default async function CreatorSettingsPage() {
   const viewer = await getViewer();
@@ -46,7 +47,7 @@ export default async function CreatorSettingsPage() {
             <p className="text-sm text-muted-foreground">Signed in as {settings.email} · card handle @{settings.handle}</p>
           </div>
           <div>
-            <DeleteAccountButton isDemo={settings.email.endsWith("@demo.naano")} />
+            <DeleteAccountButton isDemo={settings.email.endsWith(`@${BRAND.demoDomain}`)} />
           </div>
         </TabsContent>
       </Tabs>

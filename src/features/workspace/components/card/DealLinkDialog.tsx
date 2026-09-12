@@ -8,9 +8,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { BRAND } from "@/config/brand";
 type Props = { url: string; handle: string; label?: string; primary?: boolean; size?: "sm" | "default" };
 
-const SHARE_TEXT = "My Naano creator card — positioning, audience and price per post, in one link.";
+const SHARE_TEXT = `My ${BRAND.name} creator card — positioning, audience and price per post, in one link.`;
 
 // "Copy or share my Deal Link": the public card URL with a real clipboard copy
 // and real share intents (LinkedIn share, X intent, mailto).
@@ -19,7 +20,7 @@ export function DealLinkDialog({ url, handle, label = "Copy or share my Deal Lin
   const shares = [
     { label: "Share on LinkedIn", icon: MessageSquareShare, href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
     { label: "Post on X", icon: Share2, href: `https://x.com/intent/post?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(url)}` },
-    { label: "Send by email", icon: Mail, href: `mailto:?subject=${encodeURIComponent(`My Naano card (@${handle})`)}&body=${encodeURIComponent(`${SHARE_TEXT}\n\n${url}`)}` },
+    { label: "Send by email", icon: Mail, href: `mailto:?subject=${encodeURIComponent(`My {BRAND.name} card (@${handle})`)}&body=${encodeURIComponent(`${SHARE_TEXT}\n\n${url}`)}` },
   ];
 
   async function copy() {

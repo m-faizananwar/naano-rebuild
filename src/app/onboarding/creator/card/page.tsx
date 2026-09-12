@@ -4,7 +4,8 @@ import { CardStep } from "@/features/creator-onboarding/components/steps/CardSte
 import { ONBOARDING_STEPS } from "@/features/creator-onboarding/constants";
 import { requireOnboardingCreator } from "@/features/creator-onboarding/server/viewer";
 
-export const metadata: Metadata = { title: "Complete your creator card · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Complete your creator card · ${BRAND.wordmark}` };
 
 export default async function CardStepPage() {
   const state = await requireOnboardingCreator(ONBOARDING_STEPS.card.path);

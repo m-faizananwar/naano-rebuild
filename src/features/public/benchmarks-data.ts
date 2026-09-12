@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // naano's Q2 2026 benchmark report (data window Q1 2026), from the market
 // notes and the /benchmarks screenshot. First-party marketing figures.
 
@@ -5,15 +6,15 @@ export const BENCHMARKS = {
   hero: {
     eyebrow: "Q2 2026 benchmark report · 14 min read · EN",
     title: "B2B Creator-Led Growth Benchmarks: Q2 2026",
-    sub: "First-party CPL, CTR, and conversion data from ~300 vetted B2B nano-creators on Naano. Methodology, sample sizes, and per-vertical breakdowns.",
-    meta: "Published April 27, 2026 · Authored by the Naano team · Sample: 312 campaigns, 1,847 sponsored posts, Q1 2026",
+    sub: `First-party CPL, CTR, and conversion data from ~300 vetted B2B nano-creators on ${BRAND.name}. Methodology, sample sizes, and per-vertical breakdowns.`,
+    meta: `Published April 27, 2026 · Authored by the ${BRAND.name} team · Sample: 312 campaigns, 1,847 sponsored posts, Q1 2026`,
   },
   editorialNote:
-    "Editorial note (July 14, 2026): the data in this report was measured in Q1 2026 under Naano's earlier cost-per-click pricing model. Since then, Naano has moved to creator-defined fixed-price offers. The performance benchmarks below (CPL, CTR, conversion) remain valid as historical Q1 2026 data.",
+    `Editorial note (July 14, 2026): the data in this report was measured in Q1 2026 under ${BRAND.name}'s earlier cost-per-click pricing model. Since then, ${BRAND.name} has moved to creator-defined fixed-price offers. The performance benchmarks below (CPL, CTR, conversion) remain valid as historical Q1 2026 data.`,
   intro:
-    "This is the first edition of Naano's quarterly benchmark report on B2B creator-led growth. It publishes the CPL, CTR, time-to-launch and conversion data from every campaign that ran on the Naano marketplace during Q1 2026. Numbers are first-party measurements, not estimates, and every table includes the sample size behind it.",
+    `This is the first edition of ${BRAND.name}'s quarterly benchmark report on B2B creator-led growth. It publishes the CPL, CTR, time-to-launch and conversion data from every campaign that ran on the ${BRAND.name} marketplace during Q1 2026. Numbers are first-party measurements, not estimates, and every table includes the sample size behind it.`,
   summary: [
-    "Average CPL on Naano in Q1 2026 was €18.10 across 312 campaigns, ~67–80% below typical LinkedIn Ads CPL for comparable B2B SaaS audiences (€55–€90). The lowest vertical (marketing-ops, median €16) and the highest (vertical SaaS, median €21) bracket a tighter-than-expected distribution.",
+    `Average CPL on ${BRAND.name} in Q1 2026 was €18.10 across 312 campaigns, ~67–80% below typical LinkedIn Ads CPL for comparable B2B SaaS audiences (€55–€90). The lowest vertical (marketing-ops, median €16) and the highest (vertical SaaS, median €21) bracket a tighter-than-expected distribution.`,
     "CTR on creator-led posts averaged 12.0% across 1,847 posts, roughly 15× the LinkedIn Sponsored Content benchmark (0.8%). CTR scales inversely with creator follower count: 1k–3k creators clocked 13.8% median CTR, 10k+ creators clocked 8.7%.",
     "Median time-to-launch was 7 days from brief submission to first post live, with a p25 of 5 days and a p90 of 16 days.",
   ],
@@ -27,15 +28,15 @@ export const BENCHMARKS = {
   ],
   methodology: [
     { label: "Data window", text: "2026-01-01 to 2026-03-31 (Q1 2026)." },
-    { label: "Sample", text: "312 campaigns from 89 distinct brands; 1,847 individual sponsored posts; ~300 active creators from the Naano roster." },
-    { label: "Qualified click", text: "A click that carries a Naano tracking parameter, resolves to the brand's landing page, and records 30+ seconds of on-site engagement. Bots are filtered server-side; visits are deduplicated to one per IP per hour." },
+    { label: "Sample", text: `312 campaigns from 89 distinct brands; 1,847 individual sponsored posts; ~300 active creators from the ${BRAND.name} roster.` },
+    { label: "Qualified click", text: `A click that carries a ${BRAND.name} tracking parameter, resolves to the brand's landing page, and records 30+ seconds of on-site engagement. Bots are filtered server-side; visits are deduplicated to one per IP per hour.` },
     { label: "Vertical", text: "Campaigns are tagged at brief creation with one of sales-tech, RevOps, devtools, product, HR-tech, fintech, marketing-ops or vertical SaaS." },
     { label: "Statistics", text: "\"Average\" refers to the mean unless otherwise noted. Percentiles are computed on the full underlying distribution, not on per-campaign aggregates." },
   ],
   vsAds: {
     title: "Headline benchmarks",
-    body: "The metrics most often cited in B2B SaaS budget conversations. Naano figures are Q1 2026 means; LinkedIn Ads ranges reflect publicly reported values for B2B SaaS audiences in EU and US markets.",
-    columns: ["Metric", "Naano (Q1 2026)", "LinkedIn Ads benchmark", "Delta"],
+    body: `The metrics most often cited in B2B SaaS budget conversations. ${BRAND.name} figures are Q1 2026 means; LinkedIn Ads ranges reflect publicly reported values for B2B SaaS audiences in EU and US markets.`,
+    columns: ["Metric", `${BRAND.name} (Q1 2026)`, "LinkedIn Ads benchmark", "Delta"],
     rows: [
       ["Average CPL (cost per lead)", "€18.10", "€55–€90 (LinkedIn Ads, B2B SaaS)", "−67% to −80%"],
       ["Average CTR (sponsored content)", "12.0%", "0.8% (LinkedIn B2B Marketing Benchmark 2025)", "+15× absolute"],
@@ -88,9 +89,9 @@ export const BENCHMARKS = {
     { label: "p90", value: "16 days" },
   ],
   caveats: [
-    "All numbers are first-party naano marketing claims from a single quarter; they are not independently audited.",
+    "All numbers are first-party marketing claims of naano.com (the reference product) from a single quarter; they are not independently audited.",
     "Brands self-select into creator-led campaigns, so results are not a randomized comparison against LinkedIn Ads.",
     "The Q1 2026 data was measured under the earlier cost-per-click pricing model.",
   ],
-  cite: "Naano (2026). B2B Creator-Led Growth Benchmarks: Q2 2026. naano.com/benchmarks/q2-2026.",
+  cite: `${BRAND.name} (2026). B2B Creator-Led Growth Benchmarks: Q2 2026. Source data: naano.com/benchmarks/q2-2026.`,
 } as const;

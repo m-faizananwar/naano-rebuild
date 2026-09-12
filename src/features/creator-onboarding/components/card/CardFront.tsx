@@ -1,10 +1,11 @@
 import { ArrowRight, CalendarDays, Package } from "lucide-react";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { countryFlag, countryName } from "@/lib/country-flag";
 import { formatEuro } from "@/lib/format-euro";
 import type { CardModel } from "./toCardModel";
 
+import { BRAND } from "@/config/brand";
 const PROGRESS_DONE = 100;
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -44,7 +45,7 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
           </span>
         ) : null}
         <div className="absolute inset-x-0 top-9 flex justify-center">
-          <NaanoWordmark inverted className="text-xl" />
+          <BrandWordmark inverted className="text-xl" />
         </div>
         {model.reading ? <ReadingChip /> : null}
       </div>

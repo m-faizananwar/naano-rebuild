@@ -1,13 +1,15 @@
 # naano-rebuild
 
+Shipped under the name Amplio; naano.com is the reference product.
+
 A working rebuild of [naano](https://naano.com), the B2B LinkedIn creator marketplace: brands book vetted creators at a
 fixed price per post, creators write in their own voice, and every post's clicks, sign-ups and purchases are attributed
 back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn,
 Drizzle + Postgres, deployed on Vercel.
 
 **Live: https://naano-rebuild-opal.vercel.app** (auto-deployed from `main`; Postgres on Neon). Demo logins on `/login`:
-**Explore as demo brand** (Zune) / **Explore as demo creator** — one click, no typing. Accounts `brand@demo.naano` /
-`creator@demo.naano`, password `demo1234`, if you prefer the form. Smoke test: `/api/health`.
+**Explore as demo brand** (Zune) / **Explore as demo creator** — one click, no typing. Accounts `brand@demo.amplio` /
+`creator@demo.amplio`, password `demo1234`, if you prefer the form. Smoke test: `/api/health`.
 
 ## How this was built
 

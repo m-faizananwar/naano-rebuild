@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 // Pre-spend campaign estimator: selected creators × naano's Q2 2026 benchmark
 // (CTR by follower tier, CPL by vertical). Pure; every number traces back to
 // a benchmark row or a creator field. First-party numbers, not audited.
@@ -31,7 +32,7 @@ export type Estimate = {
   sourceNote: string;
 };
 
-export const ESTIMATOR_SOURCE_NOTE = "Based on naano's Q2 2026 benchmark (312 campaigns). First-party numbers, not audited.";
+export const ESTIMATOR_SOURCE_NOTE = `Based on ${BRAND.name}'s Q2 2026 benchmark (312 campaigns). First-party numbers, not audited.`;
 
 // CTR by creator size: smaller accounts click through more.
 const CTR_BY_TIER = [

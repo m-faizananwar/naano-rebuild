@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import { brands, creators, users } from "@/db/schema";
 import { destroySession, getViewer } from "@/features/auth/server/session";
+import { BRAND } from "@/config/brand";
 import {
   type ActionResult, type BrandAudienceInput, type BrandProfileInput, type CreatorProfileInput, type PayoutDetailsInput,
   brandAudienceSchema, brandProfileSchema, creatorProfileSchema, payoutDetailsSchema,
@@ -109,7 +110,7 @@ export async function updatePayoutDetails(input: PayoutDetailsInput): Promise<Ac
 export async function deleteAccount(): Promise<ActionResult> {
   const viewer = await getViewer();
   if (!viewer) return { ok: false, error: "Not signed in." };
-  if (viewer.email.endsWith("@demo.naano")) return { ok: false, error: "Demo accounts can't be deleted." };
+  if (viewer.email.endsWith(`@${BRAND.demoDomain}`)) return { ok: false, error: "Demo accounts can't be deleted." };
   try {
     await getDb().delete(users).where(eq(users.id, viewer.userId));
   } catch (error) {

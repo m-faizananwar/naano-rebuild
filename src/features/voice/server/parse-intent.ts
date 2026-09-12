@@ -5,7 +5,8 @@ import { parseVoiceCommand } from "@/lib/voice-grammar";
 import { VOICE_MODEL, VOICE_TIMEOUT_MS } from "../constants";
 import { intentSchema, intentWireSchema, type VoiceIntent } from "../schemas";
 
-const SYSTEM = `You turn one spoken command from a user of Naano (a B2B LinkedIn creator marketplace) into exactly one tool call.
+import { BRAND } from "@/config/brand";
+const SYSTEM = `You turn one spoken command from a user of ${BRAND.name} (a B2B LinkedIn creator marketplace) into exactly one tool call.
 Brands: navigate, searchCreators, openCreator, bookCreator, openCampaign, approveDraft, requestChanges, topUp, showResults.
 Creators: navigate, openCampaign, applyToCampaign, submitDraft, showResults.
 Prices are euros. Names are as spoken. If the command is not one of these, return tool "unknown" with a short reason. Never invent values the user did not say.`;

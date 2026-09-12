@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { SlotPicker } from "./SlotPicker";
 
+import { BRAND } from "@/config/brand";
 const OUTCOMES = ["Creator angles tailored to your market", "Recommended campaign format and budget", "A clear launch plan for your next campaign"];
 
 // Copy from the product map: the overview's "Naano experts available" card and
@@ -15,7 +16,7 @@ export function BookACallView() {
           Book a campaign call
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          15 minutes with a Naano expert to plan your next campaign. A campaign manager turns your selection into a ready-to-launch campaign. You
+          15 minutes with a {BRAND.name} expert to plan your next campaign. A campaign manager turns your selection into a ready-to-launch campaign. You
           validate, they handle the rest.
         </p>
         <ul className="mt-3 grid gap-1 text-sm">
@@ -36,7 +37,7 @@ export function BookACallView() {
         <div className="mt-6">
           <SlotPicker />
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">No commitment · Slot available today · You would receive a Google Calendar invite instantly on naano.</p>
+        <p className="mt-4 text-xs text-muted-foreground">No commitment · Slot available today · You would receive a Google Calendar invite instantly on {BRAND.wordmark}.</p>
       </section>
       <aside className="rounded-2xl border bg-background p-5">
         <h2 className="text-lg font-semibold">Or start now</h2>

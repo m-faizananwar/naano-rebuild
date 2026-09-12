@@ -8,9 +8,10 @@ import { formatCents } from "@/lib/money";
 import { MIN_TOPUP_CENTS } from "../../constants";
 import { AmountChooser } from "./AmountChooser";
 
+import { BRAND } from "@/config/brand";
 const REASSURANCE = [
   { icon: CreditCard, title: "Card payment", body: "entered only on Stripe's secure checkout (PCI DSS)." },
-  { icon: ShieldCheck, title: "No subscription", body: "funds stay in your Naano balance until used." },
+  { icon: ShieldCheck, title: "No subscription", body: `funds stay in your ${BRAND.name} balance until used.` },
   { icon: PackageCheck, title: "Pay on delivery", body: "creators are charged only after the post is delivered." },
 ] as const;
 
@@ -47,7 +48,7 @@ export function AddBudgetDialog({ open, onOpenChange, initialCents, suggested, c
         <DialogHeader>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-brand">Secure payment</p>
           <DialogTitle className="text-xl">Add budget</DialogTitle>
-          <DialogDescription>One-time deposit to your Naano balance. Use it across all campaigns — no subscription.</DialogDescription>
+          <DialogDescription>One-time deposit to your {BRAND.name} balance. Use it across all campaigns — no subscription.</DialogDescription>
         </DialogHeader>
         <p className="w-fit rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
           No card — demo top-up

@@ -1,3 +1,4 @@
+import { BRAND } from "@/config/brand";
 export const NEW_CREATORS_LIMIT = 5;
 export const NEW_CREATORS_POOL = 60;
 export const RECOMMENDED_OPPORTUNITIES = 3;
@@ -23,24 +24,24 @@ export const MCP_SETUPS = [
   {
     key: "claude",
     client: "Claude",
-    title: "Set up Naano in Claude",
+    title: `Set up ${BRAND.name} in Claude`,
     lead: "Claude supports a custom remote connector with automatic OAuth registration.",
     steps: [
-      "Copy the secure Naano connection URL. No API key is required.",
+      `Copy the secure ${BRAND.name} connection URL. No API key is required.`,
       "In Claude, open Settings → Connectors → Add custom connector. Leave Client ID and Client Secret empty.",
-      "Sign in to Naano, review the requested access and approve it.",
+      `Sign in to ${BRAND.name}, review the requested access and approve it.`,
     ],
     secondary: "Open Claude settings",
   },
   {
     key: "chatgpt",
     client: "ChatGPT",
-    title: "Set up Naano in ChatGPT",
+    title: `Set up ${BRAND.name} in ChatGPT`,
     lead: "ChatGPT requires a supported workspace and developer mode for a custom MCP app.",
     steps: [
-      "Copy the secure Naano connection URL. No API key is required.",
+      `Copy the secure ${BRAND.name} connection URL. No API key is required.`,
       "In ChatGPT, enable developer mode, then open Settings → Apps → Create and add this URL with OAuth.",
-      "Sign in to Naano, review the requested access and approve it.",
+      `Sign in to ${BRAND.name}, review the requested access and approve it.`,
     ],
     secondary: "Open ChatGPT",
   },
@@ -50,9 +51,9 @@ export const MCP_SETUPS = [
     title: "Set up another AI tool",
     lead: "Use a trusted client that supports remote Streamable HTTP and OAuth 2.1.",
     steps: [
-      "Copy the secure Naano connection URL. No API key is required.",
+      `Copy the secure ${BRAND.name} connection URL. No API key is required.`,
       "Add this URL as a remote Streamable HTTP server, keep authentication on OAuth and review every requested action.",
-      "Sign in to Naano, review the requested access and approve it.",
+      `Sign in to ${BRAND.name}, review the requested access and approve it.`,
     ],
     secondary: "Browse MCP clients",
   },

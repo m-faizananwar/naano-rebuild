@@ -1,6 +1,7 @@
 import type { Brief, BrandIcp } from "@/db/schema";
 import { daysAgo, daysFromNow, hex } from "./random";
 
+import { BRAND } from "@/config/brand";
 export const DEFAULT_DO = [
   "Use only the confirmed information about {Company}.",
   "Connect the product to a practical audience question.",
@@ -96,7 +97,7 @@ const zune: BrandFixture = {
   targetIndustries: ["B2B", "SaaS", "AI"],
   targetRegions: ["Europe"],
   pixelSiteKey: `nn_${hex(32)}`,
-  owner: { firstName: "Demo", lastName: "Brand", email: "brand@demo.naano" },
+  owner: { firstName: "Demo", lastName: "Brand", email: `brand@${BRAND.demoDomain}` },
   topupCents: 1_000_000,
   campaigns: [
     {

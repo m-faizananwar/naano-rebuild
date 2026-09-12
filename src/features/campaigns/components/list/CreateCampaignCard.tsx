@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
+import { BRAND } from "@/config/brand";
 export function CreateCampaignCard() {
   return (
     <Link
@@ -12,7 +13,7 @@ export function CreateCampaignCard() {
       </span>
       <span className="mt-3 text-lg font-semibold">Create a campaign</span>
       <span className="mt-1 max-w-xs text-sm text-muted-foreground">
-        Launch a new campaign in 2 minutes — with AI, the Naano team, or an existing link.
+        Launch a new campaign in 2 minutes — with AI, the {BRAND.name} team, or an existing link.
       </span>
     </Link>
   );

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { type BriefDoc, briefToAiPrompt, briefToMarkdown, primaryCta } from "./brief-markdown";
 
+import { BRAND } from "@/config/brand";
 const doc: BriefDoc = {
   campaignName: "Main campaign",
   campaignDescription: "Cold-email infrastructure, done for you.",
@@ -33,8 +34,8 @@ describe("briefToMarkdown", () => {
 
   it("prefers the tracked link for the primary CTA", () => {
     expect(primaryCta(doc)).toContain("https://premiuminboxes.com/pricing");
-    expect(primaryCta({ ...doc, trackedUrl: "https://naano.test/r/abc" })).toBe(
-      "Send readers to https://naano.test/r/abc (your tracked Naano link)",
+    expect(primaryCta({ ...doc, trackedUrl: `https://${BRAND.wordmark}.test/r/abc` })).toBe(
+      `Send readers to https://${BRAND.wordmark}.test/r/abc (your tracked ${BRAND.name} link)`,
     );
   });
 

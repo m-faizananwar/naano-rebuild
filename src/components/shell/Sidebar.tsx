@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 import { AgencyModeToggle } from "./AgencyModeToggle";
 import { navFor } from "./nav";
 import { SidebarNav } from "./SidebarNav";
 import { SignOutButton } from "./SignOutButton";
 import type { ShellViewer } from "./viewer";
 
+import { BRAND } from "@/config/brand";
 const NAV_LINK_CLASS =
   "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40";
 
@@ -15,7 +16,7 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
   return (
     <nav aria-label="Main" className="flex h-full flex-col gap-4 px-3 py-5">
       <Link href={root} className="px-3 [[data-collapsed=true]_&]:px-2" aria-label="Overview">
-        <NaanoWordmark />
+        <BrandWordmark />
       </Link>
       {viewer.role === "brand" ? (
         <div className="side-chrome">

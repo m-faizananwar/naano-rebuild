@@ -1,5 +1,6 @@
 import type { CollaborationStatus } from "@/lib/collaboration-status";
 
+import { BRAND } from "@/config/brand";
 // naano's 24 industries, verbatim from the creator onboarding (product map).
 // Copied from scripts/seed/taxonomy.ts on purpose: features never import seeds.
 export const INDUSTRIES = [
@@ -55,7 +56,7 @@ export const COLLAB_NEXT_ACTION: Record<CollaborationStatus, string> = {
   changes_requested: "Creator is revising the draft",
   approved: "Creator schedules the post",
   scheduled: "Post goes live on the scheduled date",
-  live: "Payment scheduled · Handled by Naano",
+  live: `Payment scheduled · Handled by ${BRAND.name}`,
   paid: "Completed",
 };
 

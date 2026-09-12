@@ -1,6 +1,7 @@
 import { cn } from "cn";
-import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { BrandWordmark } from "@/components/BrandWordmark";
 
+import { BRAND } from "@/config/brand";
 const STATS = ["Followers", "Est. impressions", "Cost / post"];
 
 // Static version of the "marketplace card" naano previews next to the creator
@@ -11,7 +12,7 @@ export function CreatorCardPreview({ className }: { className?: string }) {
       <div className="relative h-32 bg-linear-to-br from-brand to-brand/80">
         <span className="absolute left-5 top-5 inline-flex size-9 items-center justify-center rounded-lg bg-brand-foreground/90 text-sm font-bold text-brand">in</span>
         <div className="absolute inset-x-0 top-9 flex justify-center">
-          <NaanoWordmark inverted className="text-xl" />
+          <BrandWordmark inverted className="text-xl" />
         </div>
       </div>
       <div className="-mt-10 flex flex-col items-center px-6 text-center">

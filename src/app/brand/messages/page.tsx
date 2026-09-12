@@ -7,7 +7,8 @@ import { ThreadPlaceholder } from "@/features/collaborations/components/messages
 import { listThreads, threadScopeFor } from "@/features/collaborations/server/messages-queries";
 import { listBrandCampaignOptions } from "@/features/collaborations/server/queries";
 
-export const metadata: Metadata = { title: "Messages · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Messages · ${BRAND.wordmark}` };
 
 export default async function BrandMessagesPage() {
   const viewer = await getViewer();

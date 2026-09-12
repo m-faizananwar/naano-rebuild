@@ -2,9 +2,10 @@ import "server-only";
 import { VAPI_API_URL, VAPI_ASSISTANT_NAME } from "../constants";
 import { webhookSecret } from "./voice-token";
 
+import { BRAND } from "@/config/brand";
 export const isVapiConfigured = () => Boolean(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY && process.env.VAPI_PRIVATE_KEY);
 
-const SYSTEM_PROMPT = `You are Naano's voice assistant inside a LinkedIn creator marketplace. Keep replies to one short sentence.
+const SYSTEM_PROMPT = `You are ${BRAND.name}'s voice assistant inside a LinkedIn creator marketplace. Keep replies to one short sentence.
 Call the "command" tool with the user's words, verbatim, for anything that is an action or a navigation. For a money or status change the tool first answers with a question ending in "Confirm?" — say it and wait. Only if the user clearly says yes, call "command" again with the ORIGINAL command and confirmed=true. Never set confirmed=true on your own.`;
 
 // One assistant with a single passthrough tool: Vapi does speech and turns,
@@ -38,7 +39,7 @@ const assistantBody = (serverUrl: string) => ({
   },
   voice: { provider: "11labs", voiceId: "sarah" },
   transcriber: { provider: "deepgram", model: "nova-2", language: "en" },
-  metadata: { app: "naano-rebuild" },
+  metadata: { app: `${BRAND.key}-rebuild` },
 });
 
 let cached: { serverUrl: string; id: string } | null = null;

@@ -5,7 +5,8 @@ import { getViewer } from "@/features/auth/server/session";
 import { CollaborationDetail } from "@/features/collaborations/components/detail/CollaborationDetail";
 import { getCollaborationDetail } from "@/features/collaborations/server/queries";
 
-export const metadata: Metadata = { title: "Collaboration · naano" };
+import { BRAND } from "@/config/brand";
+export const metadata: Metadata = { title: `Collaboration · ${BRAND.wordmark}` };
 
 type Props = { params: Promise<{ id: string }> };
 
