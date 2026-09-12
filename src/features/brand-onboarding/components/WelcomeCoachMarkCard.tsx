@@ -32,7 +32,7 @@ export function WelcomeCoachMarkCard() {
       role="dialog"
       aria-labelledby="welcome-coach-title"
       aria-describedby="welcome-coach-body"
-      className="fixed inset-x-4 bottom-4 z-50 rounded-2xl border border-brand/40 bg-background p-4 shadow-xl sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-96"
+      className="animate-coach fixed inset-x-4 bottom-4 z-50 rounded-2xl border border-brand/40 bg-background p-4 shadow-xl sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-96"
     >
       <div className="flex items-start gap-3">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand" aria-hidden="true">

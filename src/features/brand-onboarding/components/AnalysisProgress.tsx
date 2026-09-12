@@ -25,9 +25,11 @@ export function AnalysisProgress({ url }: { url: string }) {
   return (
     <div className="rounded-2xl border bg-brand-soft/40 p-5" aria-busy="true" aria-live="polite">
       <p className="truncate text-xs font-semibold uppercase tracking-wide text-muted-foreground">{url}</p>
-      <div className="mt-3 flex items-center gap-2 text-sm font-medium">
+      <div className="mt-3 flex items-center gap-2 overflow-hidden text-sm font-medium">
         <Loader2 className="size-4 animate-spin text-brand" aria-hidden="true" />
-        {stage.label}
+        <span key={stage.label} className="animate-locale-in inline-block">
+          {stage.label}
+        </span>
       </div>
       <div
         role="progressbar"

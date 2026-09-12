@@ -19,7 +19,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 function ReadingChip() {
   return (
     <span className="absolute inset-x-0 top-5 flex justify-center">
-      <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-medium text-brand shadow-md" role="status">
+      <span className="animate-pulse-soft inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-medium text-brand shadow-md" role="status">
         <span className="size-2 animate-pulse rounded-full bg-brand" aria-hidden="true" />
         Reading your profile…
       </span>
@@ -53,13 +53,13 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
           <AvatarImage src={model.avatarUrl} alt="" />
           <AvatarFallback className="text-2xl font-semibold">{model.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
-        <p className="mt-4 text-2xl font-bold tracking-tight">{model.name}</p>
-        {model.industries.length > 0 ? <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-brand">{model.industries.join(" · ")}</p> : null}
-        <p className="mt-2 line-clamp-2 text-muted-foreground">{model.headline || "Your LinkedIn headline and topics will appear here."}</p>
+        <p key={model.name} className="animate-fade mt-4 text-2xl font-bold tracking-tight">{model.name}</p>
+        {model.industries.length > 0 ? <p key={model.industries.join("|")} className="animate-fade mt-1 text-xs font-semibold uppercase tracking-wider text-brand">{model.industries.join(" · ")}</p> : null}
+        <p key={model.headline} className="animate-fade mt-2 line-clamp-2 text-muted-foreground">{model.headline || "Your LinkedIn headline and topics will appear here."}</p>
         <div className="mt-6 flex w-full items-center gap-3 text-xs text-muted-foreground">
           <span>Data</span>
           <span className="h-1 flex-1 overflow-hidden rounded-full bg-muted" aria-hidden="true">
-            <span className="block h-1 rounded-full bg-brand transition-[width] duration-500" style={{ width: `${model.progress}%` }} />
+            <span className="animate-fill block h-1 rounded-full bg-brand transition-[width] duration-500" style={{ width: `${model.progress}%` }} />
           </span>
           <span className="font-semibold text-foreground">{pending ? "Pending" : "Ready"}</span>
         </div>

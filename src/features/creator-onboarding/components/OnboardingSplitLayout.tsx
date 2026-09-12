@@ -13,7 +13,7 @@ export function OnboardingSplitLayout({ children, card }: { children: ReactNode;
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col px-6 py-8 sm:px-12 lg:px-20 xl:px-28">
         <div className="flex flex-1 flex-col py-6 lg:justify-center">
-          <div className="w-full max-w-md">
+          <div className="animate-section w-full max-w-md">
             <div className="flex items-center justify-between">
               <Link href="/" aria-label="naano home" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
                 <NaanoWordmark />

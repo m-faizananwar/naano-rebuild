@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Reveal } from "@/components/motion/Reveal";
 import { CaseStudySection } from "@/features/public/components/landing/CaseStudySection";
 import { FaqSection } from "@/features/public/components/landing/FaqSection";
 import { HeroSection } from "@/features/public/components/landing/HeroSection";
@@ -29,15 +30,15 @@ export default async function HomePage() {
       <PublicNav />
       <main className="flex-1">
         <HeroSection />
-        <QuoteSection />
-        <MarketplaceShowcase creators={creators} />
-        <HowItWorksSection />
-        <CaseStudySection />
-        <ResultsSection />
-        <PostExamplesSection posts={posts} />
-        <PricingSection />
-        <FaqSection />
-        <CtaSection />
+        <Reveal><QuoteSection /></Reveal>
+        <Reveal><MarketplaceShowcase creators={creators} /></Reveal>
+        <Reveal><HowItWorksSection /></Reveal>
+        <Reveal><CaseStudySection /></Reveal>
+        <Reveal><ResultsSection /></Reveal>
+        <Reveal><PostExamplesSection posts={posts} /></Reveal>
+        <Reveal><PricingSection /></Reveal>
+        <Reveal><FaqSection /></Reveal>
+        <Reveal><CtaSection /></Reveal>
       </main>
       <PublicFooter />
     </>

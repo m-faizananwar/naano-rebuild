@@ -52,7 +52,7 @@ export function AuthSplitLayout({ children, panelVariant = "brand", ...panel }: 
                 EN
               </span>
             </div>
-            <div className="mt-10">{children}</div>
+            <div className="animate-section mt-10">{children}</div>
           </div>
         </div>
       </div>

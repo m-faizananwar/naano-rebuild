@@ -11,7 +11,7 @@ export function PostExampleCard({ post }: { post: PublicPost }) {
     { icon: Users, value: format.format(post.leadsEst), label: `Leads (${POST_EXAMPLES.estLabel})` },
   ];
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-border/70">
+    <article className="glass-card flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-border/70">
       <div className="flex items-center gap-3 border-b bg-muted/30 p-4">
         <CreatorAvatar name={post.creatorName} src={post.avatarUrl} className="size-10" />
         <div className="min-w-0">
