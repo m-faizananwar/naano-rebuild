@@ -1,4 +1,5 @@
-import { MCP_ENDPOINT, MCP_SETUPS } from "../../constants";
+import { MCP_ENDPOINT } from "../../constants";
+import { mcpClientsFor } from "./mcpClientsFor";
 import { McpSetupDialog } from "./McpSetupDialog";
 
 const READ_ACCESS = {
@@ -11,6 +12,7 @@ const ACTIONS = {
 };
 
 export function IntegrationsPanel({ role }: { role: "brand" | "creator" }) {
+  const clients = mcpClientsFor(role);
   return (
     <div className="grid gap-4">
       <section className="rounded-2xl border bg-background p-5">
@@ -23,7 +25,7 @@ export function IntegrationsPanel({ role }: { role: "brand" | "creator" }) {
         <h2 className="font-semibold">Choose your client</h2>
         <p className="text-sm text-muted-foreground">One endpoint, any compatible MCP client.</p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {MCP_SETUPS.map((setup) => (
+          {clients.map((setup) => (
             <li key={setup.key} className="flex flex-col gap-3 rounded-xl border p-4">
               <p className="font-medium">{setup.client}</p>
               <p className="flex-1 text-xs text-muted-foreground">{setup.lead}</p>

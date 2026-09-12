@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/features/auth/server/session";
 import { CardBack } from "@/features/workspace/components/CardBack";
-import { CopyLinkButton } from "@/features/workspace/components/CopyLinkButton";
+import { DealLinkDialog } from "@/features/workspace/components/card/DealLinkDialog";
 import { CreatorCardPreview } from "@/features/workspace/components/overview/CreatorCardPreview";
 import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT } from "@/features/workspace/constants";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
@@ -32,7 +32,7 @@ export default async function CreatorCardPage() {
         <div className="grid gap-4">
           <CreatorCardPreview card={card} />
           <div className="flex flex-wrap gap-2">
-            <CopyLinkButton value={link} label="Copy or share my Deal Link" />
+            <DealLinkDialog url={link} handle={card.handle} />
             <Link href={`/c/${card.handle}`} target="_blank" className={buttonVariants({ variant: "outline" })}>Open card</Link>
           </div>
         </div>
