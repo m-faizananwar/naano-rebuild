@@ -1,12 +1,20 @@
 "use client";
 
-import { Bot, RotateCcw, Sparkles } from "lucide-react";
+import { Bot, Play, RotateCcw, Sparkles, Square, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type Props = { onNewResearch: () => void; onRetry?: () => void; pending: boolean; hasResult: boolean };
+type Props = {
+  onNewResearch: () => void;
+  onRetry?: () => void;
+  onApply: () => void;
+  onStop: () => void;
+  onUndo?: () => void;
+  pending: boolean;
+  hasResult: boolean;
+};
 
-// "Nao · Creator intelligence" — New research / Retry this search.
-export function NaoRail({ onNewResearch, onRetry, pending, hasResult }: Props) {
+// "Nao · Creator intelligence" — New research / Retry this search / Undo / Stop / Apply request.
+export function NaoRail({ onNewResearch, onRetry, onApply, onStop, onUndo, pending, hasResult }: Props) {
   return (
     <aside className="rounded-2xl border bg-background p-4" aria-label="Nao">
       <p className="flex items-center gap-2 text-sm font-semibold">
@@ -30,6 +38,18 @@ export function NaoRail({ onNewResearch, onRetry, pending, hasResult }: Props) {
             Retry this search
           </Button>
         ) : null}
+        <Button type="button" variant="ghost" size="sm" onClick={onUndo} disabled={pending || !onUndo} title="Restore the previous result set">
+          <Undo2 aria-hidden="true" />
+          Undo
+        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={onStop} disabled={!pending} title="Cancel the request in flight">
+          <Square aria-hidden="true" />
+          Stop
+        </Button>
+        <Button type="button" size="sm" onClick={onApply} disabled={pending} className="bg-brand text-brand-foreground hover:bg-brand/90">
+          <Play aria-hidden="true" />
+          Apply request
+        </Button>
       </div>
     </aside>
   );

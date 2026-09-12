@@ -5,6 +5,7 @@ import { Copy, ThumbsDown, ThumbsUp } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { MatchingResultDto } from "../../schemas";
+import { recordNaoFeedback } from "../../server/actions";
 import { MatchingResultRow } from "./MatchingResultRow";
 import { StagedResults } from "./StagedResults";
 
@@ -12,6 +13,16 @@ type Props = { prompt: string; result: MatchingResultDto };
 
 export function MatchingResults({ prompt, result }: Props) {
   const text = `${result.headline}\n\n${result.rationale}\n\n${result.tradeoff}`;
+  const creatorIds = result.creators.map((c) => c.id);
+  async function feedback(kind: "up" | "down" | "copy") {
+    if (kind === "copy") await navigator.clipboard.writeText(text).catch(() => undefined);
+    const saved = await recordNaoFeedback({ prompt, kind, creatorIds });
+    if (!saved.ok) {
+      toast.error(saved.error);
+      return;
+    }
+    toast.success(kind === "copy" ? "Copied — and noted" : kind === "up" ? "Thanks — Nao will favour this kind of shortlist" : "Thanks — Nao will steer away from this");
+  }
   return (
     <div className="grid gap-4">
       <p className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-brand px-4 py-2 text-sm text-brand-foreground">{prompt}</p>
@@ -21,13 +32,13 @@ export function MatchingResults({ prompt, result }: Props) {
         <p>{result.rationale}</p>
         <p className="text-muted-foreground">{result.tradeoff}</p>
         <div className="flex items-center gap-1 text-muted-foreground [&>button]:opacity-70 [&>button:hover]:opacity-100">
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Copy Nao's answer" onClick={() => navigator.clipboard.writeText(text).then(() => toast.success("Copied"))}>
+          <Button type="button" variant="ghost" size="icon-xs" aria-label="Copy Nao's answer" onClick={() => feedback("copy")}>
             <Copy aria-hidden="true" />
           </Button>
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Good answer" onClick={() => toast.success("Thanks for the feedback")}>
+          <Button type="button" variant="ghost" size="icon-xs" aria-label="Good answer" onClick={() => feedback("up")}>
             <ThumbsUp aria-hidden="true" />
           </Button>
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Bad answer" onClick={() => toast.success("Thanks for the feedback")}>
+          <Button type="button" variant="ghost" size="icon-xs" aria-label="Bad answer" onClick={() => feedback("down")}>
             <ThumbsDown aria-hidden="true" />
           </Button>
           <span className="ml-auto text-[10px] uppercase tracking-wider">{result.source === "claude" ? "Written by Nao" : "Template rationale"}</span>

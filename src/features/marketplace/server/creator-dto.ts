@@ -49,6 +49,8 @@ export function toCreatorDto(row: CreatorRowWithName, ctx: CreatorDtoContext): C
     handle: c.handle,
     avatarUrl: c.avatarUrl,
     linkedinUrl: c.linkedinUrl,
+    xHandle: c.xHandle,
+    memberSince: c.createdAt.toISOString(),
     headline: c.headline,
     bio: c.bio,
     country: c.country,

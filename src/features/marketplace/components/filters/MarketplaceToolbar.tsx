@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { countryFlag, countryName } from "@/lib/country-flag";
 import { INDUSTRIES } from "../../constants";
 import type { CountryOptionDto, MarketplaceQuery } from "../../schemas";
+import { ActivityFilter } from "./ActivityFilter";
 import { MultiSelectPill } from "./MultiSelectPill";
 import { PriceFilter } from "./PriceFilter";
 import { SearchInput } from "./SearchInput";
@@ -15,7 +16,8 @@ type Props = { query: MarketplaceQuery; countries: CountryOptionDto[]; count: nu
 
 export function MarketplaceToolbar({ query, countries, count }: Props) {
   const { update, reset } = useMarketplaceUrl();
-  const filtered = query.industry.length > 0 || query.country.length > 0 || query.min !== undefined || query.max !== undefined || Boolean(query.q);
+  const filtered =
+    query.industry.length > 0 || query.country.length > 0 || query.min !== undefined || query.max !== undefined || Boolean(query.q) || query.activity !== "any";
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -38,6 +40,7 @@ export function MarketplaceToolbar({ query, countries, count }: Props) {
           onChange={(values) => update({ country: values })}
         />
         <PriceFilter min={query.min} max={query.max} count={count} />
+        <ActivityFilter value={query.activity} />
         {filtered ? (
           <Button type="button" variant="ghost" size="sm" onClick={reset} className="rounded-full text-muted-foreground">
             <RotateCcw className="size-3.5" aria-hidden="true" />

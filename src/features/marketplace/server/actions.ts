@@ -3,13 +3,13 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db";
-import { campaigns, creators, shortlist } from "@/db/schema";
+import { campaigns, creators, shortlist, naoFeedback } from "@/db/schema";
 import { getViewer, type Viewer } from "@/features/auth/server/session";
 import { createCollaboration, DuplicateCollaborationError } from "@/features/collaborations/server/create";
 import { InsufficientFundsError } from "@/features/collaborations/server/side-effects";
 import { CREATORS_PATH, INDUSTRIES, MATCHING_DEFAULT_COUNT, MATCHING_MAX_COUNT, MATCHING_PATH, MIN_TOPUP_CENTS, TOPUP_STEP_CENTS } from "../constants";
 import {
-  type ActionError, type ActionResult, type BookingResultDto, bookCreatorSchema, type MatchingResultDto, runMatchingSchema,
+  type ActionError, type ActionResult, type BookingResultDto, bookCreatorSchema, type MatchingResultDto, runMatchingSchema, naoFeedbackSchema,
   sendOfferSchema, toggleShortlistSchema,
 } from "../schemas";
 import { writeRationale } from "./matching-rationale";
@@ -187,5 +187,21 @@ export async function runMatching(input: unknown): Promise<ActionResult<Matching
   } catch (error) {
     console.error("[marketplace] matching failed", { brandId: auth.brandId, campaignId, error });
     return { ok: false, error: "Nao could not run this search. Please try again.", code: "unknown" };
+  }
+}
+
+// Thumbs up / down / copy on a Nao answer: one nao_feedback row, so the
+// feedback is a record and not just a toast.
+export async function recordNaoFeedback(input: unknown): Promise<ActionResult<{ saved: true }>> {
+  const auth = await brandViewer();
+  if (!auth) return UNAUTHORIZED;
+  const parsed = naoFeedbackSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error), code: "invalid" };
+  try {
+    await getDb().insert(naoFeedback).values({ brandId: auth.brandId, prompt: parsed.data.prompt, kind: parsed.data.kind, creatorIds: parsed.data.creatorIds });
+    return { ok: true, data: { saved: true } };
+  } catch (error) {
+    console.error("[marketplace] nao feedback failed", { brandId: auth.brandId, error });
+    return { ok: false, error: "We couldn't save that feedback.", code: "unknown" };
   }
 }

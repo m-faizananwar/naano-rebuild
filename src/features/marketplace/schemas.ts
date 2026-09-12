@@ -1,8 +1,8 @@
 import { z } from "zod";
 import type { FitResult } from "@/lib/fit-score";
 import {
-  CREATOR_TABS, DISCOUNT_PRESETS, MATCHING_PROMPT_MAX_LENGTH, MAX_PAGES, MIN_OFFER_CENTS, OFFER_NOTE_MAX_LENGTH,
-  PLATFORM_MAX_POST_CENTS, SEARCH_MAX_LENGTH, SORT_KEYS,
+  ACTIVITY_WINDOWS, CREATOR_TABS, DISCOUNT_PRESETS, MATCHING_PROMPT_MAX_LENGTH, MAX_PAGES, MIN_OFFER_CENTS, OFFER_NOTE_MAX_LENGTH,
+  PLATFORM_MAX_POST_CENTS, SEARCH_MAX_LENGTH, SORT_KEYS, TOP_RANKED_FEEDBACK_MAX,
 } from "./constants";
 
 // ---- URL state ----------------------------------------------------------------
@@ -32,6 +32,7 @@ export const marketplaceQuerySchema = z.object({
   min: euros,
   max: euros,
   page: z.coerce.number().int().min(1).max(MAX_PAGES).catch(1),
+  activity: z.enum(ACTIVITY_WINDOWS).catch("any"),
 });
 export type MarketplaceQuery = z.infer<typeof marketplaceQuerySchema>;
 
@@ -61,6 +62,8 @@ export type CreatorDto = {
   handle: string;
   avatarUrl: string;
   linkedinUrl: string;
+  xHandle: string | null;
+  memberSince: string; // ISO
   headline: string;
   bio: string;
   country: string;
@@ -98,6 +101,8 @@ export type CountryOptionDto = { code: string; count: number };
 
 export type CreatorListDto = {
   items: CreatorDto[];
+  // How many leading items belong to the "Top ranked creators" strip (0 when the strip doesn't apply).
+  topRanked: number;
   total: number;
   allCount: number;
   shortlistCount: number;
@@ -171,3 +176,10 @@ export const offerFormSchema = z.object({
   approveBeforePublish: z.boolean(),
 });
 export type OfferFormValues = z.infer<typeof offerFormSchema>;
+
+export const naoFeedbackSchema = z.object({
+  prompt: z.string().trim().min(1).max(MATCHING_PROMPT_MAX_LENGTH),
+  kind: z.enum(["up", "down", "copy"]),
+  creatorIds: z.array(z.string().uuid()).max(TOP_RANKED_FEEDBACK_MAX),
+});
+export type NaoFeedbackInput = z.infer<typeof naoFeedbackSchema>;

@@ -53,7 +53,7 @@ function ListBody({ list, query }: { list: CreatorListDto; query: MarketplaceQue
     return (
       <>
         <ImprovingStrip />
-        <CreatorGrid creators={list.items} />
+        <CreatorGrid creators={list.items} topRanked={list.topRanked} />
         <ShowMoreButton shown={Math.min(list.items.length, query.page * PAGE_SIZE)} total={list.total} page={query.page} hasMore={list.hasMore} />
       </>
     );

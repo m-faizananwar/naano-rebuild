@@ -54,3 +54,11 @@ export const MATCHING_TIMEOUT_MS = 20_000;
 export const BILLING_PATH = "/brand/billing";
 export const CREATORS_PATH = "/brand/creators";
 export const MATCHING_PATH = "/brand/creators/matching";
+
+// "Filters" pill: activity window on the creator's latest public post.
+export const ACTIVITY_WINDOWS = ["any", "30", "60", "90"] as const;
+export type ActivityWindow = (typeof ACTIVITY_WINDOWS)[number];
+export const ACTIVITY_LABELS: Record<ActivityWindow, string> = { any: "Any time", "30": "Last 30 days", "60": "Last 60 days", "90": "Last 90 days" };
+// "Top ranked creators — The 40 strongest profiles according to your sector and performance signals."
+export const TOP_RANKED = 40;
+export const TOP_RANKED_FEEDBACK_MAX = 20;

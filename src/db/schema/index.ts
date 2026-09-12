@@ -7,5 +7,6 @@ export * from "./campaigns";
 export * from "./collaborations";
 export * from "./creators";
 export * from "./ledger";
+export * from "./matching";
 export * from "./tracking";
 export * from "./users";

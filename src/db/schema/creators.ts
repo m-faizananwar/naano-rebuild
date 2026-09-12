@@ -36,6 +36,11 @@ export const creators = pgTable(
     taxAcknowledged: boolean("tax_acknowledged").notNull().default(false),
     invoicingAuthorized: boolean("invoicing_authorized").notNull().default(false),
     onboardingCompletedAt: timestamp("onboarding_completed_at", { withTimezone: true }),
+    // Settings › Profile / Payments (no rail behind them; the ledger is what moves).
+    xHandle: text("x_handle"),
+    payoutMethod: text("payout_method"),
+    payoutAccountHolder: text("payout_account_holder"),
+    payoutIbanLast4: text("payout_iban_last4"),
   },
   (t) => [
     uniqueIndex("creators_user_id_idx").on(t.userId),

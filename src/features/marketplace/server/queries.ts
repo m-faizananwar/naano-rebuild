@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { brands, campaigns, collaborations, creatorPosts, creators, shortlist, users } from "@/db/schema";
 import { getViewer, type Viewer } from "@/features/auth/server/session";
 import type { FitCampaign } from "@/lib/fit-score";
-import { PAGE_SIZE } from "../constants";
+import { PAGE_SIZE, TOP_RANKED } from "../constants";
 import type {
   CampaignOptionDto, CountryOptionDto, CreatorDto, CreatorListDto, MarketplaceContextDto, MarketplaceQuery,
 } from "../schemas";
@@ -48,6 +48,8 @@ export function fitCampaignOf(ctx: MarketplaceContextDto): FitCampaign {
   return { targetIndustries: ctx.targetIndustries, icpTitles: ctx.icpTitles };
 }
 
+const DAY_MS = 86_400_000;
+
 // ---- creator list -------------------------------------------------------------------
 
 function whereFor(query: MarketplaceQuery, shortlistedIds: Set<string>) {
@@ -63,6 +65,11 @@ function whereFor(query: MarketplaceQuery, shortlistedIds: Set<string>) {
     );
   }
   if (query.tab === "shortlist") clauses.push(inArray(creators.id, [...shortlistedIds]));
+  if (query.activity !== "any") {
+    // Active in the window = at least one public post since then.
+    const since = new Date(Date.now() - Number(query.activity) * DAY_MS);
+    clauses.push(sql`exists (select 1 from ${creatorPosts} where ${creatorPosts.creatorId} = ${creators.id} and ${creatorPosts.postedAt} >= ${since})`);
+  }
   return clauses.length ? and(...clauses) : undefined;
 }
 
@@ -107,7 +114,7 @@ export async function listCreators(ctx: MarketplaceContextDto, query: Marketplac
   const shortlistedIds = await shortlistedIdsFor(ctx.brandId);
   const [all] = await db.select({ n: count() }).from(creators);
   const allCount = all?.n ?? 0;
-  const empty = { items: [], total: 0, allCount, shortlistCount: shortlistedIds.size, hasMore: false };
+  const empty = { items: [], topRanked: 0, total: 0, allCount, shortlistCount: shortlistedIds.size, hasMore: false };
   // inArray([]) is invalid SQL; an empty shortlist is simply an empty tab.
   if (query.tab === "shortlist" && shortlistedIds.size === 0) return empty;
 
@@ -132,7 +139,9 @@ export async function listCreators(ctx: MarketplaceContextDto, query: Marketplac
   const extra = await loadDtoContext(ctx, [...pageIds]);
   const items = sortItems(pageRows.map((r) => toCreatorDto(r, { ...base, ...extra })), query.sort);
 
-  return { ...empty, items, total: scored.length, hasMore: scored.length > limit };
+  // The strip only makes sense on the ranked view of all creators.
+  const topRanked = query.tab === "all" && query.sort === "best" ? Math.min(TOP_RANKED, items.length) : 0;
+  return { ...empty, items, topRanked, total: scored.length, hasMore: scored.length > limit };
 }
 
 export async function listCountries(): Promise<CountryOptionDto[]> {
@@ -147,7 +156,7 @@ export async function listCountries(): Promise<CountryOptionDto[]> {
 // Nao: every creator scored against the campaign, best first. Optional
 // industry hint narrows the pool when the prompt names one.
 export async function rankCreators(ctx: MarketplaceContextDto, industries: string[]): Promise<CreatorDto[]> {
-  const query: MarketplaceQuery = { tab: "all", sort: "best", industry: industries, country: [], min: undefined, max: undefined, page: 1 };
+  const query: MarketplaceQuery = { tab: "all", sort: "best", industry: industries, country: [], min: undefined, max: undefined, page: 1, activity: "any" };
   const list = await listCreators(ctx, query);
   return list.items;
 }

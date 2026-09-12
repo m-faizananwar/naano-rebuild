@@ -1,7 +1,7 @@
 "use client";
 
 import { Cloud } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EmptyState } from "@/components/page/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MarketplaceContextDto, MatchingResultDto } from "../../schemas";
@@ -47,14 +47,20 @@ export function MatchingView({ ctx }: Props) {
   const [result, setResult] = useState<MatchingResultDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Undo restores the previous result set; Stop discards the answer of the run in flight.
+  const [history, setHistory] = useState<Array<{ asked: string; result: MatchingResultDto }>>([]);
+  const runId = useRef(0);
   const requested = Number(/\b(\d{1,2})\s+creators?\b/i.exec(prompt)?.[1] ?? "4");
 
   async function run(text = prompt) {
     if (!ctx.selectedCampaign) return;
+    const id = ++runId.current;
     setPending(true);
     setError(null);
+    if (asked && result) setHistory((h) => [...h, { asked, result }]);
     setAsked(text);
     const response = await runMatching({ campaignId: ctx.selectedCampaign.id, prompt: text });
+    if (id !== runId.current) return; // stopped or superseded
     setPending(false);
     if (!response.ok) {
       setError(response.error);
@@ -64,10 +70,37 @@ export function MatchingView({ ctx }: Props) {
     setResult(response.data);
   }
 
+  function stop() {
+    runId.current += 1;
+    setPending(false);
+    const last = history[history.length - 1];
+    if (last) {
+      setHistory((h) => h.slice(0, -1));
+      setAsked(last.asked);
+      setResult(last.result);
+    } else {
+      setAsked(null);
+      setResult(null);
+    }
+  }
+
+  function undo() {
+    const last = history[history.length - 1];
+    if (!last) return;
+    setHistory((h) => h.slice(0, -1));
+    setAsked(last.asked);
+    setResult(last.result);
+    setPrompt(last.asked);
+    setError(null);
+  }
+
   function reset() {
+    runId.current += 1;
+    setPending(false);
     setResult(null);
     setAsked(null);
     setError(null);
+    setHistory([]);
     setPrompt(defaultPrompt(ctx));
   }
 
@@ -101,7 +134,15 @@ export function MatchingView({ ctx }: Props) {
           <MatchingPromptBox value={prompt} onChange={setPrompt} onSubmit={() => run()} pending={pending} />
           {!result ? <SuggestedChips suggestions={suggestionsFor(ctx)} onPick={(text) => { setPrompt(text); void run(text); }} disabled={pending} /> : null}
         </section>
-        <NaoRail onNewResearch={reset} onRetry={asked ? () => run(asked) : undefined} pending={pending} hasResult={result !== null} />
+        <NaoRail
+          onNewResearch={reset}
+          onRetry={asked ? () => run(asked) : undefined}
+          onApply={() => run()}
+          onStop={stop}
+          onUndo={history.length > 0 ? undo : undefined}
+          pending={pending}
+          hasResult={result !== null}
+        />
       </div>
     </MarketplaceProvider>
   );

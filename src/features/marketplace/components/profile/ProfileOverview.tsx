@@ -3,6 +3,7 @@ import type { CreatorDto } from "../../schemas";
 import { AudienceSnapshot } from "./AudienceSnapshot";
 import { ContentPerformance } from "./ContentPerformance";
 import { FitBreakdown } from "./FitBreakdown";
+import { ProfessionalProfile } from "./ProfessionalProfile";
 
 type Props = { creator: CreatorDto; campaignName: string | null };
 
@@ -30,6 +31,7 @@ export function ProfileOverview({ creator, campaignName }: Props) {
       <AudienceSnapshot creator={creator} />
       <ContentPerformance creator={creator} />
       <FitBreakdown creator={creator} campaignName={campaignName} />
+      <ProfessionalProfile creator={creator} />
     </div>
   );
 }
