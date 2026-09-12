@@ -1,18 +1,34 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/page/EmptyState";
+import { ErrorState } from "@/components/page/ErrorState";
 import { PageHeader } from "@/components/page/PageHeader";
+import { CreatorsTabs } from "@/features/marketplace/components/CreatorsTabs";
+import { MarketplaceView } from "@/features/marketplace/components/MarketplaceView";
+import { parseMarketplaceQuery, type RawSearchParams } from "@/features/marketplace/schemas";
+import { loadMarketplacePage } from "@/features/marketplace/server/queries";
 
 export const metadata: Metadata = { title: "Creators · naano" };
 
-export default function BrandCreatorsPage() {
+type Props = { searchParams: Promise<RawSearchParams> };
+
+export default async function BrandCreatorsPage({ searchParams }: Props) {
+  const query = parseMarketplaceQuery(await searchParams);
+  const data = await loadMarketplacePage(query);
+  if (data.kind !== "ok") {
+    return (
+      <>
+        <PageHeader title="Creators" />
+        <ErrorState
+          body={data.kind === "no-brand" ? "Your brand workspace could not be loaded." : "The marketplace could not be loaded. The database may be unreachable."}
+          retryHref="/brand/creators"
+        />
+      </>
+    );
+  }
   return (
     <>
-      <PageHeader title="Creators" description="All creators are shown from most to least relevant, using sector fit first and verified performance statistics to refine the order." />
-      <EmptyState
-        title="The marketplace opens in the next build step"
-        body="Creator cards with fit %, CPM and median views, filters and a profile modal with the audience snapshot."
-        cta={{ href: "/brand/campaigns", label: "See campaigns" }}
-      />
+      <PageHeader title="Creators" />
+      <CreatorsTabs active="marketplace" campaignId={data.ctx.selectedCampaign?.id} />
+      <MarketplaceView ctx={data.ctx} list={data.list} query={query} countries={data.countries} />
     </>
   );
 }
