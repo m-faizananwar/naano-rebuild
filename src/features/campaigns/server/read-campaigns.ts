@@ -3,19 +3,8 @@ import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { brands, campaigns, collaborations, creators, ledgerEntries, shortlist, users } from "@/db/schema";
 import { AI_HISTORY_LIMIT, COLLAB_TAB_STATUSES, type CollabTabKey } from "../constants";
-import type { CampaignCardDto, CampaignDto, CampaignSummaryDto, CollaborationRowDto, LaunchPlanDto } from "../schemas";
+import type { BrandProfile, CampaignCardDto, CampaignDto, CampaignSummaryDto, CollaborationRowDto, LaunchPlanDto } from "../schemas";
 import { toCampaignDto, toCollaborationRowDto } from "./dto";
-
-export type BrandProfile = {
-  id: string;
-  company: string;
-  website: string | null;
-  valueProp: string | null;
-  icps: Array<{ title: string; description: string }>;
-  targetIndustries: string[];
-  targetRegions: string[];
-  walletCents: number;
-};
 
 export async function getBrandProfile(brandId: string): Promise<BrandProfile | null> {
   const [row] = await getDb()

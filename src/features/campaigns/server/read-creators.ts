@@ -5,8 +5,7 @@ import { collaborations, creators, shortlist, users } from "@/db/schema";
 import { estimate, verticalFor } from "@/lib/estimator";
 import { fitScore } from "@/lib/fit-score";
 import { BEST_FIT_LIMIT } from "../constants";
-import type { CampaignDto, CreatorPickDto, EstimateDto } from "../schemas";
-import type { BrandProfile } from "./read-campaigns";
+import type { BrandProfile, CampaignDto, CreatorPickDto, EstimateDto } from "../schemas";
 
 type CreatorJoin = { creator: typeof creators.$inferSelect; firstName: string; lastName: string };
 

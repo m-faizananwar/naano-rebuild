@@ -4,8 +4,7 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { buildTemplateDraft, DEFAULT_AVOID, DEFAULT_DO, DEFAULT_TONE } from "@/lib/brief-template";
 import { BRIEF_AI_MAX_TOKENS, BRIEF_AI_MODEL, BRIEF_AI_TIMEOUT_MS, GEOGRAPHIES, INDUSTRIES } from "../constants";
 import { z } from "zod";
-import { type CampaignDraft, campaignDraftSchema } from "../schemas";
-import type { BrandProfile } from "./read-campaigns";
+import { type BrandProfile, type CampaignDraft, campaignDraftSchema } from "../schemas";
 
 // The wire schema for the model: the shared campaignDraftSchema has zod
 // transforms, which JSON Schema cannot express. The response is validated

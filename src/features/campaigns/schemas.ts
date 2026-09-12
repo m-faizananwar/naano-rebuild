@@ -128,6 +128,31 @@ export type CreatorPickDto = {
 
 export type EstimateDto = Estimate & { confidence: Confidence };
 
+export type BrandProfile = {
+  id: string;
+  company: string;
+  website: string | null;
+  valueProp: string | null;
+  icps: Array<{ title: string; description: string }>;
+  targetIndustries: string[];
+  targetRegions: string[];
+  walletCents: number;
+};
+
+export type CampaignShellDto = {
+  campaign: CampaignDto;
+  brand: BrandProfile;
+  summaries: CampaignSummaryDto[];
+  // Active campaigns: the estimator over the creators on the campaign vs real clicks.
+  projection: { estimate: EstimateDto; actualClicks: number } | null;
+};
+
+export type LaunchStepData =
+  | { step: "basics" }
+  | { step: "brief" }
+  | { step: "creators"; creators: CreatorPickDto[] }
+  | { step: "review"; creators: CreatorPickDto[]; estimate: EstimateDto };
+
 export type LaunchPlanDto = { explored: boolean; briefed: boolean; invited: boolean; stepsLeft: number };
 
 export type AnalyticsDto = {
