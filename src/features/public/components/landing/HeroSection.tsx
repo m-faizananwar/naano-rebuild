@@ -7,9 +7,9 @@ import { PillLink } from "../shared/PillLink";
 
 export function HeroSection() {
   return (
-    <section className="relative -mt-16 overflow-hidden bg-linear-to-b from-brand-sky via-brand-soft to-background pt-16">
+    <section className="relative -mt-16 overflow-hidden bg-linear-to-b from-brand-sky via-brand-sky/70 via-55% to-background pt-16">
       <Clouds />
-      <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pb-16 pt-24 text-center sm:px-6 sm:pt-32">
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pb-20 pt-24 text-center sm:px-6 sm:pt-36">
         <p className="inline-flex items-center gap-2 rounded-full bg-background/80 px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-border/60 backdrop-blur">
           <span aria-hidden="true" className="text-xs font-bold">
             𝕏

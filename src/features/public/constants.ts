@@ -201,6 +201,7 @@ export const BENCHMARK_CPC_EUR = 2.3;
 export const BENCHMARK_CPL_EUR = 18.1;
 export const LEADS_PER_CLICK = BENCHMARK_CPC_EUR / BENCHMARK_CPL_EUR;
 export const POST_EXAMPLES_COUNT = 4;
+export const POST_EXAMPLES_CANDIDATES = 40;
 
 export type PublicPost = {
   id: string;

@@ -7,6 +7,7 @@ import { fitScore } from "@/lib/fit-score";
 import {
   BENCHMARK_CTR,
   LEADS_PER_CLICK,
+  POST_EXAMPLES_CANDIDATES,
   POST_EXAMPLES_COUNT,
   type PublicCreator,
   type PublicPost,
@@ -49,12 +50,20 @@ function toPostDto(row: {
   };
 }
 
+// One post per creator: the top posts by impressions cluster on the biggest
+// account, and the section is meant to show four different voices.
+function onePerCreator<T extends { creatorId: string }>(rows: T[], count: number): T[] {
+  const seen = new Set<string>();
+  return rows.filter((row) => (seen.has(row.creatorId) ? false : seen.add(row.creatorId))).slice(0, count);
+}
+
 export async function getTopPosts(): Promise<PublicPost[]> {
   if (!isDbConfigured()) return [];
   try {
     const rows = await getDb()
       .select({
         id: creatorPosts.id,
+        creatorId: creatorPosts.creatorId,
         url: creatorPosts.url,
         body: creatorPosts.body,
         impressions: creatorPosts.impressions,
@@ -68,8 +77,8 @@ export async function getTopPosts(): Promise<PublicPost[]> {
       .innerJoin(creators, eq(creators.id, creatorPosts.creatorId))
       .innerJoin(users, eq(users.id, creators.userId))
       .orderBy(desc(creatorPosts.impressions))
-      .limit(POST_EXAMPLES_COUNT);
-    return rows.map(toPostDto);
+      .limit(POST_EXAMPLES_CANDIDATES);
+    return onePerCreator(rows, POST_EXAMPLES_COUNT).map(toPostDto);
   } catch (error) {
     console.error("[public] getTopPosts failed", error);
     return [];
