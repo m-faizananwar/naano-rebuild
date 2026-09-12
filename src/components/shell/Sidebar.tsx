@@ -13,8 +13,8 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
   const root = `/${viewer.role}`;
   const nav = navFor(viewer.role);
   return (
-    <nav aria-label="Main" className="flex h-full flex-col gap-6 px-3 py-5">
-      <Link href={root} className="px-3" aria-label="Overview">
+    <nav aria-label="Main" className="flex h-full flex-col gap-4 px-3 py-5">
+      <Link href={root} className="px-3 [[data-collapsed=true]_&]:px-2" aria-label="Overview">
         <NaanoWordmark />
       </Link>
       {viewer.role === "brand" ? (

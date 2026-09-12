@@ -238,9 +238,14 @@
 .typing-dot:nth-child(3) { animation-delay: 0.3s; }
 
 /* Collapsed sidebar: labels and secondary chrome fade out, icons stay. */
-[data-collapsed="true"] .side-label, [data-collapsed="true"] .side-chrome { opacity: 0; width: 0; overflow: hidden; }
-.side-label, .side-chrome { transition: opacity 0.2s ease-out, width 0.2s ease-out; }
-[data-collapsed="true"] nav { padding-left: 0.5rem; padding-right: 0.5rem; }
+/* Collapsed rail: logo, icons directly under it with 8px gaps, secondary group pinned to the bottom, nothing else. */
+[data-collapsed="true"] .side-label { opacity: 0; width: 0; overflow: hidden; }
+.side-label { transition: opacity 0.2s ease-out, width 0.2s ease-out; }
+[data-collapsed="true"] .side-chrome { display: none; }
+[data-collapsed="true"] nav { padding-left: 0.5rem; padding-right: 0.5rem; gap: 0.5rem; }
+[data-collapsed="true"] nav ul { gap: 0.5rem; }
+[data-collapsed="true"] nav a, [data-collapsed="true"] nav button { justify-content: center; padding-left: 0; padding-right: 0; gap: 0; }
+[data-collapsed="true"] nav .border-t { padding-top: 0.5rem; }
 
 /* Children appear one after another; the caller sets --i per child and --stagger on the parent. */
 .stagger > * { animation: sectionAppear 0.35s ease-in both; animation-delay: calc(var(--stagger, 40ms) * var(--i, 0)); }

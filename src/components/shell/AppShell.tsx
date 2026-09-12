@@ -11,7 +11,7 @@ export function AppShell({ viewer, children }: { viewer: ShellViewer; children: 
   return (
     <WalletProvider initialCents={viewer.walletCents}>
     <div className="flex min-h-screen bg-muted/40">
-      <SidebarFrame>
+      <SidebarFrame role={viewer.role}>
         <Sidebar viewer={viewer} />
       </SidebarFrame>
       <div className="flex min-w-0 flex-1 flex-col">
