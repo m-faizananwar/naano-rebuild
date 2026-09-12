@@ -24,7 +24,7 @@ export function HowItWorksSection() {
           {HOW_IT_WORKS.steps.map((step, index) => {
             const Mock = MOCKS[index];
             return (
-              <li key={step.n} style={{ "--i": index } as React.CSSProperties} className="glass-card flex flex-col rounded-2xl bg-background/70 p-4 ring-1 ring-border/50">
+              <li key={step.n} style={{ "--i": index } as React.CSSProperties} className="glass-card frost-card flex flex-col rounded-2xl bg-background/70 p-4">
                 <span className="w-fit rounded-full bg-background px-2.5 py-0.5 text-[0.65rem] font-bold text-brand ring-1 ring-brand/30">{step.n}</span>
                 <div className="my-6 flex min-h-44 items-center justify-center">{Mock ? <Mock /> : null}</div>
                 <h3 className="text-base font-semibold leading-snug">{step.label}</h3>

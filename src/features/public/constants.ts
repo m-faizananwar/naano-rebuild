@@ -12,6 +12,15 @@ export const NAV_LINKS = [
   { href: "/benchmarks", label: "Resources" },
 ] as const;
 
+// The slide-in menu (mobile nav), in the spec's five-link shape.
+export const MENU_LINKS = [
+  { href: "/", label: "For companies" },
+  { href: "/for-creators", label: "For creators" },
+  { href: "/for-agencies", label: "For agencies" },
+  { href: "/benchmarks", label: "Benchmarks" },
+  { href: "/book-a-call", label: "Book a call" },
+] as const;
+
 export const FOOTER_COLUMNS = [
   {
     heading: "Product",

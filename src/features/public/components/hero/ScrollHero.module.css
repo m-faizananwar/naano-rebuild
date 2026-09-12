@@ -101,6 +101,10 @@
       rgba(242, 240, 236, 0.24);
   }
 }
+/* With the glass card pinned bottom-right (≥1024), centre the copy in the space left of it. */
+@media (min-width: 1024px) {
+  .panel { padding-right: calc(340px + 6rem); }
+}
 @media (max-width: 720px) {
   .h1 { max-width: 12ch; font-size: clamp(30px, 9.8vw, 52px); }
   .sub { font-size: 15px; max-width: 34ch; }

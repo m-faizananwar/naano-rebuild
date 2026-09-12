@@ -4,6 +4,11 @@ import { Inter_Tight } from "next/font/google";
 import Link from "next/link";
 import { useRef } from "react";
 import { cn } from "cn";
+import { ChamferLink } from "../glass/ChamferLink";
+import { GLASS_FONT_HREF } from "../glass/glass-copy";
+import { GlassFilterDefs } from "../glass/GlassFilterDefs";
+import { HeroGlassCard } from "../glass/HeroGlassCard";
+import { HeroRules } from "../glass/HeroRules";
 import { HERO_POSTER, PANELS } from "./hero-config";
 import styles from "./ScrollHero.module.css";
 import { useScrollScrub } from "./useScrollScrub";
@@ -27,6 +32,9 @@ export function ScrollHero() {
   return (
     <section ref={wrapper} className={cn(styles.hero, interTight.className, status === "static" && styles.static)} aria-label="Introduction">
       <div className={styles.stage}>
+        {/* Helvetica Neue Light for the glass card and the chamfer button only (glass-card-spec §1). */}
+        <link rel="stylesheet" href={GLASS_FONT_HREF} />
+        <GlassFilterDefs />
         <video ref={clip} muted playsInline preload="none" disablePictureInPicture poster={HERO_POSTER} aria-hidden="true" />
         <div className={styles.veil} />
         <div className={styles.grain} />
@@ -39,11 +47,14 @@ export function ScrollHero() {
               <h1 className={styles.h1}>{panel.h1}</h1>
               <p className={styles.sub}>{panel.sub}</p>
               <div className={styles.cta}>
-                <Link href={panel.cta.href} className={styles.pill}>{panel.cta.label}</Link>
+                {i === 0 ? <ChamferLink href={panel.cta.href} label={panel.cta.label} /> : <Link href={panel.cta.href} className={styles.pill}>{panel.cta.label}</Link>}
               </div>
             </section>
           ))}
         </div>
+
+        <HeroRules />
+        <HeroGlassCard videoRef={clip} />
 
         <div className={cn(styles.boot, status !== "loading" && styles.bootDone)} aria-hidden={status !== "loading"}>
           <div className={styles.bar}><i ref={bootBar} /></div>

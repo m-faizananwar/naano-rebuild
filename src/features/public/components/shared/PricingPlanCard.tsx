@@ -5,7 +5,7 @@ type Plan = (typeof PRICING.plans)[number];
 
 export function PricingPlanCard({ plan }: { plan: Plan }) {
   return (
-    <article className="glass-card flex flex-col rounded-[1.75rem] bg-card p-8 shadow-sm ring-1 ring-border/70 sm:p-10">
+    <article className="glass-card frost-card flex flex-col rounded-[48px] bg-card p-8 shadow-sm sm:p-10">
       <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${plan.cta.primary ? "text-brand" : "text-muted-foreground"}`}>{plan.eyebrow}</p>
       <h3 className="mt-3 text-3xl font-bold tracking-tight">{plan.title}</h3>
       <p className="mt-6 text-muted-foreground">{plan.body}</p>

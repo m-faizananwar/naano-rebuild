@@ -2,48 +2,79 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { NAV_LINKS } from "../../constants";
+import { BRAND } from "@/config/brand";
+import { MENU_LINKS } from "../../constants";
+import styles from "./slide-menu.module.css";
 
-const ITEM = "rounded-lg px-3 py-2.5 text-base font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50";
+const ARROW = (
+  <svg className={styles.arrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+  </svg>
+);
 
-// Under lg the public nav collapses into a menu button + right-hand sheet.
+// Under lg the public nav collapses into the spec's slide-in menu
+// (docs/reference/glass-card-spec.md §12): blurred backdrop, full-width panel
+// that becomes a 380px drawer at ≥640, staggered links, "Get in touch" foot.
+// Closes on X / backdrop / link / Escape; focus goes to Close and back to
+// the hamburger.
 export function MobilePublicNav() {
   const [open, setOpen] = useState(false);
-  const close = () => setOpen(false);
+  // true after hydration only (portals need document); no setState in an effect.
+  const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
+  const openBtn = useRef<HTMLButtonElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
+
+  const setMenu = useCallback((next: boolean) => {
+    setOpen(next);
+    // Focus after the state commit so the target is visible/focusable.
+    requestAnimationFrame(() => (next ? closeBtn.current : openBtn.current)?.focus({ preventScroll: true }));
+  }, []);
+
+  // The sticky header has backdrop-filter, which makes it the containing block
+  // for fixed descendants (the menu would be 64px tall). Portal it to <body>.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, setMenu]);
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}>
+    <>
+      <Button ref={openBtn} variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={menuId} onClick={() => setMenu(true)}>
         <Menu aria-hidden="true" />
-      </SheetTrigger>
-      <SheetContent side="right" className="w-80 gap-0 p-6">
-        <SheetTitle className="text-lg font-bold tracking-tight">Menu</SheetTitle>
-        <nav aria-label="Main" className="mt-6 flex flex-col gap-1">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.label} href={link.href} onClick={close} className={ITEM}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="mt-6 grid gap-2 border-t pt-6">
-          <Link
-            href="/login"
-            onClick={close}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-background text-sm font-semibold ring-1 ring-border hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            onClick={close}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-foreground text-sm font-semibold text-background hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
-          >
-            Sign up
-          </Link>
+      </Button>
+      {mounted ? createPortal(
+      <div id={menuId} className={cn(styles.menu, open && styles.open)} aria-hidden={!open}>
+        <button type="button" className={styles.backdrop} aria-label="Close menu" tabIndex={-1} onClick={() => setMenu(false)} />
+        <div className={styles.panel} role="dialog" aria-modal="true" aria-label="Menu">
+          <button ref={closeBtn} type="button" className={styles.close} onClick={() => setMenu(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+            </svg>
+            <span>Close</span>
+          </button>
+          <nav className={styles.nav} aria-label="Main">
+            {MENU_LINKS.map((link) => (
+              <Link key={link.label} href={link.href} className={styles.link} onClick={() => setMenu(false)}>
+                <span className={styles.linkText}>{link.label}</span>
+                {ARROW}
+              </Link>
+            ))}
+          </nav>
+          <div className={styles.foot}>
+            <span className={styles.footLabel}>Get in touch</span>
+            <a className={styles.mail} href={`mailto:${BRAND.supportEmail}`}>{BRAND.supportEmail}</a>
+          </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>,
+      document.body,
+      ) : null}
+    </>
   );
 }
