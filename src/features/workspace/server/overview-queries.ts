@@ -1,6 +1,6 @@
 import "server-only";
 import { and, count, desc, eq, gte, inArray, notInArray, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb, isDbConfigured } from "@/db";
 import {
   brands, campaigns, clicks, collaborations, creatorPosts, creators, messages, pixelEvents, shortlist, trackingLinks, users,
 } from "@/db/schema";
@@ -176,6 +176,7 @@ export async function getCreatorOverview(creatorId: string): Promise<CreatorOver
 
 // Sum of estimated impressions of published sponsored posts, per creator.
 export async function getLeaderboard(limit: number) {
+  if (!isDbConfigured()) return [];
   const rows = await getDb()
     .select({
       creatorId: creators.id,

@@ -8,6 +8,9 @@ import { getLeaderboard } from "@/features/workspace/server/overview-queries";
 
 export const metadata: Metadata = { title: "Community · naano" };
 
+// Reads rows on every request; must never be prerendered at build time.
+export const dynamic = "force-dynamic";
+
 export default async function CreatorCommunityPage() {
   const rows = await getLeaderboard(LEADERBOARD_SIZE);
   return (
