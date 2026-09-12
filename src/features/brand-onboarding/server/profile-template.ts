@@ -27,12 +27,26 @@ function endSentence(text: string): string {
   return `${clean}.`;
 }
 
-// "Vercel: Build and deploy the best web experiences" → "Vercel".
-export function companyFromTitle(title: string): string | null {
-  const first = title.split(TITLE_SEPARATORS)[0]?.trim();
-  if (!first) return null;
-  const WORDS_MAX = 4;
-  return first.split(/\s+/).length <= WORDS_MAX ? first : null;
+const COMPANY_WORDS_MAX = 4;
+
+function hostLabel(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "").split(".")[0] ?? "";
+  } catch {
+    return "";
+  }
+}
+
+// "Vercel: Build and deploy…" → "Vercel"; "Agentic Infrastructure - Vercel"
+// with host vercel.com → "Vercel". The segment naming the host wins, then
+// the first short segment.
+export function companyFromTitle(title: string, host = ""): string | null {
+  const segments = title.split(TITLE_SEPARATORS).map((s) => s.trim()).filter(Boolean);
+  if (segments.length === 0) return null;
+  const label = host.toLowerCase();
+  const named = label ? segments.find((s) => s.toLowerCase().replace(/[^a-z0-9]/g, "").includes(label)) : undefined;
+  const pick = named ?? segments[0];
+  return pick.split(/\s+/).length <= COMPANY_WORDS_MAX ? pick : null;
 }
 
 export function companyFromDomain(emailDomain: string): string {
@@ -42,15 +56,9 @@ export function companyFromDomain(emailDomain: string): string {
 
 export function resolveCompany(source: ProfileSource): string {
   if (!source.companyIsPlaceholder && source.company.trim()) return source.company.trim();
-  const fromTitle = source.summary ? companyFromTitle(source.summary.title) : null;
+  const host = hostLabel(source.url);
+  const fromTitle = source.summary ? companyFromTitle(source.summary.title, host) : null;
   if (fromTitle) return fromTitle;
-  const host = (() => {
-    try {
-      return new URL(source.url).hostname.replace(/^www\./, "");
-    } catch {
-      return "";
-    }
-  })();
   return companyFromDomain(host || source.emailDomain);
 }
 

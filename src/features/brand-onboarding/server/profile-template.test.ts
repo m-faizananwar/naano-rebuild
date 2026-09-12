@@ -13,6 +13,10 @@ describe("companyFromTitle", () => {
     expect(companyFromTitle("Zune — AI product studio")).toBe("Zune");
     expect(companyFromTitle("Acme & Co | Invoicing")).toBe("Acme & Co");
   });
+  it("prefers the segment that names the host", () => {
+    expect(companyFromTitle("Agentic Infrastructure - Vercel", "vercel")).toBe("Vercel");
+    expect(companyFromTitle("Home | Acme Corp", "acmecorp")).toBe("Acme Corp");
+  });
   it("refuses long titles with no separator", () => {
     expect(companyFromTitle("Build and deploy the best web experiences today")).toBeNull();
   });
