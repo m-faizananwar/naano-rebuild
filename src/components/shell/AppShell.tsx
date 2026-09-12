@@ -22,7 +22,7 @@ export function AppShell({ viewer, children }: { viewer: ShellViewer; children: 
           <div className="mx-auto w-full min-w-0 max-w-6xl [&_.grid>*]:min-w-0 [&_.flex>*]:min-w-0"><RouteTransition>{children}</RouteTransition></div>
         </main>
       </div>
-      <AssistantPill role={viewer.role} workspace={viewer.workspace} />
+      <AssistantPill role={viewer.role} workspace={viewer.workspace} csrfToken={viewer.csrfToken} />
     </div>
     </WalletProvider>
   );

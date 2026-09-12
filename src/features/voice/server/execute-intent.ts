@@ -38,6 +38,10 @@ export async function executeIntent(intent: VoiceIntent, ctx: Ctx): Promise<Voic
 
 // First pass of a gated tool: resolve what it would do, then ask.
 async function describe(intent: VoiceIntent, viewer: Viewer): Promise<VoiceOutcome> {
+  const brandOnly = intent.tool === "topUp" || intent.tool === "bookCreator";
+  const creatorOnly = intent.tool === "applyToCampaign" || intent.tool === "submitDraft";
+  if (brandOnly && !viewer.brand) return failed("That's a brand action. You're signed in as a creator.");
+  if (creatorOnly && !viewer.creator) return failed("That's a creator action. You're signed in as a brand.");
   switch (intent.tool) {
     case "topUp":
       return ask(`Add ${formatCents(intent.amountEuros * EURO_CENTS, "EUR", "de-DE")} to your wallet.`, intent);

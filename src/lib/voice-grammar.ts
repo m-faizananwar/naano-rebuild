@@ -82,5 +82,7 @@ export function parseVoiceCommand(transcript: string): GrammarIntent {
     if (new RegExp(`^(?:go to|open|show(?: me)?|take me to|navigate to)(?: the| my)?\\s+${word}$`, "i").test(t)) return { tool: "navigate", route: word };
   }
   if ((m = /^(?:open|show(?: me)?|find)\s+(?:creator|profile)\s+(.+)$/i.exec(t)) || (m = /^(?:open|show(?: me)?)\s+(.+?)(?:'s)?\s+(?:profile|card)$/i.exec(t))) return { tool: "openCreator", name: titleCase(m[1]) };
+  // Bare "open Sarah Chen" once no route matched: a creator by name.
+  if ((m = /^(?:open|show(?: me)?|find)\s+([a-z][a-z' -]{1,40})$/i.exec(t))) return { tool: "openCreator", name: titleCase(m[1]) };
   return { tool: "unknown", reason: `I didn't catch a command in “${t}”.` };
 }

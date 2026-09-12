@@ -24,3 +24,8 @@ describe("parseVoiceCommand", () => {
     expect(parseVoiceCommand("what's the weather").tool).toBe("unknown");
   });
 });
+
+it("treats a bare 'open <name>' as a creator once no route matches", () => {
+  expect(parseVoiceCommand("open Sarah")).toEqual({ tool: "openCreator", name: "Sarah" });
+  expect(parseVoiceCommand("open campaigns")).toEqual({ tool: "navigate", route: "campaigns" });
+});

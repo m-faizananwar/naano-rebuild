@@ -31,7 +31,7 @@ pnpm dev                          # http://localhost:3000
 | ------------------ | ----------------------------------------------------------------- |
 | `pnpm typecheck`   | `tsc --noEmit`                                                    |
 | `pnpm lint`        | ESLint — the engineering rules in `eslint.config.mjs`             |
-| `pnpm test`        | Vitest, 80 unit tests over the pure logic                         |
+| `pnpm test`        | Vitest, 90 unit tests over the pure logic                         |
 | `pnpm build`       | Production build                                                  |
 | `pnpm db:up/down`  | Docker Postgres                                                   |
 | `pnpm db:generate` | Drizzle migration from `src/db/schema/*`                          |
@@ -95,6 +95,7 @@ query over rows; the click log exports to CSV per creator.
 | Tracking | Real: redirect, pixel, collector, results (with "More metrics & attribution details": clicks by country/referrer, pixel visits/sign-ups/purchases/revenue), per-creator CSV, campaign analytics, creator analytics with an All time / 30 / 90 days period. Post reactions/comments are the creator's recent public-post averages (labelled); naano's own post-metrics import is not built. |
 | Billing / earnings | Real ledger: top-ups ("No card — demo top-up"), bookings, payouts, withdrawals (bank transfers sit "In transit" as pending, Stripe settles instantly); wallet chip is a cache of the ledger. Settings › Payments stores the method, account holder and the IBAN's last 4 only. No Stripe Connect, no real bank rail, no invoice PDFs. |
 | Settings, team, integrations, community, affiliate, tour | Real screens with real updates (profile incl. X handle, audience, payout details, delete account). Team invites and the Slack community need email/Slack and say so; the MCP endpoint is documented, not served. Affiliate: brands that sign up through a creator's `?ref=` link are attributed; rewards assume a 20% platform commission (naano doesn't publish it) × 25% share for 3 months. Community leaderboard toggles impressions/posts. |
+| Voice | Real command layer on the floating pill (`src/features/voice`, `docs/voice.md`): Web Speech API by default, Vapi when both keys are set; intents parsed by Claude with structured output or a regex grammar; every tool runs the same server actions as the UI (session + CSRF); money and status changes ask "Confirm?" and wait for a yes. Navigation from a Vapi reply is spoken, not performed (the webhook has no page). |
 | Book a call | Fake slot picker on both the public page and the brand page; writes nothing (no calendar). |
 | EN / FR toggle | Visual only: FR re-renders the same English strings. Agency mode toggle: visual only. |
 | Public site | Landing page in naano's section order with their copy; for-creators, for-agencies, pricing, faq, case study, about, benchmarks, book-a-call (fake slot picker); a floating assistant pill with links (no chat); marketing figures are naano's published claims, labelled "est." where derived. Video testimonials are poster cards; logos are text. |

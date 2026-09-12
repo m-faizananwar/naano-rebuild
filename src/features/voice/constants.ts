@@ -34,3 +34,8 @@ export const ROUTES: Record<"brand" | "creator", Record<string, string>> = {
 export const VAPI_ASSISTANT_NAME = "Naano voice";
 export const VAPI_API_URL = "https://api.vapi.ai";
 
+
+export const SPEECH_LANG = "en-US";
+export const SPEECH_RATE = 1.05;
+export const WAVEFORM_BARS = 5;
+export const NAVIGATE_DELAY_MS = 350;
