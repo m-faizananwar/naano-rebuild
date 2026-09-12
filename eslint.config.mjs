@@ -99,6 +99,15 @@ export default defineConfig([
     },
   },
 
+  // ---- /api/health is the one route whose job is to prove the db is reachable ---
+  {
+    files: ["src/app/api/health/route.ts"],
+    rules: {
+      "no-restricted-imports": "off",
+      "import/no-restricted-paths": "off",
+    },
+  },
+
   // ---- page.tsx is thin ---------------------------------------------------------
   {
     files: ["src/app/**/page.tsx", "src/app/**/layout.tsx"],
@@ -123,6 +132,15 @@ export default defineConfig([
         { selector: `Literal[value=${HEX_COLOUR}]`, message: "No raw hex colours. Use tailwind theme tokens." },
         { selector: `TemplateElement[value.raw=${HEX_COLOUR}]`, message: "No raw hex colours. Use tailwind theme tokens." },
       ],
+    },
+  },
+
+  // ---- tests assert on literal values; that is not "magic" ---------------------
+  {
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    rules: {
+      "no-magic-numbers": "off",
+      "max-lines-per-function": "off",
     },
   },
 
