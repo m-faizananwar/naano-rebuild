@@ -17,7 +17,7 @@ export type EarningsSummary = {
 export type MonthPoint = { month: string; label: string; cents: number };
 export type BillingSummary = { balanceCents: number; topupsCents: number; committedCents: number; entries: number };
 
-function toDto(row: typeof ledgerEntries.$inferSelect): LedgerRowDto {
+export function toLedgerDto(row: typeof ledgerEntries.$inferSelect): LedgerRowDto {
   return {
     id: row.id,
     date: row.createdAt.toISOString(),
@@ -76,7 +76,7 @@ export async function getEarningsByMonth(creatorId: string): Promise<MonthPoint[
 
 export async function getCreatorLedger(creatorId: string): Promise<LedgerRowDto[]> {
   const rows = await getDb().select().from(ledgerEntries).where(eq(ledgerEntries.creatorId, creatorId)).orderBy(desc(ledgerEntries.createdAt));
-  return rows.map(toDto);
+  return rows.map(toLedgerDto);
 }
 
 export async function getBillingSummary(brandId: string): Promise<BillingSummary> {
@@ -94,5 +94,5 @@ export async function getBillingSummary(brandId: string): Promise<BillingSummary
 
 export async function getBrandLedger(brandId: string): Promise<LedgerRowDto[]> {
   const rows = await getDb().select().from(ledgerEntries).where(eq(ledgerEntries.brandId, brandId)).orderBy(desc(ledgerEntries.createdAt));
-  return rows.map(toDto);
+  return rows.map(toLedgerDto);
 }

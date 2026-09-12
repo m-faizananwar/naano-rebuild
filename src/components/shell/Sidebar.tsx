@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NaanoWordmark } from "@/components/NaanoWordmark";
+import { AgencyModeToggle } from "./AgencyModeToggle";
 import { navFor } from "./nav";
 import { SidebarNav } from "./SidebarNav";
 import { SignOutButton } from "./SignOutButton";
@@ -16,6 +17,7 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
       <Link href={root} className="px-3" aria-label="Overview">
         <NaanoWordmark />
       </Link>
+      {viewer.role === "brand" ? <AgencyModeToggle /> : null}
       <SidebarNav role={viewer.role} section="primary" onNavigate={onNavigate} />
       {nav.secondary.length > 0 ? (
         <div className="mt-auto border-t pt-4">
