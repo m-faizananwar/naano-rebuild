@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/features/auth/server/session";
+import { TourOverlay } from "@/features/creator-onboarding/components/TourOverlay";
 import { CreatorCardPreview } from "@/features/workspace/components/overview/CreatorCardPreview";
 import { ActiveCollaborations, RecommendedOpportunities } from "@/features/workspace/components/overview/CreatorOverviewPanels";
 import { StatTile } from "@/features/workspace/components/overview/StatTile";
@@ -11,12 +12,14 @@ import { getCreatorOverview } from "@/features/workspace/server/overview-queries
 
 export const metadata: Metadata = { title: "Creator workspace · naano" };
 
-export default async function CreatorOverviewPage() {
+export default async function CreatorOverviewPage({ searchParams }: { searchParams: Promise<{ tour?: string }> }) {
   const viewer = await getViewer();
   if (!viewer?.creator) redirect("/login");
   const overview = await getCreatorOverview(viewer.creator.id);
+  const { tour } = await searchParams;
   return (
     <>
+      {tour === "1" ? <TourOverlay /> : null}
       <PageHeader eyebrow="Creator workspace" title={`Good to see you, ${viewer.firstName}`} description="Your creator activity, at a glance." />
       <div className="grid gap-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
