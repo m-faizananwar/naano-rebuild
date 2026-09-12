@@ -3,6 +3,9 @@ import { Reveal } from "@/components/motion/Reveal";
 import { CaseStudySection } from "@/features/public/components/landing/CaseStudySection";
 import { ScrollHero } from "@/features/public/components/hero/ScrollHero";
 import { FaqSection } from "@/features/public/components/landing/FaqSection";
+import { LANDING_COPY, LANDING_LOGO_LABEL } from "@/features/public/components/gaze-footer/footer-copy";
+import { GazeFooter } from "@/features/public/components/gaze-footer/GazeFooter";
+import { LandingLogo } from "@/features/public/components/gaze-footer/LandingLogo";
 import { HowItWorksSection } from "@/features/public/components/landing/HowItWorksSection";
 import { MarketplaceShowcase } from "@/features/public/components/landing/MarketplaceShowcase";
 import { PostExamplesSection } from "@/features/public/components/landing/PostExamplesSection";
@@ -10,7 +13,6 @@ import { PricingSection } from "@/features/public/components/landing/PricingSect
 import { QuoteSection } from "@/features/public/components/landing/QuoteSection";
 import { ResultsSection } from "@/features/public/components/landing/ResultsSection";
 import { PublicAssistantPill } from "@/features/public/components/nav/PublicAssistantPill";
-import { PublicFooter } from "@/features/public/components/nav/PublicFooter";
 import { PublicNav } from "@/features/public/components/nav/PublicNav";
 import { CtaSection } from "@/features/public/components/shared/CtaSection";
 import { getShowcaseCreators, getTopPosts } from "@/features/public/server/queries";
@@ -42,7 +44,10 @@ export default async function HomePage() {
         <Reveal><FaqSection /></Reveal>
         <Reveal><CtaSection /></Reveal>
       </main>
-      <PublicFooter />
+      {/* The gaze-scrub footer (docs/reference/gaze-footer-spec.md); .gaze scopes its tokens. */}
+      <div className="gaze">
+        <GazeFooter copy={LANDING_COPY} logo={<LandingLogo />} logoLabel={LANDING_LOGO_LABEL} />
+      </div>
       <PublicAssistantPill />
     </>
   );
