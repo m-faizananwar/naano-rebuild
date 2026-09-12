@@ -10,12 +10,12 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed/index.ts",
     "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && pnpm db:up && pnpm db:migrate && pnpm db:seed",
-    "db:migrate:remote": "node scripts/remote-env.mjs pnpm exec drizzle-kit migrate",
+    "db:migrate:remote": "node scripts/remote-env.mjs pnpm exec tsx scripts/migrate.ts",
     "db:seed:remote": "node scripts/remote-env.mjs pnpm exec tsx scripts/seed/index.ts"
   },
   "dependencies": {

@@ -10,3 +10,4 @@ export * from "./ledger";
 export * from "./matching";
 export * from "./tracking";
 export * from "./users";
+export * from "./newsletter";

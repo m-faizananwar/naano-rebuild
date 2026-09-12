@@ -3,9 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { CaseStudySection } from "@/features/public/components/landing/CaseStudySection";
 import { ScrollHero } from "@/features/public/components/hero/ScrollHero";
 import { FaqSection } from "@/features/public/components/landing/FaqSection";
-import { LANDING_COPY, LANDING_LOGO_LABEL } from "@/features/public/components/gaze-footer/footer-copy";
-import { GazeFooter } from "@/features/public/components/gaze-footer/GazeFooter";
-import { LandingLogo } from "@/features/public/components/gaze-footer/LandingLogo";
+import { InkFooter } from "@/features/public/components/ink-footer/InkFooter";
 import { HowItWorksSection } from "@/features/public/components/landing/HowItWorksSection";
 import { MarketplaceShowcase } from "@/features/public/components/landing/MarketplaceShowcase";
 import { PostExamplesSection } from "@/features/public/components/landing/PostExamplesSection";
@@ -44,10 +42,8 @@ export default async function HomePage() {
         <Reveal><FaqSection /></Reveal>
         <Reveal><CtaSection /></Reveal>
       </main>
-      {/* The gaze-scrub footer (docs/reference/gaze-footer-spec.md); .gaze scopes its tokens. */}
-      <div className="gaze">
-        <GazeFooter copy={LANDING_COPY} logo={<LandingLogo />} logoLabel={LANDING_LOGO_LABEL} />
-      </div>
+      {/* The ink footer (docs/reference/ink-footer-spec.md); its cream/ink tokens live on .site-footer. */}
+      <InkFooter />
       <PublicAssistantPill />
     </>
   );
