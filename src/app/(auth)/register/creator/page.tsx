@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
-import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { SignUpOptions } from "@/features/auth/components/SignUpOptions";
 
 export const metadata: Metadata = { title: "Join Naano as a creator" };
 
 export default function RegisterCreatorPage() {
   return (
     <AuthSplitLayout
-      panelTitle="Your marketplace card"
-      panelBody="Build a card brands can trust. Set your own price per post, keep your voice, get paid without the admin."
-      panelFootnote="Takes 2 minutes. No commitment."
+      panelVariant="card"
+      panelEyebrow="Your marketplace card"
+      panelTitle="Build a card brands can trust."
+      panelBody="It updates live with your profile, analytics, positioning and price."
     >
-      <RegisterForm role="creator" />
+      <SignUpOptions role="creator" />
     </AuthSplitLayout>
   );
 }

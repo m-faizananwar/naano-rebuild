@@ -11,6 +11,8 @@ import { type LoginInput, loginSchema } from "../schemas";
 import { login } from "../server/actions";
 import { FormField } from "./FormField";
 
+const INPUT = "h-12 rounded-xl px-4";
+
 export function LoginForm({ next }: { next?: string }) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -30,23 +32,23 @@ export function LoginForm({ next }: { next?: string }) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5" noValidate>
       <FormField id="email" label="Email" error={errors.email?.message}>
-        <Input id="email" type="email" autoComplete="email" {...form.register("email")} />
+        <Input id="email" type="email" autoComplete="email" placeholder="john@company.com" className={INPUT} {...form.register("email")} />
       </FormField>
       <FormField id="password" label="Password" error={errors.password?.message}>
-        <Input id="password" type="password" autoComplete="current-password" {...form.register("password")} />
+        <Input id="password" type="password" autoComplete="current-password" placeholder="••••••••" className={INPUT} {...form.register("password")} />
       </FormField>
       {serverError ? (
         <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive" role="alert">
           {serverError}
         </p>
       ) : null}
-      <Button type="submit" size="lg" disabled={isSubmitting} className="bg-brand text-brand-foreground hover:bg-brand/90">
+      <Button type="submit" size="lg" disabled={isSubmitting} className="h-12 rounded-xl bg-brand text-base text-brand-foreground hover:bg-brand/90">
         {isSubmitting ? "Signing in…" : "Sign in"}
       </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        New to Naano?{" "}
-        <Link href="/register" className="font-medium text-brand hover:underline">
-          Create an account
+      <p className="text-center text-xs text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="font-semibold text-brand hover:underline">
+          Sign up
         </Link>
       </p>
     </form>

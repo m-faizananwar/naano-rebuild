@@ -29,11 +29,11 @@ export function DemoLoginButtons() {
   return (
     <div className="grid gap-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <Button type="button" variant="outline" size="lg" disabled={pending !== null} onClick={() => enter("brand")}>
+        <Button type="button" variant="outline" size="lg" className="h-11 rounded-xl" disabled={pending !== null} onClick={() => enter("brand")}>
           <Building2 aria-hidden="true" />
           {pending === "brand" ? "Opening…" : DEMO_ACCOUNTS.brand.label}
         </Button>
-        <Button type="button" variant="outline" size="lg" disabled={pending !== null} onClick={() => enter("creator")}>
+        <Button type="button" variant="outline" size="lg" className="h-11 rounded-xl" disabled={pending !== null} onClick={() => enter("creator")}>
           <PenLine aria-hidden="true" />
           {pending === "creator" ? "Opening…" : DEMO_ACCOUNTS.creator.label}
         </Button>
