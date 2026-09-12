@@ -1,4 +1,4 @@
-import { index, integer, jsonb, pgTable, real, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgTable, real, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { baseColumns } from "../columns";
 import { users } from "./users";
 
@@ -28,6 +28,14 @@ export const creators = pgTable(
     audienceJobTitles: jsonb("audience_job_titles").$type<AudienceMix>().notNull().default({}),
     audienceSeniority: jsonb("audience_seniority").$type<AudienceMix>().notNull().default({}),
     avatarUrl: text("avatar_url").notNull(),
+    // Onboarding: "complete your professional information" (optional step) and completion.
+    legalCountry: text("legal_country"),
+    registeredBusiness: boolean("registered_business"),
+    legalName: text("legal_name"),
+    legalAddress: text("legal_address"),
+    taxAcknowledged: boolean("tax_acknowledged").notNull().default(false),
+    invoicingAuthorized: boolean("invoicing_authorized").notNull().default(false),
+    onboardingCompletedAt: timestamp("onboarding_completed_at", { withTimezone: true }),
   },
   (t) => [
     uniqueIndex("creators_user_id_idx").on(t.userId),

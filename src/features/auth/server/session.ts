@@ -17,8 +17,8 @@ export type Viewer = {
   lastName: string;
   role: Role;
   csrfToken: string;
-  brand: { id: string; slug: string; company: string; walletCents: number } | null;
-  creator: { id: string; handle: string; avatarUrl: string; headline: string; availableCents: number } | null;
+  brand: { id: string; slug: string; company: string; walletCents: number; onboarded: boolean } | null;
+  creator: { id: string; handle: string; avatarUrl: string; headline: string; availableCents: number; onboarded: boolean } | null;
 };
 
 function hashToken(token: string) {
@@ -65,11 +65,11 @@ export async function getViewer(): Promise<Viewer | null> {
   if (!row) return null;
 
   const [brand] = await db
-    .select({ id: brands.id, slug: brands.slug, company: brands.company, walletCents: brands.walletCents })
+    .select({ id: brands.id, slug: brands.slug, company: brands.company, walletCents: brands.walletCents, onboardingCompletedAt: brands.onboardingCompletedAt })
     .from(brands)
     .where(eq(brands.ownerUserId, row.user.id));
   const [creator] = await db
-    .select({ id: creators.id, handle: creators.handle, avatarUrl: creators.avatarUrl, headline: creators.headline })
+    .select({ id: creators.id, handle: creators.handle, avatarUrl: creators.avatarUrl, headline: creators.headline, onboardingCompletedAt: creators.onboardingCompletedAt })
     .from(creators)
     .where(eq(creators.userId, row.user.id));
 
@@ -82,8 +82,10 @@ export async function getViewer(): Promise<Viewer | null> {
     lastName: row.user.lastName,
     role: row.user.role,
     csrfToken: row.csrfToken,
-    brand: brand ?? null,
-    creator: creator ? { ...creator, availableCents } : null,
+    brand: brand ? { id: brand.id, slug: brand.slug, company: brand.company, walletCents: brand.walletCents, onboarded: Boolean(brand.onboardingCompletedAt) } : null,
+    creator: creator
+      ? { id: creator.id, handle: creator.handle, avatarUrl: creator.avatarUrl, headline: creator.headline, availableCents, onboarded: Boolean(creator.onboardingCompletedAt) }
+      : null,
   };
 }
 

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb, isDbConfigured } from "@/db";
 import { brands, creators, users } from "@/db/schema";
-import { DEMO_ACCOUNTS, ROLE_HOME } from "../constants";
+import { DEMO_ACCOUNTS, ROLE_HOME, ROLE_ONBOARDING } from "../constants";
 import { type ActionResult, type LoginInput, type RegisterInput, loginSchema, registerSchema, roleSchema } from "../schemas";
 import { csrfOk } from "./csrf";
 import { hashPassword, verifyPassword } from "./password";
@@ -71,7 +71,8 @@ export async function register(input: RegisterInput): Promise<ActionResult<{ red
   }
 
   await createSession(user.id);
-  return { ok: true, data: { redirectTo: ROLE_HOME[data.role] } };
+  // New accounts go through onboarding first (the layouts enforce it too).
+  return { ok: true, data: { redirectTo: ROLE_ONBOARDING[data.role] } };
 }
 
 export async function login(input: LoginInput): Promise<ActionResult<{ redirectTo: string }>> {

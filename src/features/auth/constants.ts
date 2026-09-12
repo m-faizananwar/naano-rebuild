@@ -10,3 +10,4 @@ export const DEMO_ACCOUNTS = {
 } as const;
 
 export const ROLE_HOME = { brand: "/brand", creator: "/creator" } as const;
+export const ROLE_ONBOARDING = { brand: "/onboarding/brand", creator: "/onboarding/creator" } as const;

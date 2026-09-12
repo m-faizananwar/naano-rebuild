@@ -55,6 +55,7 @@ async function seedCreators(db: Db, passwordHash: string): Promise<SeededCreator
         audienceJobTitles: c.audienceJobTitles,
         audienceSeniority: c.audienceSeniority,
         avatarUrl: c.avatarUrl,
+        onboardingCompletedAt: daysAgo(faker.number.int({ min: 20, max: 200 })),
       })),
     )
     .returning({ id: creators.id, handle: creators.handle });
@@ -86,6 +87,7 @@ async function seedBrands(db: Db, passwordHash: string): Promise<SeededCampaign[
         targetRegions: fixture.targetRegions,
         walletCents: 0,
         pixelSiteKey: fixture.pixelSiteKey,
+        onboardingCompletedAt: daysAgo(36),
       })
       .returning({ id: brands.id });
     await db.insert(ledgerEntries).values({

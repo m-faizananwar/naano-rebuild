@@ -2,7 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { isDbConfigured } from "@/db";
 import type { ShellViewer } from "@/components/shell/viewer";
-import { ROLE_HOME } from "../constants";
+import { ROLE_HOME, ROLE_ONBOARDING } from "../constants";
 import type { Role } from "../schemas";
 import { getLaunchPlan } from "@/features/campaigns/server/queries";
 import { getBrandNotifications, getCreatorNotifications } from "@/features/workspace/server/notifications";
@@ -42,5 +42,7 @@ export async function resolveShellViewer(role: Role, pathname: string) {
   const viewer = await getViewer();
   if (!viewer) redirect(`/login?next=${encodeURIComponent(pathname)}`);
   if (viewer.role !== role) redirect(ROLE_HOME[viewer.role]);
+  const onboarded = role === "brand" ? viewer.brand?.onboarded : viewer.creator?.onboarded;
+  if (!onboarded) redirect(ROLE_ONBOARDING[role]);
   return { mode: "ok" as const, shell: await toShellViewer(viewer), viewer };
 }
