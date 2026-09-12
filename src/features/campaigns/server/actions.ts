@@ -1,9 +1,9 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db";
-import { campaigns } from "@/db/schema";
+import { brands, campaigns, collaborations, ledgerEntries } from "@/db/schema";
 import { getViewer } from "@/features/auth/server/session";
 import { createCollaboration, DuplicateCollaborationError } from "@/features/collaborations/server/create";
 import { InsufficientFundsError } from "@/features/collaborations/server/side-effects";
@@ -192,4 +192,41 @@ export async function inviteCreator(input: InviteInput): Promise<ActionResult<{ 
     console.error("[campaigns] inviteCreator failed", { campaignId, creatorId, error });
     return { ok: false, error: GENERIC };
   }
+}
+
+// Deleting a campaign cascades to its collaborations, tracking links, clicks
+// and messages. Pending booking holds are released so the wallet cache stays
+// equal to the ledger. Blocked while any collaboration is live or paid — those
+// carry money and attribution that must stay auditable.
+export async function deleteCampaign(campaignId: string): Promise<ActionResult<{ deleted: true }>> {
+  const owned = await ownedCampaign(campaignId);
+  if (!owned) return { ok: false, error: NOT_FOUND };
+  const db = getDb();
+  try {
+    const rows = await db
+      .select({ id: collaborations.id, status: collaborations.status })
+      .from(collaborations)
+      .where(eq(collaborations.campaignId, campaignId));
+    if (rows.some((r) => r.status === "live" || r.status === "paid")) {
+      return { ok: false, error: "This campaign has published or paid posts, so it can't be deleted. Mark it completed instead." };
+    }
+    await db.transaction(async (tx) => {
+      const ids = rows.map((r) => r.id);
+      if (ids.length > 0) {
+        const held = await tx
+          .delete(ledgerEntries)
+          .where(and(inArray(ledgerEntries.collaborationId, ids), eq(ledgerEntries.type, "booking"), eq(ledgerEntries.status, "pending")))
+          .returning({ amountCents: ledgerEntries.amountCents });
+        const refund = held.reduce((sum, r) => sum - r.amountCents, 0);
+        if (refund > 0) await tx.update(brands).set({ walletCents: sql`${brands.walletCents} + ${refund}` }).where(eq(brands.id, owned.brandId));
+      }
+      await tx.delete(campaigns).where(and(eq(campaigns.id, campaignId), eq(campaigns.brandId, owned.brandId)));
+    });
+  } catch (error) {
+    console.error("[campaigns] deleteCampaign failed", { campaignId, error });
+    return { ok: false, error: GENERIC };
+  }
+  revalidatePath("/brand/campaigns");
+  revalidatePath("/brand", "layout");
+  return { ok: true, data: { deleted: true } };
 }

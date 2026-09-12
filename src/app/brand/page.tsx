@@ -37,6 +37,15 @@ export default async function BrandOverviewPage() {
           <BrandPriorityActions overview={overview} walletCents={viewer.brand.walletCents} />
           <NewCreatorsList creators={overview.newCreators} campaignId={overview.activeCampaign?.id ?? null} />
         </div>
+        <section className="rounded-2xl border bg-background p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recently engaged companies</p>
+          <h2 className="mt-1 font-semibold">ICP accounts in your target</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {overview.profilesEngaged > 0
+              ? `${overview.profilesEngaged} distinct visitors reached your site through creator posts. Company resolution (reverse IP) is not part of this build, so they are counted, not named.`
+              : "No company has engaged yet."}
+          </p>
+        </section>
         <section className="grid gap-4 rounded-2xl border bg-background p-5 sm:grid-cols-2">
           <div>
             <h2 className="font-semibold">Messages</h2>

@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { CAMPAIGN_STATUS_LABEL } from "../../constants";
 import type { CampaignShellDto } from "../../schemas";
 import { CampaignSwitcher } from "./CampaignSwitcher";
+import { DeleteCampaignButton } from "./DeleteCampaignButton";
 import { type CampaignTabKey, CampaignTabs, tabPath } from "./CampaignTabs";
 
 type Props = { shell: CampaignShellDto; tab: CampaignTabKey; children: React.ReactNode };
@@ -38,6 +39,7 @@ export function CampaignHeader({ shell, tab, children }: Props) {
               <UserPlus data-icon="inline-start" aria-hidden="true" /> Invite a creator
             </Link>
           )}
+          <DeleteCampaignButton campaignId={campaign.id} name={campaign.name} />
         </div>
       </div>
       {projection ? (
