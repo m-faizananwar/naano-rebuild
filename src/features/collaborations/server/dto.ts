@@ -7,6 +7,14 @@ import { PERFORMANCE_STATUSES } from "@/lib/collaboration-labels";
 import { MAX_REVISION_ROUNDS } from "../constants";
 import type { BriefDto, CollaborationDto, CollaborationEventDto, ViewerRole } from "../schemas";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Postgres rejects a malformed uuid with an error; a bad route param should
+// simply be "not found".
+export function isUuid(value: string) {
+  return UUID_RE.test(value);
+}
+
 export function iso(value: Date | null | undefined): string | null {
   return value ? value.toISOString() : null;
 }

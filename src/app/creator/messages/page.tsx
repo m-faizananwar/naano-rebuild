@@ -1,18 +1,29 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/page/EmptyState";
-import { PageHeader } from "@/components/page/PageHeader";
+import { redirect } from "next/navigation";
+import { ErrorState } from "@/components/page/ErrorState";
+import { getViewer } from "@/features/auth/server/session";
+import { MessagesLayout } from "@/features/collaborations/components/messages/MessagesLayout";
+import { ThreadPlaceholder } from "@/features/collaborations/components/messages/ThreadPlaceholder";
+import { listThreads, threadScopeFor } from "@/features/collaborations/server/messages-queries";
 
 export const metadata: Metadata = { title: "Messages · naano" };
 
-export default function CreatorMessagesPage() {
+export default async function CreatorMessagesPage() {
+  const viewer = await getViewer();
+  const scope = viewer && threadScopeFor(viewer);
+  if (!scope) redirect("/login?next=/creator/messages");
+
+  let threads;
+  try {
+    threads = await listThreads(scope);
+  } catch (error) {
+    console.error("[messages] creator list failed", { creatorId: scope.ownerId, error });
+    return <ErrorState body="We could not load your messages. Try again in a moment." retryHref="/creator/messages" />;
+  }
+
   return (
-    <>
-      <PageHeader title="Messages" description="All messages with the brands you work with." />
-      <EmptyState
-        title="Threads open with your bookings"
-        body="The thread opens as soon as a booking is accepted."
-        cta={{ href: "/creator/opportunities", label: "Browse opportunities" }}
-      />
-    </>
+    <MessagesLayout threads={threads} role="creator" activeId={null}>
+      <ThreadPlaceholder hasThreads={threads.length > 0} />
+    </MessagesLayout>
   );
 }

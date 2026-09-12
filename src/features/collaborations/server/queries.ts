@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { brands, campaigns, collaborationEvents, collaborations } from "@/db/schema";
 import type { CampaignOption, CollaborationDetailDto, CollaborationDto, ViewerRole } from "../schemas";
 import { trackedUrlFor } from "./app-url";
-import { collaborationSelect, toBriefDto, toCollaborationDto, toEventDto } from "./dto";
+import { collaborationSelect, isUuid, toBriefDto, toCollaborationDto, toEventDto } from "./dto";
 
 export async function listCreatorCollaborations(creatorId: string): Promise<CollaborationDto[]> {
   const rows = await collaborationSelect()
@@ -33,6 +33,7 @@ type DetailScope = { id: string; role: ViewerRole; ownerId: string };
 // Ownership is part of the query: a creator only sees their own rows, a brand
 // only rows on its campaigns. Anything else is "not found", never "forbidden".
 export async function getCollaborationDetail(scope: DetailScope): Promise<CollaborationDetailDto | null> {
+  if (!isUuid(scope.id)) return null;
   const owner = scope.role === "creator" ? eq(collaborations.creatorId, scope.ownerId) : eq(campaigns.brandId, scope.ownerId);
   const [row] = await collaborationSelect().where(and(eq(collaborations.id, scope.id), owner));
   if (!row) return null;

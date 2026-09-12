@@ -1,0 +1,34 @@
+import { cn } from "cn";
+import Link from "next/link";
+import type { ViewerRole } from "../../schemas";
+import { NAANOBOT, NAANOBOT_THREAD_ID } from "../../ui-constants";
+
+// Pinned helper thread at the top of the list, like naano's NaanoBot.
+export function NaanoBotItem({ role, active }: { role: ViewerRole; active: boolean }) {
+  return (
+    <li>
+      <Link
+        href={`/${role}/messages/${NAANOBOT_THREAD_ID}`}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "flex items-center gap-3 border-b px-4 py-3 transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-ring",
+          active ? "bg-brand/5" : "bg-muted/30",
+        )}
+      >
+        <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-foreground text-sm font-bold text-background">
+          n
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-sm font-semibold">{NAANOBOT.name}</span>
+            <span className="text-xs text-muted-foreground">Now</span>
+          </div>
+          <p className="truncate text-xs text-muted-foreground">{NAANOBOT.preview}</p>
+        </div>
+        <span className="flex size-5 items-center justify-center rounded-full bg-brand text-[0.625rem] font-bold text-brand-foreground" aria-label="1 unread">
+          1
+        </span>
+      </Link>
+    </li>
+  );
+}

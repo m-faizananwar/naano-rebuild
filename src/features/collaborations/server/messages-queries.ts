@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { campaigns, collaborations, creators, messages, users } from "@/db/schema";
 import { THREAD_STATUSES } from "@/lib/collaboration-labels";
 import type { MessageDto, ThreadDetailDto, ThreadDto, ViewerRole } from "../schemas";
-import { type CollaborationRow, collaborationSelect, initialOf } from "./dto";
+import { type CollaborationRow, collaborationSelect, initialOf, isUuid } from "./dto";
 import { MAX_THREAD_MESSAGES, MESSAGE_PREVIEW_CHARS } from "../ui-constants";
 
 export type ThreadScope = { role: ViewerRole; ownerId: string; userId: string };
@@ -63,6 +63,7 @@ export async function listThreads(scope: ThreadScope): Promise<ThreadDto[]> {
 
 // The viewer must be a party (owner filter) for the thread to exist at all.
 export async function getThread(scope: ThreadScope, collaborationId: string): Promise<ThreadDetailDto | null> {
+  if (!isUuid(collaborationId)) return null;
   const [row] = await collaborationSelect().where(and(eq(collaborations.id, collaborationId), ownerFilter(scope)));
   if (!row || !THREAD_STATUSES.includes(row.collab.status)) return null;
 
@@ -96,4 +97,10 @@ export async function getThread(scope: ThreadScope, collaborationId: string): Pr
     thread: toThreadDto(row, scope.role, { body: lastMessage?.body ?? null, at: lastMessage?.createdAt ?? null }),
     messages: dtos,
   };
+}
+
+// The viewer's side of every thread query; null when the profile is missing.
+export function threadScopeFor(viewer: { role: ViewerRole; userId: string; brand: { id: string } | null; creator: { id: string } | null }): ThreadScope | null {
+  const ownerId = viewer.role === "brand" ? viewer.brand?.id : viewer.creator?.id;
+  return ownerId ? { role: viewer.role, ownerId, userId: viewer.userId } : null;
 }
