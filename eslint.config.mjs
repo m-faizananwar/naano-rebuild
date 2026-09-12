@@ -153,6 +153,8 @@ export default defineConfig([
       "max-params": "off",
       "max-depth": "off",
       "no-restricted-syntax": "off",
+      // the primitive is the generic wrapper; the control is passed at the call site
+      "jsx-a11y/label-has-associated-control": "off",
     },
   },
 ]);
