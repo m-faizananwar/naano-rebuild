@@ -41,8 +41,9 @@ pnpm dev                          # http://localhost:3000
 | `pnpm db:migrate:remote` / `db:seed:remote` | same, against the `DATABASE_URL` in a gitignored `.env.remote.local` |
 
 CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push. Smoke test after every deploy:
-`GET /api/health` → `{ ok, db, dbEnv, commit }` (503 with `db: "not configured"` until a database URL is set; `dbEnv` names
-the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`).
+`GET /api/health` → `{ ok, db, dbEnv, ai, voice, commit }` (503 with `db: "not configured"` until a database URL is set; `dbEnv` names
+the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`; `ai` is `claude` or `template`,
+`voice` is `vapi` or `web-speech`, depending on which optional keys are present).
 
 **Without a database** every page still renders: the app shells show an honest "Database not configured" state on every
 tab, the public pages fall back to static content, `/api/health` is the only thing that reports the reason. The
