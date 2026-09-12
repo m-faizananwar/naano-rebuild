@@ -1,0 +1,4 @@
+.DS_Store
+node_modules/
+# capture hook's own error log (not a session log; .agent-logs/ is committed)
+.claude/hooks/capture-errors.log
