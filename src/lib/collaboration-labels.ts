@@ -207,3 +207,30 @@ export function brandNextAction(input: NextActionInput): string {
       return "Declined";
   }
 }
+
+// ---- timeline -----------------------------------------------------------------
+
+const ACTOR_NAMES = { brand: "The brand", creator: "The creator", system: "Naano" } as const;
+
+const EVENT_VERBS: Record<string, string> = {
+  invite: "sent the invitation",
+  apply: "applied to the campaign",
+  accept: "accepted",
+  decline: "declined",
+  submit_draft: "submitted a draft",
+  approve: "approved the draft",
+  request_changes: "requested changes",
+  schedule: "scheduled the post",
+  publish: "published the post",
+  pay: "released the payment",
+};
+
+// "The creator accepted the invitation" — one line per collaboration_events row.
+export function eventLabel(event: string, actor: "brand" | "creator" | "system", fromStatus: CollaborationStatus | null): string {
+  const who = ACTOR_NAMES[actor];
+  const verb = EVENT_VERBS[event] ?? event.replace(/_/g, " ");
+  if (event === "accept" || event === "decline") {
+    return `${who} ${verb} the ${fromStatus === "applied" ? "application" : "invitation"}`;
+  }
+  return `${who} ${verb}`;
+}

@@ -92,3 +92,13 @@ describe("next action", () => {
     }
   });
 });
+
+describe("eventLabel", () => {
+  it("names who did what, distinguishing invitation from application", async () => {
+    const { eventLabel } = await import("./collaboration-labels");
+    expect(eventLabel("accept", "creator", "invited")).toBe("The creator accepted the invitation");
+    expect(eventLabel("accept", "brand", "applied")).toBe("The brand accepted the application");
+    expect(eventLabel("pay", "system", "live")).toBe("Naano released the payment");
+    expect(eventLabel("request_changes", "brand", "draft_submitted")).toBe("The brand requested changes");
+  });
+});
