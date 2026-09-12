@@ -1,0 +1,55 @@
+import { index, integer, jsonb, pgTable, real, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { baseColumns } from "../columns";
+import { users } from "./users";
+
+export type CreatorBundle = { posts: number; totalCents: number };
+// Percentages summing to ~100, e.g. { Marketing: 48, Founders: 29, ... }
+export type AudienceMix = Record<string, number>;
+
+export const creators = pgTable(
+  "creators",
+  {
+    ...baseColumns,
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    handle: text("handle").notNull(),
+    linkedinUrl: text("linkedin_url").notNull(),
+    headline: text("headline").notNull(),
+    bio: text("bio").notNull().default(""),
+    country: text("country").notNull(),
+    industries: text("industries").array().notNull().default([]),
+    followers: integer("followers").notNull().default(0),
+    priceCents: integer("price_cents").notNull(),
+    bundles: jsonb("bundles").$type<CreatorBundle[]>().notNull().default([]),
+    medianViews: integer("median_views").notNull().default(0),
+    engagementRate: real("engagement_rate").notNull().default(0),
+    postsPerMonth: real("posts_per_month").notNull().default(0),
+    audienceJobTitles: jsonb("audience_job_titles").$type<AudienceMix>().notNull().default({}),
+    audienceSeniority: jsonb("audience_seniority").$type<AudienceMix>().notNull().default({}),
+    avatarUrl: text("avatar_url").notNull(),
+  },
+  (t) => [
+    uniqueIndex("creators_user_id_idx").on(t.userId),
+    uniqueIndex("creators_handle_idx").on(t.handle),
+    index("creators_followers_idx").on(t.followers),
+  ],
+);
+
+export const creatorPosts = pgTable(
+  "creator_posts",
+  {
+    ...baseColumns,
+    creatorId: uuid("creator_id")
+      .notNull()
+      .references(() => creators.id, { onDelete: "cascade" }),
+    url: text("url").notNull(),
+    body: text("body").notNull(),
+    impressions: integer("impressions").notNull().default(0),
+    reactions: integer("reactions").notNull().default(0),
+    comments: integer("comments").notNull().default(0),
+    reposts: integer("reposts").notNull().default(0),
+    postedAt: timestamp("posted_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("creator_posts_creator_id_idx").on(t.creatorId)],
+);

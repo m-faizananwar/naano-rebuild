@@ -16,6 +16,10 @@ function create(url: string) {
 
 let cached: ReturnType<typeof create> | undefined;
 
+export function isDbConfigured() {
+  return Boolean(process.env.DATABASE_URL);
+}
+
 // Lazy so importing this module never fails at build time on a machine
 // without DATABASE_URL; the first query is what needs it.
 export function getDb() {
