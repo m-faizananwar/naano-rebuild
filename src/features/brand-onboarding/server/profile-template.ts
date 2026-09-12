@@ -54,12 +54,17 @@ export function companyFromDomain(emailDomain: string): string {
   return label ? capitalize(label) : "Your company";
 }
 
+// A host label that can stand in as a brand name: "acme" yes,
+// "this-host-does-not-exist-9f3k2" no.
+const NAME_LIKE_LABEL = /^[a-z]{2,20}$/i;
+
 export function resolveCompany(source: ProfileSource): string {
   if (!source.companyIsPlaceholder && source.company.trim()) return source.company.trim();
   const host = hostLabel(source.url);
   const fromTitle = source.summary ? companyFromTitle(source.summary.title, host) : null;
   if (fromTitle) return fromTitle;
-  return companyFromDomain(host || source.emailDomain);
+  if (NAME_LIKE_LABEL.test(host)) return companyFromDomain(host);
+  return source.company.trim() || companyFromDomain(source.emailDomain);
 }
 
 // 2–3 industries by keyword hits over the fetched text; B2B / SaaS fill in.

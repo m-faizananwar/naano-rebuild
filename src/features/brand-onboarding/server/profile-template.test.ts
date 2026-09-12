@@ -30,6 +30,9 @@ describe("resolveCompany", () => {
     expect(resolveCompany({ summary, company: "Gmail", companyIsPlaceholder: true, emailDomain: "gmail.com", url: "https://vercel.com" })).toBe("Vercel");
     expect(resolveCompany({ summary: null, company: "Gmail", companyIsPlaceholder: true, emailDomain: "gmail.com", url: "https://www.acme.io" })).toBe("Acme");
   });
+  it("keeps the registered name when the host does not look like a brand", () => {
+    expect(resolveCompany({ summary: null, company: "Gmail", companyIsPlaceholder: true, emailDomain: "gmail.com", url: "https://no-such-host-9f3k2.example" })).toBe("Gmail");
+  });
 });
 
 describe("inferIndustries", () => {

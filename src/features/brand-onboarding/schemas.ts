@@ -5,15 +5,18 @@ import {
 
 // ---- step 1: the website -----------------------------------------------------------
 
-// "yourcompany.com" is accepted and normalised to https://.
+const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+const HTTP_SCHEME = /^https?:\/\//i;
+
+// "yourcompany.com" is accepted and normalised to https://; other schemes are refused.
 export const websiteSchema = z.object({
   url: z
     .string()
     .trim()
     .min(1, "Enter your website address")
     .max(WEBSITE_URL_MAX_CHARS)
-    .transform((value) => (/^https?:\/\//i.test(value) ? value : `https://${value}`))
-    .pipe(z.string().url("Enter a full address like https://yourcompany.com")),
+    .transform((value) => (HAS_SCHEME.test(value) ? value : `https://${value}`))
+    .pipe(z.string().url("Enter a full address like https://yourcompany.com").regex(HTTP_SCHEME, "Only http and https addresses can be read")),
 });
 export type WebsiteInput = z.input<typeof websiteSchema>;
 
