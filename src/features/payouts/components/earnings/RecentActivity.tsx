@@ -10,7 +10,7 @@ export function RecentActivity({ rows }: { rows: LedgerRowDto[] }) {
       <h2 className="font-semibold">Recent activity</h2>
       <p className="text-sm text-muted-foreground">Collaboration earnings, withdrawals and invoices in one place.</p>
       <Tabs defaultValue="movements" className="mt-4">
-        <TabsList>
+        <TabsList className="h-auto max-w-full flex-wrap">
           <TabsTrigger value="movements">Earnings and withdrawals</TabsTrigger>
           <TabsTrigger value="awaiting">Awaiting release · {awaiting.length}</TabsTrigger>
           <TabsTrigger value="invoices">Invoices · {movements.filter((r) => r.type === "payout").length}</TabsTrigger>

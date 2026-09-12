@@ -24,7 +24,7 @@ export default async function BrandSettingsPage({ searchParams }: { searchParams
     <>
       <PageHeader eyebrow="Naano workspace" title="Settings" description="Manage your company profile and the audience you want to reach." />
       <Tabs defaultValue={tab === "audience" || tab === "team" || tab === "integrations" ? tab : "profile"}>
-        <TabsList>
+        <TabsList className="h-auto max-w-full flex-wrap">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="audience">Audience</TabsTrigger>
           <TabsTrigger value="team">Team &amp; access</TabsTrigger>

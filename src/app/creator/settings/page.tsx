@@ -29,7 +29,7 @@ export default async function CreatorSettingsPage() {
     <>
       <PageHeader title="Settings" description="Profile · Payments · Account" />
       <Tabs defaultValue="profile">
-        <TabsList>
+        <TabsList className="h-auto max-w-full flex-wrap">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="account">Account</TabsTrigger>

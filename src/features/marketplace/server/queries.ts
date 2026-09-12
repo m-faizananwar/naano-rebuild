@@ -67,8 +67,9 @@ function whereFor(query: MarketplaceQuery, shortlistedIds: Set<string>) {
   if (query.tab === "shortlist") clauses.push(inArray(creators.id, [...shortlistedIds]));
   if (query.activity !== "any") {
     // Active in the window = at least one public post since then.
-    const since = new Date(Date.now() - Number(query.activity) * DAY_MS);
-    clauses.push(sql`exists (select 1 from ${creatorPosts} where ${creatorPosts.creatorId} = ${creators.id} and ${creatorPosts.postedAt} >= ${since})`);
+    // ISO string: a Date inside a raw sql fragment is not serialised by the driver.
+    const since = new Date(Date.now() - Number(query.activity) * DAY_MS).toISOString();
+    clauses.push(sql`exists (select 1 from ${creatorPosts} where ${creatorPosts.creatorId} = ${creators.id} and ${creatorPosts.postedAt} >= ${since}::timestamptz)`);
   }
   return clauses.length ? and(...clauses) : undefined;
 }
