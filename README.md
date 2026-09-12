@@ -31,7 +31,7 @@ pnpm dev                          # http://localhost:3000
 | ------------------ | ----------------------------------------------------------------- |
 | `pnpm typecheck`   | `tsc --noEmit`                                                    |
 | `pnpm lint`        | ESLint — the engineering rules in `eslint.config.mjs`             |
-| `pnpm test`        | Vitest, 90 unit tests over the pure logic                         |
+| `pnpm test`        | Vitest, 89 unit tests over the pure logic                         |
 | `pnpm build`       | Production build                                                  |
 | `pnpm db:up/down`  | Docker Postgres                                                   |
 | `pnpm db:generate` | Drizzle migration from `src/db/schema/*`                          |
