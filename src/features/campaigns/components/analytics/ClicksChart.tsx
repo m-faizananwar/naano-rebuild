@@ -1,5 +1,9 @@
 "use client";
 
+// naano draws every line chart on mount: 2.5s ease-out after a 0.5s delay.
+const CHART_DRAW_MS = 2500;
+const CHART_DRAW_DELAY_MS = 500;
+
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatShortDay } from "@/lib/dates";
 
@@ -21,7 +25,7 @@ export function ClicksChart({ data }: Props) {
             contentStyle={{ borderRadius: 8, border: "1px solid var(--border)", background: "var(--popover)", color: "var(--popover-foreground)", fontSize: 12 }}
             formatter={(value) => [`${value} clicks`, "Qualified clicks"]}
           />
-          <Line type="monotone" dataKey="clicks" stroke="var(--brand)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "var(--brand)", stroke: "var(--background)", strokeWidth: 2 }} isAnimationActive={false} />
+          <Line type="monotone" dataKey="clicks" stroke="var(--brand)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "var(--brand)", stroke: "var(--background)", strokeWidth: 2 }} isAnimationActive animationBegin={CHART_DRAW_DELAY_MS} animationDuration={CHART_DRAW_MS} animationEasing="ease-out" />
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -9,6 +9,8 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const TOAST_MS = 3000;
+
 export const metadata: Metadata = {
   title: "naano",
   description: "Creator marketplace — rebuild",
@@ -19,7 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         {children}
-        <Toaster position="bottom-right" />
+        <Toaster position="bottom-right" duration={TOAST_MS} />
       </body>
     </html>
   );

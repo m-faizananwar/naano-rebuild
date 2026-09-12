@@ -13,7 +13,8 @@ const TONE_CLASSES: Record<StatusTone, string> = {
 
 export function StatusBadge({ status, className }: { status: CollaborationStatus; className?: string }) {
   return (
-    <Badge variant="secondary" className={cn(TONE_CLASSES[STATUS_TONES[status]], "border-transparent", className)}>
+    // Keyed on the status so a transition crossfades the chip in.
+    <Badge key={status} variant="secondary" className={cn("animate-fade", TONE_CLASSES[STATUS_TONES[status]], "border-transparent", className)}>
       {STATUS_LABELS[status]}
     </Badge>
   );

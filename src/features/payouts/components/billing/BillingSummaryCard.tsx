@@ -1,3 +1,4 @@
+import { CountUp } from "@/components/motion/CountUp";
 import { formatCents } from "@/lib/money";
 import { TOPUP_PRESETS_CENTS, TOPUP_QUICK_PRESETS } from "../../constants";
 import type { BillingSummary } from "../../server/queries";
@@ -11,7 +12,7 @@ export function BillingSummaryCard({ summary, onAddBudget }: Props) {
     <section className="grid gap-4 rounded-2xl border bg-background p-5 lg:grid-cols-[1fr_auto] lg:items-center">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Available balance</p>
-        <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums" aria-live="polite">{formatCents(summary.balanceCents, "EUR")}</p>
+        <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums" aria-live="polite"><CountUp value={summary.balanceCents} format="eur" /></p>
         <p className="mt-1 text-sm text-muted-foreground">
           Ready to spend across your campaigns. {formatCents(summary.topupsCents, "EUR")} added · {formatCents(summary.committedCents, "EUR")} committed to bookings.
         </p>

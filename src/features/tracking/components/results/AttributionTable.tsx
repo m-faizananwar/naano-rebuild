@@ -1,8 +1,7 @@
-import { Download } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { CreatorAttribution } from "../../server/queries";
+import { ExportCsvButton } from "./ExportCsvButton";
 
 export function AttributionTable({ rows, exportPath }: { rows: CreatorAttribution[]; exportPath: string }) {
   return (
@@ -12,9 +11,7 @@ export function AttributionTable({ rows, exportPath }: { rows: CreatorAttributio
           <h2 className="font-semibold">Attribution by creator</h2>
           <p className="text-sm text-muted-foreground">Every click is a row in the click log; the CSV is the audit trail.</p>
         </div>
-        <a href={exportPath} className={buttonVariants({ variant: "outline", size: "sm" })}>
-          <Download aria-hidden="true" /> Export all clicks (CSV)
-        </a>
+        <ExportCsvButton href={exportPath} label="Export all clicks (CSV)" />
       </div>
       {rows.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">No attributed activity yet.</p>
@@ -50,9 +47,7 @@ export function AttributionTable({ rows, exportPath }: { rows: CreatorAttributio
                   <TableCell className="text-right">{r.signups}</TableCell>
                   <TableCell className="text-right">{r.purchases}</TableCell>
                   <TableCell className="text-right">
-                    <a href={`${exportPath}?creator=${r.creatorId}`} className="text-sm font-medium text-brand hover:underline">
-                      CSV
-                    </a>
+                    <ExportCsvButton href={`${exportPath}?creator=${r.creatorId}`} label="CSV" size="xs" variant="ghost" />
                   </TableCell>
                 </TableRow>
               ))}

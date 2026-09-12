@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useOptimistic } from "react";
 import type { CollaborationDetailDto, ViewerRole } from "../../schemas";
 import { BrandActions } from "../actions/BrandActions";
@@ -27,7 +28,8 @@ export function CollaborationDetail({ detail, role, csrfToken }: Props) {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-4">
           {action.isPending ? (
-            <section aria-busy="true" className="rounded-2xl border border-dashed p-5 text-sm text-muted-foreground">
+            <section aria-busy="true" className="animate-fade flex items-center gap-2 rounded-2xl border border-dashed p-5 text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin text-brand" aria-hidden="true" />
               Saving…
             </section>
           ) : (

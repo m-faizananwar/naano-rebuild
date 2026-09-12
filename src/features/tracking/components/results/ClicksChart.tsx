@@ -5,6 +5,10 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import type { SeriesRange } from "../../constants";
 import type { SeriesPoint } from "../../server/queries";
 
+// naano draws every line chart on mount: 2.5s ease-out after a 0.5s delay.
+const CHART_DRAW_MS = 2500;
+const CHART_DRAW_DELAY_MS = 500;
+
 const RANGES: Array<{ key: SeriesRange; label: string }> = [
   { key: "week", label: "Week" },
   { key: "month", label: "Month" },
@@ -40,7 +44,7 @@ export function ClicksChart({ series, range, basePath }: { series: SeriesPoint[]
             <XAxis dataKey="day" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} minTickGap={24} />
             <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
             <Tooltip contentStyle={{ borderRadius: 12, borderColor: "var(--color-border)", fontSize: 12 }} />
-            <Line type="monotone" dataKey="clicks" stroke="var(--color-brand)" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="clicks" stroke="var(--color-brand)" strokeWidth={2} dot={false} isAnimationActive animationBegin={CHART_DRAW_DELAY_MS} animationDuration={CHART_DRAW_MS} animationEasing="ease-out" />
           </LineChart>
         </ResponsiveContainer>
       </div>
