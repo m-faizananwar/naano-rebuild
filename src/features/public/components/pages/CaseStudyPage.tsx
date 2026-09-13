@@ -1,6 +1,9 @@
 import { Check, Play } from "lucide-react";
 import { CASE_STUDY_PAGE } from "../../page-copy";
+import { cn } from "cn";
+import { HERO_POSTER } from "../hero/hero-config";
 import { CreatorAvatar } from "../shared/CreatorAvatar";
+import { interTight } from "../shared/display-font";
 import { CtaSection } from "../shared/CtaSection";
 import { LinkedInMark } from "../shared/LinkedInMark";
 import { CaseStudyNarrative } from "./CaseStudyNarrative";
@@ -22,13 +25,15 @@ export function CaseStudyPage() {
   const c = CASE_STUDY_PAGE;
   return (
     <>
-      <section className="px-4 pt-16 sm:px-6">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[3fr_2fr] lg:items-center">
+      <section className={cn("page-hero relative -mt-16 overflow-hidden px-4 pb-16 pt-32 sm:px-6", interTight.className)}>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.28] blur-[2px]" style={{ backgroundImage: `url(${HERO_POSTER})` }} />
+        <div aria-hidden="true" className="page-hero-wash pointer-events-none absolute inset-0" />
+        <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[3fr_2fr] lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">{c.eyebrow}</p>
+            <p className="page-hero-eyebrow text-[12.5px] uppercase tracking-[0.18em]">{c.eyebrow}</p>
             <p className="mt-4 text-2xl font-bold tracking-tight">{c.brand}</p>
-            <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] sm:text-6xl">{c.title}</h1>
-            <p className="mt-6 text-lg text-foreground/70">{c.sub}</p>
+            <h1 className="mt-4 text-[clamp(38px,5.4vw,72px)] font-normal leading-[0.98] tracking-[-0.036em] [text-wrap:balance]">{c.title}</h1>
+            <p className="page-hero-muted mt-6 text-lg">{c.sub}</p>
             <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-medium">
               <LinkedInMark />
               {c.tags}
