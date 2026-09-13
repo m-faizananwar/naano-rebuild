@@ -1,7 +1,9 @@
+import { cn } from "cn";
 import { ShieldCheck, Star } from "lucide-react";
 import { HERO_LOGOS } from "../../../constants";
 import { FOR_CREATORS } from "../../../page-copy";
-import { Clouds } from "../../shared/Clouds";
+import { HERO_POSTER } from "../../hero/hero-config";
+import { interTight } from "../../shared/display-font";
 import { CreatorAvatar } from "../../shared/CreatorAvatar";
 import { FaqList } from "../../shared/FaqList";
 import { LogoWall } from "../../shared/LogoWall";
@@ -16,8 +18,9 @@ const STARS = 5;
 function Hero() {
   const { hero } = FOR_CREATORS;
   return (
-    <section className="relative -mt-16 overflow-hidden bg-linear-to-b from-brand-sky via-brand-sky/70 via-55% to-background pt-16">
-      <Clouds />
+    <section className={cn("page-hero relative -mt-16 overflow-hidden pt-16", interTight.className)}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.28] blur-[2px]" style={{ backgroundImage: `url(${HERO_POSTER})` }} />
+      <div aria-hidden="true" className="page-hero-wash pointer-events-none absolute inset-0" />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pb-20 pt-24 text-center sm:px-6 sm:pt-36">
         <p className="inline-flex items-center gap-2 rounded-full bg-background/80 px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-border/60">
           <span className="flex -space-x-1.5">
@@ -27,8 +30,8 @@ function Hero() {
           </span>
           {hero.badge}
         </p>
-        <h1 className="mt-8 text-5xl font-bold tracking-[-0.04em] sm:text-7xl">{hero.title}</h1>
-        <p className="mt-6 max-w-2xl text-lg text-foreground/70 sm:text-xl">
+        <h1 className="mt-8 max-w-[15ch] text-[clamp(38px,6.4vw,88px)] font-normal leading-[0.98] tracking-[-0.036em] [text-wrap:balance]">{hero.title}</h1>
+        <p className="page-hero-muted mt-6 max-w-2xl text-lg sm:text-xl">
           {hero.sub} <strong className="font-semibold text-foreground">{hero.subStrong}</strong>.
         </p>
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
@@ -75,7 +78,7 @@ export function ForCreatorsPage() {
           <span aria-hidden="true" className="size-1.5 rounded-full bg-success" />
           {results.eyebrow}
         </p>
-        <div className="mx-auto max-w-6xl rounded-[2rem] bg-linear-to-b from-brand-soft/70 to-background p-4 sm:p-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] bg-muted/40 p-4 sm:p-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {results.stats.map((stat) => (
               <StatTile key={stat.label} value={stat.value} label={stat.label} />
@@ -89,8 +92,8 @@ export function ForCreatorsPage() {
           <FaqList items={faq.items} />
         </div>
       </section>
-      <section className="bg-brand-sky/60 px-4 py-24 text-center sm:px-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">{cta.eyebrow}</p>
+      <section className="page-hero px-4 py-24 text-center sm:px-6">
+        <p className="page-hero-eyebrow text-[12.5px] uppercase tracking-[0.18em]">{cta.eyebrow}</p>
         <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-bold tracking-[-0.03em] sm:text-6xl">{cta.title}</h2>
         <p className="mt-6 text-lg text-foreground/70">{cta.sub}</p>
         <div className="mt-8">

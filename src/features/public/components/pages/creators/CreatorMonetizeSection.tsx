@@ -6,7 +6,7 @@ import { LinkedInMark } from "../../shared/LinkedInMark";
 import { BRAND } from "@/config/brand";
 const M = FOR_CREATORS.monetize;
 const BARS = [20, 45, 20, 90, 30, 100];
-const CARD = "flex flex-col rounded-[1.75rem] bg-linear-to-b from-card to-brand-soft/40 p-5 ring-1 ring-border/60";
+const CARD = "frost flex flex-col rounded-[48px] bg-card/80 p-5 ring-1 ring-border/60";
 const MOCK = "mx-auto w-full max-w-60 rounded-xl bg-card p-4 shadow-md ring-1 ring-border/70";
 const CAPTION = "mt-auto pt-6 text-center text-lg font-semibold";
 
