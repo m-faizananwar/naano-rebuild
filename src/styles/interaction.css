@@ -190,7 +190,16 @@
 .card-invert:hover .card-keep { color: var(--foreground); }
 .card-invert:hover .card-keep .text-muted-foreground { color: var(--muted-foreground); }
 .card-invert:hover .card-keep .text-brand { color: var(--brand); }
-.card-invert:hover > [class*="frost"] { opacity: 0; }
+/* The inversion is painted ON the glass layer, like the chamfer button: the frost
+   (z1, above the refraction canvas, below the text) fills ink and the refracted
+   duplicate fades out, so the card reads as solid ink instead of a ghost. */
+.card-invert > [class*="frost"] { transition: background-color .35s var(--ix-ease), box-shadow .35s var(--ix-ease); }
+.card-invert > [class*="dup"] { transition: opacity .35s var(--ix-ease); }
+.card-invert:hover > [class*="frost"] { background: #0d0c0b !important; box-shadow: none; opacity: 1; }
+.card-invert:hover > [class*="dup"] { opacity: 0; }
+.card-invert:hover [class*="index"]:not(.card-keep *) { color: rgb(242 240 236 / 0.6); }
+.card-invert:hover :is(.text-brand, .text-primary):not(.card-keep *) { color: #f2f0ec; }
+.card-invert:hover :is([class*="border-"], hr):not(.card-keep *) { border-color: rgb(242 240 236 / 0.2); }
 @media (prefers-reduced-motion: reduce) { .card-invert:hover { translate: none; } }
 
 /* ── Stopgap for the scroll hero (hero files are another stream's): the spec gives
