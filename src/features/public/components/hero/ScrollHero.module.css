@@ -79,7 +79,8 @@
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset; -webkit-text-fill-color: var(--pill-fg);
   transition: transform 0.4s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
 }
-.pill:hover, .pill:focus-visible { transform: translateY(-2px); background: #000; color: #fff; -webkit-text-fill-color: #fff; }
+/* hover: the ink pill turns to paper (black → white) on the pill's own 0.3s ease, and lifts 2px */
+.pill:hover, .pill:focus-visible { transform: translateY(-2px); background: #fff; color: var(--fg); -webkit-text-fill-color: var(--fg); border-color: rgba(10, 9, 8, 0.3); }
 .pill:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 
 
