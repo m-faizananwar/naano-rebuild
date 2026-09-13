@@ -4,9 +4,14 @@ import type { ReactNode } from "react";
 import { BrandWordmark } from "@/components/BrandWordmark";
 import { BRAND } from "@/config/brand";
 import { AuthMediaPanel } from "./media/AuthMediaPanel";
+import { CreatorCardPanel } from "./preview/CreatorCardPanel";
+import { SignupPreviewProvider } from "./preview/SignupPreviewContext";
+import "./media/auth-media.css";
 
 type Props = {
   children: ReactNode;
+  // "card": the live marketplace-card preview (creator sign-up) instead of the media card.
+  panelVariant?: "media" | "card";
   // Brand onboarding still passes its flat blue panel copy; the auth pages
   // pass nothing and get the media card panel.
   panelTitle?: string;
@@ -28,8 +33,10 @@ function BrandPanel({ panelTitle, panelBody, panelFootnote }: Pick<Props, "panel
 // the media card panel right from lg up. Below lg the panel is hidden and the
 // page is the form only, on white. The form column's direct children fade up
 // with --d 9 onwards in DOM order (auth-media.css, .auth-stagger).
-export function AuthSplitLayout({ children, ...panel }: Props) {
+export function AuthSplitLayout({ children, panelVariant = "media", ...panel }: Props) {
+  const right = panel.panelTitle ? <BrandPanel {...panel} /> : panelVariant === "card" ? <CreatorCardPanel /> : <AuthMediaPanel />;
   return (
+    <SignupPreviewProvider>
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col px-6 py-8 sm:px-12 lg:px-24 xl:px-32">
         <div className="flex flex-1 flex-col justify-center py-10">
@@ -47,7 +54,8 @@ export function AuthSplitLayout({ children, ...panel }: Props) {
           </div>
         </div>
       </div>
-      {panel.panelTitle ? <BrandPanel {...panel} /> : <AuthMediaPanel />}
+      {right}
     </div>
+    </SignupPreviewProvider>
   );
 }

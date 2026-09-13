@@ -1,7 +1,6 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { AUTH_MEDIA } from "../../constants";
 import { InstagramGlyph, LinkedInGlyph, XGlyph } from "./AuthSocialGlyphs";
-import "./auth-media.css";
 
 // Panel-only font (the spec's), self-hosted by next/font; the form column stays Inter.
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-jakarta", display: "swap" });

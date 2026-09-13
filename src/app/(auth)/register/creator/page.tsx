@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: `Join ${BRAND.name} as a creator` };
 
 export default function RegisterCreatorPage() {
   return (
-    <AuthSplitLayout>
+    <AuthSplitLayout panelVariant="card">
       <SignUpOptions role="creator" />
     </AuthSplitLayout>
   );

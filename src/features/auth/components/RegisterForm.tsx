@@ -4,14 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { type Control, Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HEARD_ABOUT_OPTIONS } from "../constants";
 import { type RegisterInput, type Role, registerSchema } from "../schemas";
 import { register } from "../server/actions";
 import { FormField } from "./FormField";
+import { useSignupPreview } from "./preview/SignupPreviewContext";
 
 import { BRAND } from "@/config/brand";
 const COPY: Record<Role, { eyebrow?: string; title: string; sub: string }> = {
@@ -24,6 +25,17 @@ const BACK = "inline-flex items-center gap-2 text-sm text-foreground/80 hover:te
 
 // onBack: when rendered behind the sign-up options, "back" returns to them
 // instead of leaving the page.
+// Mirrors name + email into the sign-up preview (the live card next to creator
+// sign-up) while the person types. No provider → nothing happens.
+function usePreviewPublish(control: Control<RegisterInput>) {
+  const preview = useSignupPreview();
+  const [firstName, lastName, email] = useWatch({ control, name: ["firstName", "lastName", "email"] });
+  const publish = preview?.publish;
+  useEffect(() => {
+    publish?.({ firstName, lastName, email });
+  }, [publish, firstName, lastName, email]);
+}
+
 export function RegisterForm({ role, onBack }: { role: Role; onBack?: () => void }) {
   const router = useRouter();
   const ref = useSearchParams().get("ref") ?? undefined;
@@ -33,6 +45,7 @@ export function RegisterForm({ role, onBack }: { role: Role; onBack?: () => void
     defaultValues: { role, firstName: "", lastName: "", email: "", password: "", ref },
   });
   const { errors, isSubmitting } = form.formState;
+  usePreviewPublish(form.control);
 
   async function onSubmit(values: RegisterInput) {
     setServerError(null);
