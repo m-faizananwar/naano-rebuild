@@ -1,30 +1,32 @@
-/* The assistant's glass: the liquid-gooey silhouette is the white surface
-   (LIQUID.fill); these add the 12px backdrop blur behind it and keep the
-   content transparent so the goo underneath reads as the pill. */
-.assistant-pill,
-.assistant-panel {
+/* The assistant's glass — the same material on the pill, the panel and the
+   tooltip: 72% white, 12px blur, hairline border, soft shadow. The pill's
+   surface is the liquid-gooey silhouette (LIQUID.fill) so the bar can flow
+   into the bubble; the panel is a plain glass card anchored above it. */
+.assistant-glass {
+  background: rgb(255 255 255 / 0.72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgb(13 12 11 / 0.08);
+  box-shadow: 0 20px 60px rgb(13 12 11 / 0.1);
+}
+.assistant-pill {
   background: transparent;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
-.assistant-panel {
-  border: 1px solid rgb(47 47 47 / 0.08);
+.assistant-bubble {
+  background: rgb(13 12 11);
 }
-@media (prefers-reduced-motion: reduce) {
-  .assistant-pill,
-  .assistant-panel {
-    animation: assistant-fade 0.2s ease both;
-  }
+.assistant-msg--user {
+  background: rgb(13 12 11 / 0.06);
+  border-radius: 999px;
+  font-size: 14px;
+  padding: 8px 14px;
 }
-@keyframes assistant-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.assistant-msg--assistant {
+  font-size: 15px;
+  line-height: 1.5;
 }
-
-/* pieces we move ourselves: a bouncy travel, plain snap under reduced motion */
-.assistant-blob {
-  transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.64, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .assistant-blob { transition: none; }
+.assistant-ink60 {
+  color: rgb(13 12 11 / 0.6);
 }

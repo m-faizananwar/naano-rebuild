@@ -1,6 +1,8 @@
 "use client";
 
 import { Mic, MicOff, Square } from "lucide-react";
+import { type ReactNode, useEffect } from "react";
+import type { VoiceState } from "@/lib/voice-state";
 import { useVoice } from "./useVoice";
 import { Waveform } from "./Waveform";
 
@@ -15,8 +17,18 @@ const LABELS = {
 
 // Mic button for the floating pill. Renders the streaming transcript and the
 // assistant's last reply above the pill (the pill row is position:relative).
-export function VoiceMic({ csrfToken }: { csrfToken: string }) {
+type Props = {
+  csrfToken: string;
+  // Lets a host dress the button (the assistant pill's metal ring) and follow the state.
+  wrap?: (button: ReactNode) => ReactNode;
+  onStatusChange?: (status: VoiceState["status"]) => void;
+};
+
+export function VoiceMic({ csrfToken, wrap, onStatusChange }: Props) {
   const { state, supported, toggle } = useVoice(csrfToken);
+  useEffect(() => {
+    onStatusChange?.(state.status);
+  }, [state.status, onStatusChange]);
   const active = state.status !== "idle";
   const waveMode = state.status === "listening" || state.status === "confirming" ? "listening" : state.status === "speaking" ? "speaking" : state.status === "thinking" ? "thinking" : "idle";
   const caption = state.status === "speaking" || state.status === "confirming" || state.status === "error" ? (state.error ?? state.speech) : state.transcript;
@@ -33,6 +45,7 @@ export function VoiceMic({ csrfToken }: { csrfToken: string }) {
           <span className="voice-transcript">{caption || "…"}</span>
         </div>
       ) : null}
+      {(wrap ?? ((b: ReactNode) => b))(
       <button
         type="button"
         onClick={toggle}
@@ -45,6 +58,7 @@ export function VoiceMic({ csrfToken }: { csrfToken: string }) {
       >
         {!supported ? <MicOff className="size-4" aria-hidden="true" /> : state.status === "idle" || state.status === "error" ? <Mic className="size-4" aria-hidden="true" /> : state.status === "listening" || state.status === "confirming" ? <Waveform mode={waveMode} /> : state.status === "thinking" ? <Waveform mode="thinking" /> : <Square className="size-3" aria-hidden="true" />}
       </button>
+      )}
     </>
   );
 }

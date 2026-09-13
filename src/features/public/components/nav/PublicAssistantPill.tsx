@@ -10,7 +10,7 @@ export function PublicAssistantPill() {
     <>
       <AssistantWidget mode="public" />
       {/* left of the assistant's bubble slot (16px edge + 48px bubble + 8px) */}
-      <div className="pointer-events-none fixed bottom-4 right-[4.5rem] z-30 flex flex-col items-end gap-2">
+      <div className="pointer-events-none fixed right-4 bottom-[4.75rem] z-30 flex flex-col items-end gap-2 sm:right-[4.5rem] sm:bottom-4">
         <CookiesPill />
       </div>
     </>
