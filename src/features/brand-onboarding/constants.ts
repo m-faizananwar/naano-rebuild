@@ -31,7 +31,6 @@ export const SITE_HEADINGS_MAX = 12;
 export const WEBSITE_URL_MAX_CHARS = 2_000;
 
 // server/profile-ai.ts
-export const PROFILE_AI_MODEL = "claude-sonnet-5";
 export const PROFILE_AI_MAX_TOKENS = 2_000;
 export const PROFILE_AI_TIMEOUT_MS = 30_000;
 export const ICP_COUNT = 3;

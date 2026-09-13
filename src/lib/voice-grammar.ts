@@ -1,6 +1,6 @@
 import { BRAND } from "@/config/brand";
 // Template fallback for the voice layer: a small regex table that turns a
-// transcript into an intent when there is no ANTHROPIC_API_KEY. Pure.
+// transcript into an intent when no AI provider key is set. Pure.
 
 export type GrammarIntent =
   | { tool: "navigate"; route: string }

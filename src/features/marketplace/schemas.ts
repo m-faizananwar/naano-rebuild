@@ -164,7 +164,7 @@ export type MatchingResultDto = {
   headline: string;
   rationale: string;
   tradeoff: string;
-  source: "claude" | "template";
+  source: "model" | "template";
   creators: CreatorDto[];
 };
 

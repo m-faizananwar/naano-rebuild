@@ -1,5 +1,6 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
+import { describeAiError, generateText } from "@/features/ai/server/llm";
+import { aiProvider } from "@/features/ai/server/provider";
 import { formatCompact, formatEuro, formatEuroWhole } from "@/lib/format-euro";
 import { MATCHING_MAX_TOKENS, MATCHING_MODEL, MATCHING_TIMEOUT_MS } from "../constants";
 import type { CreatorDto } from "../schemas";
@@ -12,7 +13,7 @@ export type RationaleInput = {
   requested: number;
   creators: CreatorDto[];
 };
-export type Rationale = { rationale: string; tradeoff: string; source: "claude" | "template" };
+export type Rationale = { rationale: string; tradeoff: string; source: "model" | "template" };
 
 const TRADEOFF_PREFIX = "Trade-off:";
 const NAMED_IN_TEMPLATE = 3;
@@ -67,39 +68,24 @@ function parseRationale(text: string): Omit<Rationale, "source"> | null {
   return rationale && tradeoff ? { rationale, tradeoff } : null;
 }
 
-async function claudeRationale(input: RationaleInput): Promise<Rationale | null> {
-  const client = new Anthropic();
+async function modelRationale(input: RationaleInput): Promise<Rationale | null> {
   const user =
     `Brand: ${input.company}. Campaign: ${input.campaignName}.\nRequest: ${input.prompt}\n` +
     `Requested ${input.requested} creators; selection (best first):\n${input.creators.map(creatorSummary).join("\n")}`;
-  const response = await client.messages.create(
-    {
-      model: MATCHING_MODEL,
-      max_tokens: MATCHING_MAX_TOKENS,
-      output_config: { effort: "low" },
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: user }],
-    },
-    { timeout: MATCHING_TIMEOUT_MS },
-  );
-  if (response.stop_reason === "refusal") return null;
-  const text = response.content
-    .filter((block): block is Anthropic.TextBlock => block.type === "text")
-    .map((block) => block.text)
-    .join("\n")
-    .trim();
-  const parsed = parseRationale(text);
-  return parsed ? { ...parsed, source: "claude" } : null;
+  const result = await generateText({ system: SYSTEM_PROMPT, user, maxTokens: MATCHING_MAX_TOKENS, timeoutMs: MATCHING_TIMEOUT_MS, effort: "low" });
+  if (!result) return null;
+  const parsed = parseRationale(result.text);
+  return parsed ? { ...parsed, source: "model" } : null;
 }
 
 // Never throws: without a key, on any API error or on an unparseable reply
 // the template write-up is returned instead.
 export async function writeRationale(input: RationaleInput): Promise<Rationale> {
-  if (!process.env.ANTHROPIC_API_KEY || input.creators.length === 0) return templateRationale(input);
+  if (aiProvider().name === "template" || input.creators.length === 0) return templateRationale(input);
   try {
-    return (await claudeRationale(input)) ?? templateRationale(input);
+    return (await modelRationale(input)) ?? templateRationale(input);
   } catch (error) {
-    const detail = error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : String(error);
+    const detail = describeAiError(error);
     console.error(`[marketplace] ${BRAND.copilot} rationale fell back to the template`, { company: input.company, detail });
     return templateRationale(input);
   }

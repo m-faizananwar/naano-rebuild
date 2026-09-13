@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { pingDatabase } from "@/db/health";
+import { aiProvider } from "@/features/ai/server/provider";
+import { aiKeyEnvNames } from "@/lib/ai-provider";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +15,9 @@ export async function GET() {
     ok: db.ok,
     db: db.ok ? "ok" : db.reason,
     dbEnv: db.via,
-    ai: process.env.ANTHROPIC_API_KEY ? "claude" : "template",
+    ai: aiProvider().name,
+    // names only, never values: shows a misspelt or prefixed key variable
+    aiEnv: aiKeyEnvNames(process.env),
     voice: process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY && process.env.VAPI_PRIVATE_KEY ? "vapi" : "web-speech",
     email: process.env.RESEND_API_KEY ? "resend" : "on-screen",
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local",

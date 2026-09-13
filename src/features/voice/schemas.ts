@@ -75,5 +75,5 @@ export type VoiceResponse = {
   // Gated intent awaiting a yes; the client sends it back with the answer.
   pending?: VoiceIntent;
   intent?: VoiceIntent;
-  source?: "claude" | "grammar";
+  source?: "model" | "grammar";
 };

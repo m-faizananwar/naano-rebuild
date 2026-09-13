@@ -81,7 +81,6 @@ export const LAUNCH_STEPS = [
 export type LaunchStepKey = (typeof LAUNCH_STEPS)[number]["key"];
 
 // AI brief generation (features/campaigns/server/brief-ai.ts).
-export const BRIEF_AI_MODEL = "claude-sonnet-5";
 export const BRIEF_AI_MAX_TOKENS = 4_000;
 export const BRIEF_AI_TIMEOUT_MS = 45_000;
 export const BRIEF_PROMPT_MAX_CHARS = 1_000;
@@ -92,6 +91,6 @@ export const CAMPAIGN_NAME_MAX_CHARS = 120;
 export const CAMPAIGN_DESCRIPTION_MAX_CHARS = 400;
 export const LINK_URL_MAX_CHARS = 2_000;
 
-export const TEMPLATE_NOTE = "Prepared from a template — add ANTHROPIC_API_KEY for AI briefs";
+export const TEMPLATE_NOTE = "Prepared from a template — add ANTHROPIC_API_KEY or GEMINI_API_KEY for AI briefs";
 export const AI_NOTE = "Generated with AI";
 export const LINK_NOTE = "We couldn't read the link in this build, so we prepared the brief from your workspace profile";

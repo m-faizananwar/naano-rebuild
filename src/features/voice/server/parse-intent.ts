@@ -1,8 +1,8 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { generateStructured } from "@/features/ai/server/llm";
+import { aiProvider } from "@/features/ai/server/provider";
 import { parseVoiceCommand } from "@/lib/voice-grammar";
-import { VOICE_MODEL, VOICE_TIMEOUT_MS } from "../constants";
+import { VOICE_MAX_TOKENS, VOICE_TIMEOUT_MS } from "../constants";
 import { intentSchema, intentWireSchema, type VoiceIntent } from "../schemas";
 
 import { BRAND } from "@/config/brand";
@@ -12,22 +12,15 @@ Creators: navigate, openCampaign, applyToCampaign, submitDraft, showResults.
 Prices are euros. Names are as spoken. If the command is not one of these, return tool "unknown" with a short reason. Never invent values the user did not say.`;
 
 // Claude with structured output when the key is set; the regex grammar otherwise or on any failure.
-export async function parseIntent(transcript: string, role: "brand" | "creator"): Promise<{ intent: VoiceIntent; source: "claude" | "grammar" }> {
+export async function parseIntent(transcript: string, role: "brand" | "creator"): Promise<{ intent: VoiceIntent; source: "model" | "grammar" }> {
   const fallback = () => ({ intent: intentSchema.parse(parseVoiceCommand(transcript)), source: "grammar" as const });
-  if (!process.env.ANTHROPIC_API_KEY) return fallback();
+  if (aiProvider().name === "template") return fallback();
   try {
-    const client = new Anthropic({ timeout: VOICE_TIMEOUT_MS, maxRetries: 0 });
-    const message = await client.messages.parse({
-      model: VOICE_MODEL,
-      max_tokens: 300,
-      system: SYSTEM,
-      messages: [{ role: "user", content: `Role: ${role}. Command: "${transcript}"` }],
-      output_config: { format: zodOutputFormat(intentWireSchema) },
-    });
-    if (!message.parsed_output) return fallback();
+    const result = await generateStructured({ system: SYSTEM, user: `Role: ${role}. Command: "${transcript}"`, schema: intentWireSchema, maxTokens: VOICE_MAX_TOKENS, timeoutMs: VOICE_TIMEOUT_MS });
+    if (!result) return fallback();
     // Drop nulls so the app schema's optionals/defaults apply.
-    const cleaned = Object.fromEntries(Object.entries(message.parsed_output).filter(([, v]) => v !== null));
-    return { intent: intentSchema.parse(cleaned), source: "claude" };
+    const cleaned = Object.fromEntries(Object.entries(result.data).filter(([, v]) => v !== null));
+    return { intent: intentSchema.parse(cleaned), source: "model" };
   } catch (error) {
     console.error("[voice] intent parse failed, using grammar", { error });
     return fallback();

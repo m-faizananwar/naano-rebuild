@@ -9,7 +9,7 @@ export const VOICE_TOOLS = [
 export type VoiceTool = (typeof VOICE_TOOLS)[number];
 export const GATED_TOOLS: readonly VoiceTool[] = ["bookCreator", "approveDraft", "requestChanges", "topUp", "applyToCampaign", "submitDraft"];
 
-export const VOICE_MODEL = "claude-sonnet-5";
+export const VOICE_MAX_TOKENS = 300;
 export const VOICE_TIMEOUT_MS = 12_000;
 export const TRANSCRIPT_MAX_CHARS = 500;
 export const YES_PATTERN = /^(yes|yeah|yep|yup|confirm|confirmed|do it|go ahead|sure|ok|okay|please)\b/i;

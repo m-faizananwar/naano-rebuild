@@ -28,7 +28,7 @@ export default async function CreateWithAiPage() {
         <div>
           <AiComposer />
           <p className="mt-3 text-xs text-muted-foreground">
-            The AI turns your workspace profile and this prompt into an editable brief. Without an ANTHROPIC_API_KEY it is prepared from a template.
+            The AI turns your workspace profile and this prompt into an editable brief. Without an ANTHROPIC_API_KEY or GEMINI_API_KEY it is prepared from a template.
           </p>
         </div>
       </div>

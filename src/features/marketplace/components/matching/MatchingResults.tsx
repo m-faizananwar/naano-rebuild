@@ -42,7 +42,7 @@ export function MatchingResults({ prompt, result }: Props) {
           <Button type="button" variant="ghost" size="icon-xs" aria-label="Bad answer" onClick={() => feedback("down")}>
             <ThumbsDown aria-hidden="true" />
           </Button>
-          <span className="ml-auto text-[10px] uppercase tracking-wider">{result.source === "claude" ? `Written by ${BRAND.copilot}` : "Template rationale"}</span>
+          <span className="ml-auto text-[10px] uppercase tracking-wider">{result.source === "model" ? `Written by ${BRAND.copilot}` : "Template rationale"}</span>
         </div>
         </StagedResults>
       </div>

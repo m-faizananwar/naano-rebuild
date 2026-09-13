@@ -44,12 +44,12 @@ pnpm dev                          # http://localhost:3000
 
 CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push. Smoke test after every deploy:
 `GET /api/health` → `{ ok, db, dbEnv, ai, voice, commit }` (503 with `db: "not configured"` until a database URL is set; `dbEnv` names
-the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`; `ai` is `claude` or `template`,
+the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`; `ai` is `anthropic`, `gemini` or `template` (provider order `ANTHROPIC_API_KEY` → `GEMINI_API_KEY` → template, `aiEnv` lists key-looking variable names),
 `voice` is `vapi` or `web-speech`, `email` is `resend` or `on-screen`, depending on which optional keys are present).
 
 **Without a database** every page still renders: the app shells show an honest "Database not configured" state on every
 tab, the public pages fall back to static content, `/api/health` is the only thing that reports the reason. The
-deploy never 500s because of a missing env var: `ANTHROPIC_API_KEY` is optional everywhere it is used.
+deploy never 500s because of a missing env var: the AI keys are optional everywhere they are used.
 
 ## Architecture
 
@@ -88,10 +88,10 @@ query over rows; the click log exports to CSV per creator.
 | Area | Status |
 | --- | --- |
 | Auth | Own users/sessions (bcrypt, httpOnly cookie, CSRF token on the session). Login/register pages carry the OceanPulse media panel (`docs/reference/auth-media-spec.md`; standalone at `/oceanpulse/index.html`): reef video card, markers, entrance stagger, Plus Jakarta Sans in that panel only; hidden below lg; creator sign-up keeps the live marketplace-card panel, filling in as you type. `/register?role=saas|influencer` lands on the role step. Forgot password is real end to end (single-use hashed token, 30 min); the link is emailed through Resend when `RESEND_API_KEY` is set and always shown on screen in a labelled box (free-plan Resend only delivers to the account owner, failures are logged, never shown). Register copies naano's flow; the 6-digit email code step is skipped on purpose; LinkedIn/Google buttons are visual. |
-| Brand onboarding | Real: reads the website server-side (title, description, headings), writes value prop + 3 ICPs with Claude when `ANTHROPIC_API_KEY` is set, otherwise a template that still uses the fetched text; creates the "{Company} creator brief" campaign; lands in AI Matching with the coach mark. |
+| Brand onboarding | Real: reads the website server-side (title, description, headings), writes value prop + 3 ICPs with the resolved LLM (Claude Sonnet 5 or Gemini 2.5 Flash) when a key is set, otherwise a template that still uses the fetched text; creates the "{Company} creator brief" campaign; lands in AI Matching with the coach mark. |
 | Creator onboarding | Real 4-step flow with the live card; the LinkedIn read is **simulated** deterministically from the URL slug (no Apify); price recommendation from `src/lib/recommend-price.ts` (2,070 followers → €315 like naano). Professional info is stored, not enforced. |
 | Marketplace (brand) | Real: 300 creators ranked by `fitScore()` against the selected campaign, the "Top ranked creators" strip (40) over an "All creators" divider, filters incl. the activity window (last public post), sort/search/pagination in the URL, shortlist, profile modal (Overview / Audience / Content tabs, audience bars, reach chart, Professional profile accordion), "Your selection" and "Make an offer" dialogs creating funded invitations. |
-| AI Matching (Nao) | Real ranking; rationale written by Claude (`claude-sonnet-5`) when the key is set, otherwise a template built from the fit signals — the UI labels which. Rail: New research, Retry, Undo (previous result set), Stop (discards the run in flight), Apply request; thumbs/copy write a `nao_feedback` row. |
+| AI Matching (Nao) | Real ranking; rationale written by the resolved LLM (`claude-sonnet-5` or `gemini-2.5-flash`) when a key is set, otherwise a template built from the fit signals — the UI labels which. Rail: New research, Retry, Undo (previous result set), Stop (discards the run in flight), Apply request; thumbs/copy write a `nao_feedback` row. |
 | Campaigns | Real: list, chooser, create-with-AI as a three-question chat (what you sell, the buyer, the goal → draft, with a history rail), start-from-link (URL stored, not fetched — says so), 4-step launch stepper with the pre-spend estimator (`src/lib/estimator.ts`, naano's Q2 2026 benchmarks), brief editor with naano's exact fields, detail tabs (collaborations, brief, shortlist, analytics from rows), delete. |
 | Collaborations | Real on both sides: apply, accept/decline, draft, review modal (approve / request changes, capped rounds), schedule, publish with post URL, pay; optimistic UI with rollback; timeline from `collaboration_events`. |
 | Messages | Real threads per accepted booking, both sides; NaanoBot is a static placeholder; reactions are visual. |
@@ -112,5 +112,5 @@ Motion follows naano's own keyframes and easings (`src/app/globals.css`); every 
 
 ## Environment
 
-See `.env.example`. `DATABASE_URL` is required for the product to have rows; `ANTHROPIC_API_KEY` is optional (AI briefs,
+See `.env.example`. `DATABASE_URL` is required for the product to have rows; `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` are optional (AI briefs,
 Nao rationale and brand-onboarding profile fall back to templates without it). Vercel sets `VERCEL_GIT_COMMIT_SHA`.

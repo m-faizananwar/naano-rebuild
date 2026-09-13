@@ -21,6 +21,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
     "@base-ui/react": "^1.8.0",
+    "@google/genai": "^2.22.0",
     "@hookform/resolvers": "^5.9.1",
     "@next/env": "^16.3.5",
     "@vapi-ai/web": "^2.7.0",

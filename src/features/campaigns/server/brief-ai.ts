@@ -1,8 +1,8 @@
 import "server-only";
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { describeAiError, generateStructured } from "@/features/ai/server/llm";
+import { aiProvider } from "@/features/ai/server/provider";
 import { buildTemplateDraft, DEFAULT_AVOID, DEFAULT_DO, DEFAULT_TONE } from "@/lib/brief-template";
-import { BRIEF_AI_MAX_TOKENS, BRIEF_AI_MODEL, BRIEF_AI_TIMEOUT_MS, GEOGRAPHIES, INDUSTRIES } from "../constants";
+import { BRIEF_AI_MAX_TOKENS, BRIEF_AI_TIMEOUT_MS, GEOGRAPHIES, INDUSTRIES } from "../constants";
 import { z } from "zod";
 import { type BrandProfile, type CampaignDraft, campaignDraftSchema } from "../schemas";
 
@@ -58,17 +58,10 @@ function userPrompt({ brand, prompt }: GenerateInput) {
 }
 
 async function generateWithAi(input: GenerateInput): Promise<CampaignDraft | null> {
-  const client = new Anthropic({ timeout: BRIEF_AI_TIMEOUT_MS, maxRetries: 1 });
-  const response = await client.messages.parse({
-    model: BRIEF_AI_MODEL,
-    max_tokens: BRIEF_AI_MAX_TOKENS,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt(input) }],
-    output_config: { format: zodOutputFormat(aiOutputSchema) },
-  });
-  if (response.stop_reason === "refusal" || !response.parsed_output) return null;
+  const result = await generateStructured({ system: SYSTEM_PROMPT, user: userPrompt(input), schema: aiOutputSchema, maxTokens: BRIEF_AI_MAX_TOKENS, timeoutMs: BRIEF_AI_TIMEOUT_MS });
+  if (!result) return null;
   // The shared schema applies the limits and the transforms the wire schema lacks.
-  const parsed = campaignDraftSchema.safeParse(response.parsed_output);
+  const parsed = campaignDraftSchema.safeParse(result.data);
   return parsed.success ? parsed.data : null;
 }
 
@@ -87,16 +80,17 @@ function templateDraft(input: GenerateInput): CampaignDraft {
   );
 }
 
-// AI when ANTHROPIC_API_KEY is set; the template on any failure (missing key,
-// network, refusal, invalid JSON). The deploy never fails because of the key.
+// AI when a provider key is set (src/lib/ai-provider.ts); the template on any
+// failure (no key, network, refusal, invalid JSON). The deploy never fails
+// because of the key.
 export async function generateCampaignDraft(input: GenerateInput): Promise<GeneratedDraft> {
-  if (!process.env.ANTHROPIC_API_KEY) return { draft: templateDraft(input), generatedWith: "template" };
+  if (aiProvider().name === "template") return { draft: templateDraft(input), generatedWith: "template" };
   try {
     const draft = await generateWithAi(input);
     if (draft) return { draft, generatedWith: "ai" };
     console.warn("[campaigns] brief-ai returned no usable draft, using the template", { brandId: input.brand.id });
   } catch (error) {
-    const reason = error instanceof Anthropic.APIError ? `${error.name} ${error.status ?? ""}`.trim() : "unexpected error";
+    const reason = describeAiError(error);
     console.error("[campaigns] brief-ai failed, using the template", { brandId: input.brand.id, reason, error });
   }
   return { draft: templateDraft(input), generatedWith: "template" };
