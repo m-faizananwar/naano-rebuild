@@ -13,6 +13,7 @@ const REASON: Record<string, string> = {
   expired: "This reset link has expired — they last 30 minutes.",
   used: "This reset link was already used.",
   unconfigured: "Password reset needs the database, which isn't configured on this deployment.",
+  unavailable: "Password reset isn't available right now. Try again in a little while.",
 };
 
 export default async function ResetPasswordPage({ params }: { params: Promise<{ token: string }> }) {
