@@ -10,7 +10,7 @@
   --pad:clamp(20px, 2.2vw, 34px);
   --ease-out:cubic-bezier(.16,1,.3,1);
   --stagger:72ms;
-  --nature-img:url("https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260831_224622_4eeb9d43-9e46-4483-9530-1eb4ef4c942d.png&w=1920&q=85");
+  --nature-img:url("/media/auth-nature.jpg"); /* self-hosted 1280px copy of the spec still */
   font-family:var(--font-jakarta),"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
   color:var(--ink);
