@@ -8,10 +8,10 @@
   touch-action: none; overflow: hidden;
   /* Budget guard on the compositor, independent of the main thread: whatever
      hydration or the script does, the overlay leaves by 2.5s from paint (ring +
-     number out at 1.73s, overlay fade at 2.2s). The script only ever ends it earlier. */
-  animation: splashAutoExit 200ms cubic-bezier(.55,.085,.68,.53) 2200ms both;
+     number out at 0.83s, overlay fade at 1.3s). The script only ever ends it earlier. */
+  animation: splashAutoExit 200ms cubic-bezier(.55,.085,.68,.53) 1300ms both;
 }
-.stage { animation: splashAutoOut 450ms cubic-bezier(.55,.085,.68,.53) 1730ms both; }
+.stage { animation: splashAutoOut 450ms cubic-bezier(.55,.085,.68,.53) 830ms both; }
 @keyframes splashAutoExit { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
 @keyframes splashAutoOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.85); } }
 :global(html[data-splash="seen"]) .root { display: none; }

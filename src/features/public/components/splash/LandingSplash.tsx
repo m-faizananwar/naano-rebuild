@@ -10,15 +10,15 @@ const CIRC = 2 * Math.PI * R;
 const FIRST_TARGET = 85;
 const FIRST_MS = 260;
 const SETTLE_MS = 120;
-// The whole splash, exit included, is gone within 2500ms of first paint:
-// 100 is forced at ~1.7s at the latest, then out (450) + fade (200).
-const BUDGET_MS = 2500;
+// The whole splash, exit included, is gone within 1600ms of first paint:
+// 100 is forced at ~0.83s at the latest, then out (450) + fade (200).
+const BUDGET_MS = 1600;
 const HOLD_MS = 80;
 const OUT_MS = 450;
 const FADE_MS = 200;
 // timer + animation-finish overhead measured at ~50–100ms, hence the margin
 const EXIT_MARGIN_MS = 120;
-const FORCE_AT_MS = BUDGET_MS - OUT_MS - FADE_MS - EXIT_MARGIN_MS; // 1730
+const FORCE_AT_MS = BUDGET_MS - OUT_MS - FADE_MS - EXIT_MARGIN_MS; // 830
 const OUT_EASE = "cubic-bezier(.55,.085,.68,.53)";
 const STORAGE_KEY = "amplio:splash";
 const MARK_SIZE = 120;
