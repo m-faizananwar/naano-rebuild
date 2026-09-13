@@ -1,6 +1,7 @@
 "use client";
 
 import { type RefObject, useEffect } from "react";
+import { onSplashDone } from "../splash/splash-events";
 
 const BLUR_PX = 18;
 const WASH = "rgba(242, 240, 236, 0.55)";
@@ -52,15 +53,28 @@ export function useStaticGlass(refs: Refs, src: string | null) {
       ctx.fillRect(0, 0, w, h);
     };
 
-    image.onload = draw;
-    image.src = src;
-    const ro = new ResizeObserver(draw);
-    ro.observe(section);
-    ro.observe(card);
-    window.addEventListener("resize", draw);
-    // The entrance translates the card, which ResizeObserver does not see: re-register when it settles.
-    card.addEventListener("animationend", draw);
-    return () => { disposed = true; ro.disconnect(); window.removeEventListener("resize", draw); card.removeEventListener("animationend", draw); };
+    // A blurred full-section draw is expensive, and there are ~17 cards: never
+    // on the critical path. Start after the splash, when the thread is idle, and
+    // only once the card is near the viewport.
+    let armed = false;
+    const ro = new ResizeObserver(() => { if (armed) draw(); });
+    const onResize = () => { if (armed) draw(); };
+    const onSettle = () => { if (armed) draw(); };
+    const arm = () => {
+      if (armed || disposed) return;
+      armed = true;
+      image.onload = draw;
+      image.src = src;
+      ro.observe(section);
+      ro.observe(card);
+      window.addEventListener("resize", onResize);
+      // The entrance translates the card, which ResizeObserver does not see: re-register when it settles.
+      card.addEventListener("animationend", onSettle);
+    };
+    const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); arm(); } }, { rootMargin: "50% 0px" });
+    const idle = () => (typeof requestIdleCallback === "function" ? requestIdleCallback(() => io.observe(card), { timeout: 1500 }) : window.setTimeout(() => io.observe(card), 200));
+    const offSplash = onSplashDone(idle);
+    return () => { disposed = true; offSplash(); io.disconnect(); ro.disconnect(); window.removeEventListener("resize", onResize); card.removeEventListener("animationend", onSettle); };
     // refs are stable; run once after hydration
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);

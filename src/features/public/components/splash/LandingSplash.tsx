@@ -3,17 +3,22 @@
 import { useEffect, useRef, useState } from "react";
 import { BrandMark } from "@/components/brand/BrandMark";
 import styles from "./splash.module.css";
-import { markSplashDone, onHeroProgress, whenHeroReady } from "./splash-events";
+import { markSplashDone, onHeroProgress } from "./splash-events";
 
 const R = 150;
 const CIRC = 2 * Math.PI * R;
 const FIRST_TARGET = 85;
 const FIRST_MS = 260;
 const SETTLE_MS = 120;
-const HARD_CAP_MS = 2500;
+// The whole splash, exit included, is gone within 2500ms of first paint:
+// 100 is forced at ~1.7s at the latest, then out (450) + fade (200).
+const BUDGET_MS = 2500;
 const HOLD_MS = 80;
 const OUT_MS = 450;
 const FADE_MS = 200;
+// timer + animation-finish overhead measured at ~50–100ms, hence the margin
+const EXIT_MARGIN_MS = 120;
+const FORCE_AT_MS = BUDGET_MS - OUT_MS - FADE_MS - EXIT_MARGIN_MS; // 1730
 const OUT_EASE = "cubic-bezier(.55,.085,.68,.53)";
 const STORAGE_KEY = "amplio:splash";
 const MARK_SIZE = 120;
@@ -24,12 +29,15 @@ const power2InOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 
 // Inline, before hydration: a tab that has seen the splash never paints it.
 const SEEN_SCRIPT = `try{if(sessionStorage.getItem(${JSON.stringify(STORAGE_KEY)}))document.documentElement.dataset.splash="seen"}catch(e){}`;
 
-// First visit per tab on the landing: a full-screen splash over the hero's
-// blob preload. The counter runs 0→85 over 260ms (power2.out), holds on the
-// real preload progress, then 85→100 over 120ms once fonts and the blob have
-// both resolved — or at the 2.5s hard cap. 80ms after 100 the ring and number
-// scale out (450ms) and the overlay fades (200ms). No click gate. Scroll is
-// locked underneath with the scrollbar gap compensated.
+// First visit per tab on the landing: a full-screen splash while the hero
+// preloads behind it. The counter runs 0→85 over 260ms (power2.out), holds on
+// the real preload progress (read for the number only — nothing waits on the
+// blob's attach), then 85→100 over 120ms once fonts are ready and the preload
+// is complete, or cuts straight to 100 when the budget fires. 80ms after 100
+// the ring and number scale out (450ms) and the overlay fades (200ms); the
+// forced path skips the hold so everything is gone by 2500ms from first
+// paint. No click gate. Scroll is locked underneath with the scrollbar gap
+// compensated.
 export function LandingSplash() {
   const root = useRef<HTMLDivElement>(null);
   const ring = useRef<SVGCircleElement>(null);
@@ -40,13 +48,24 @@ export function LandingSplash() {
   useEffect(() => {
     if (document.documentElement.dataset.splash === "seen") { markSplashDone(); const raf = requestAnimationFrame(() => setGone(true)); return () => cancelAnimationFrame(raf); }
     try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch { /* storage may be blocked */ }
+    // budget counted from first paint, not from hydration
+    const paintAt = performance.getEntriesByType("paint").find((e) => e.name === "first-contentful-paint")?.startTime ?? performance.now();
+    const sincePaint = performance.now() - paintAt;
+    if (sincePaint >= FORCE_AT_MS) {
+      // Hydration arrived late: the CSS budget guard has taken (or is taking) the
+      // overlay out already — just clear it, no lock, no scripted exit.
+      markSplashDone();
+      const raf = requestAnimationFrame(() => setGone(true));
+      return () => cancelAnimationFrame(raf);
+    }
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const gap = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${gap}px`;
     const unlock = () => { document.body.style.overflow = ""; document.body.style.paddingRight = ""; };
 
-    let killed = false, raf = 0, shown = 0, heroFraction = 0, settling = false;
+    let killed = false, raf = 0, shown = 0, heroFraction = 0, settling = false, forced = false;
+    const forceIn = Math.max(0, FORCE_AT_MS - sincePaint);
     const paint = (value: number) => {
       shown = Math.max(shown, Math.round(value));
       if (ring.current) ring.current.style.strokeDashoffset = String(CIRC * (1 - shown / 100));
@@ -66,7 +85,7 @@ export function LandingSplash() {
       window.setTimeout(() => {
         out.forEach((el) => el.animate([{ opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(0.85)" }], { duration: OUT_MS, easing: OUT_EASE, fill: "both" }));
         window.setTimeout(fade, OUT_MS);
-      }, HOLD_MS);
+      }, forced ? 0 : HOLD_MS);
     };
     const tick = (now: number) => {
       if (killed) return;
@@ -83,9 +102,20 @@ export function LandingSplash() {
       settling = true;
       from = shown; start = performance.now(); dur = SETTLE_MS; target = 100; ease = power2InOut;
     };
-    const cap = window.setTimeout(settle, HARD_CAP_MS);
-    Promise.all([document.fonts.ready, whenHeroReady()]).then(settle);
-    const offProgress = onHeroProgress((f) => { heroFraction = f; });
+    // The budget: cut straight to 100 and exit, whatever the preload is doing.
+    const force = () => {
+      if (killed || forced) return;
+      forced = true;
+      settling = true;
+      cancelAnimationFrame(raf);
+      paint(100);
+      finish();
+    };
+    const cap = window.setTimeout(force, forceIn);
+    let fontsReady = false;
+    const maybeSettle = () => { if (fontsReady && heroFraction >= 1) settle(); };
+    document.fonts.ready.then(() => { fontsReady = true; maybeSettle(); });
+    const offProgress = onHeroProgress((f) => { heroFraction = f; maybeSettle(); });
     return () => { killed = true; window.clearTimeout(cap); cancelAnimationFrame(raf); offProgress(); unlock(); };
   }, []);
 
@@ -93,7 +123,7 @@ export function LandingSplash() {
   return (
     <>
       <script dangerouslySetInnerHTML={{ __html: SEEN_SCRIPT }} />
-      <div ref={root} className={styles.root} role="status" aria-label="Loading">
+      <div ref={root} data-splash="" className={styles.root} role="status" aria-label="Loading">
         <div className={styles.stage}>
           <svg ref={ringSvg} className={styles.ring} viewBox="0 0 420 420" aria-hidden="true">
             <circle className={styles.trackCircle} cx="210" cy="210" r={R} fill="none" strokeWidth="2.5" />
