@@ -8,7 +8,7 @@ import { LogoWall } from "../shared/LogoWall";
 
 export function CaseStudySection() {
   return (
-    <GlassSection className="px-4 py-24 sm:px-6">
+    <GlassSection className="section-ink px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <h2 className="text-4xl font-bold tracking-[-0.03em] sm:text-5xl">{CASE_STUDY.eyebrow}</h2>
         <p className="mt-3 text-lg text-muted-foreground">{CASE_STUDY.sub}</p>

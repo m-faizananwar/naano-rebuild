@@ -255,3 +255,53 @@ main [aria-busy="true"][aria-label^="Loading"] { animation: skeletonAppear 0s 0.
    grid (case study: 2fr/3fr on lg) must get one, or the video panel goes
    full-width and 800px tall. */
 [class*="chromeBody"].grid { display: grid; }
+
+/* ---- ink sections: the same page, tokens flipped for one subtree ----
+   .section-ink paints solid ink edge to edge (hard edges, 96px top/bottom)
+   and re-points the theme tokens so every utility inside — text, borders,
+   rings, bg-card, bg-primary — reads paper on ink without touching the
+   components. Glass cards become ink-on-ink glass (paper/6% fill,
+   paper/12% hairline) and invert to PAPER with ink text on hover, the
+   mirror of the paper sections. Primary pills are paper with ink text and
+   invert to ink/paper; glass secondaries keep their capsule material. Two
+   ink sections are never adjacent, the page order keeps paper between. */
+.section-ink {
+  --background: #0d0c0b; --foreground: #f2f0ec;
+  --card: #0d0c0b; --card-foreground: #f2f0ec;
+  --popover: #0d0c0b; --popover-foreground: #f2f0ec;
+  --primary: #f2f0ec; --primary-foreground: #0d0c0b;
+  --secondary: rgb(242 240 236 / 0.08); --secondary-foreground: #f2f0ec;
+  --muted: rgb(242 240 236 / 0.08); --muted-foreground: rgb(242 240 236 / 0.6);
+  --accent: rgb(242 240 236 / 0.08); --accent-foreground: #f2f0ec;
+  --border: rgb(242 240 236 / 0.14); --input: rgb(242 240 236 / 0.14); --ring: rgb(242 240 236 / 0.4);
+  --brand-soft: rgb(242 240 236 / 0.08); --brand-sky: rgb(242 240 236 / 0.14);
+  background-color: #0d0c0b !important; color: #f2f0ec;
+  padding-top: 96px !important; padding-bottom: 96px !important;
+  border-radius: 0; color-scheme: dark;
+}
+.section-ink > [class*="backdropImage"] { display: none; }
+.section-ink :is([class*="border-"], hr, .divide-x > :not(:last-child)):not(.card-keep *) { border-color: rgb(242 240 236 / 0.14); }
+.section-ink [class*="index"] { color: rgb(242 240 236 / 0.6); }
+/* ink-on-ink glass cards */
+.section-ink .card-invert { background-color: rgb(242 240 236 / 0.06) !important; border-color: rgb(242 240 236 / 0.12) !important; color: #f2f0ec; }
+.section-ink .card-invert > [class*="frost"] { background: transparent !important; box-shadow: none; }
+.section-ink .card-invert > [class*="dup"] { display: none; }
+.section-ink .card-invert:hover { background-color: #f2f0ec !important; color: #0d0c0b; border-color: rgb(13 12 11 / 0.2) !important; box-shadow: 0 22px 48px rgb(0 0 0 / 0.45) !important; }
+.section-ink .card-invert:hover > [class*="frost"] { background: #f2f0ec !important; }
+.section-ink .card-invert:hover :is(h2, h3, h4, p, span, li, dt, dd, time, strong, a):not(.card-keep *) { color: #0d0c0b; }
+.section-ink .card-invert:hover .text-muted-foreground:not(.card-keep *) { color: rgb(13 12 11 / 0.6); }
+.section-ink .card-invert:hover :is(.text-brand, .text-primary):not(.card-keep *) { color: #0d0c0b; }
+.section-ink .card-invert:hover [class*="index"]:not(.card-keep *) { color: rgb(13 12 11 / 0.55); }
+.section-ink .card-invert:hover :is([class*="border-"], hr, .divide-x > :not(:last-child), .border-b, .border-t, .border):not(.card-keep *) { border-color: rgb(13 12 11 / 0.2); }
+.section-ink .card-invert:hover :is(.bg-card\/80, .bg-brand-soft\/70):not(.card-keep *) { background-color: rgb(13 12 11 / 0.05); box-shadow: 0 0 0 1px rgb(13 12 11 / 0.2); }
+.section-ink .card-invert:hover :is(.bg-foreground\/80, .bg-background\/90):not(.card-keep *) { background-color: rgb(13 12 11 / 0.92); color: #f2f0ec; }
+.section-ink .card-invert:hover .bg-background\/90 svg { color: #f2f0ec; }
+/* buttons: primary pills paper/ink → ink/paper, hairline links paper */
+.section-ink :is(a, button).group\/button:not(.btn-glass):not(.size-icon):not(.size-icon-sm):not(.size-icon-lg):not(.size-icon-xs) { background-color: #f2f0ec !important; color: #0d0c0b !important; border-color: #f2f0ec !important; }
+.section-ink :is(a, button).group\/button:not(.btn-glass):not(.size-icon):not(.size-icon-sm):not(.size-icon-lg):not(.size-icon-xs):hover { background-color: #0d0c0b !important; color: #f2f0ec !important; border-color: rgb(242 240 236 / 0.6) !important; }
+.section-ink :is(a, button).rounded-full.inline-flex:not(.group\/button):not(.btn-glass):not([class*="glass-nav-module"]):not([class*="chamfer"]) { background-color: #f2f0ec !important; color: #0d0c0b !important; border-color: #f2f0ec !important; }
+.section-ink :is(a, button).rounded-full.inline-flex:not(.group\/button):not(.btn-glass):not([class*="glass-nav-module"]):not([class*="chamfer"]):hover { background-color: #0d0c0b !important; color: #f2f0ec !important; border-color: rgb(242 240 236 / 0.6) !important; }
+.section-ink .btn-glass { color: #f2f0ec; }
+.section-ink .btn-glass:hover { background-color: #f2f0ec; color: #0d0c0b; }
+.section-ink .card-invert:hover .btn-glass { color: #0d0c0b; }
+.section-ink .card-invert:hover .btn-glass:hover { background-color: #0d0c0b; color: #f2f0ec; }

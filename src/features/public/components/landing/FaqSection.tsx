@@ -7,7 +7,7 @@ import { FaqList } from "../shared/FaqList";
 
 export function FaqSection() {
   return (
-    <GlassSection id="faq" className="scroll-mt-20 px-4 py-24 sm:px-6">
+    <GlassSection id="faq" className="section-ink scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.6fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <h2 className="text-4xl font-bold tracking-[-0.03em] sm:text-5xl">{FAQ.title}</h2>
