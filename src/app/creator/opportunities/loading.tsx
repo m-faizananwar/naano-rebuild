@@ -1,22 +1,14 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeaderSkeleton } from "@/components/skeleton/PageHeaderSkeleton";
+import { OpportunitiesSkeleton } from "@/components/skeleton/Skeletons";
+import { Bone } from "@/components/skeleton/Bone";
 
-const CARDS = 3;
-
+// Layout-matched skeleton for this route; the page crossfades over it once its data lands.
 export default function Loading() {
   return (
     <div aria-busy="true" aria-label="Loading opportunities">
-      <Skeleton className="h-9 w-64" />
-      <Skeleton className="mt-3 h-4 w-96 max-w-full" />
-      <div className="mt-6 flex gap-2">
-        <Skeleton className="h-8 w-28 rounded-full" />
-        <Skeleton className="h-8 w-24 rounded-full" />
-      </div>
-      <Skeleton className="mt-4 h-9 w-full" />
-      <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: CARDS }, (_, i) => (
-          <Skeleton key={i} className="h-96 rounded-2xl" />
-        ))}
-      </div>
+      <PageHeaderSkeleton />
+      <div className="mt-5 flex flex-wrap gap-2">{Array.from({ length: 4 }, (_, i) => <Bone key={i} className="h-8 w-28 rounded-lg" />)}</div>
+      <div className="mt-5"><OpportunitiesSkeleton /></div>
     </div>
   );
 }

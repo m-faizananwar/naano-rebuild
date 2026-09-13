@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Reveal } from "@/components/motion/Reveal";
 import { PageHeader } from "@/components/page/PageHeader";
 import { getViewer } from "@/features/auth/server/session";
 import { TourOverlay } from "@/features/creator-onboarding/components/TourOverlay";
@@ -27,20 +28,26 @@ export default async function CreatorOverviewPage({ searchParams }: { searchPara
     <>
       <PageHeader eyebrow="Creator workspace" title={`Good to see you, ${viewer.firstName}`} description="Your creator activity, at a glance." />
       <div className="grid gap-4">
+        <Reveal>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile label="Public post reach" value={overview.reach > 0 ? overview.reach.toLocaleString("en-US") : "—"} hint={overview.reach > 0 ? "Impressions across imported posts" : "Waiting for public post data"} />
           <StatTile label="Public posts" value={String(overview.posts)} hint="Original LinkedIn posts found" />
           <StatTile label="Public engagements" value={overview.engagements.toLocaleString("en-US")} hint="Reactions, comments and reposts" />
           <StatTile label="LinkedIn followers" value={overview.followers.toLocaleString("en-US")} hint="Imported from the public profile" />
         </div>
+        </Reveal>
+        <Reveal>
         <div className="grid gap-4 lg:grid-cols-[minmax(0,22rem)_1fr]">
           <CreatorCardBlock card={card} cardLink={cardLink} />
           <LaunchGuide ready={ready} />
         </div>
+        </Reveal>
+        <Reveal>
         <div className="grid gap-4 lg:grid-cols-[minmax(0,22rem)_1fr]">
           <RecommendedOpportunities items={overview.recommended} />
           <ActiveCollaborations items={overview.active} />
         </div>
+        </Reveal>
       </div>
       {tour === "1" ? <TourOverlay /> : null}
     </>

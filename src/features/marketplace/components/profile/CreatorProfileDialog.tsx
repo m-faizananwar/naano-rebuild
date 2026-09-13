@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileModalSkeleton } from "@/components/skeleton/Skeletons";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShortlistButton } from "../cards/ShortlistButton";
@@ -54,7 +55,9 @@ export function CreatorProfileDialog() {
               <BookingRail creator={creator} />
             </div>
           </div>
-        ) : null}
+        ) : (
+          <ProfileModalSkeleton />
+        )}
       </DialogContent>
     </Dialog>
   );

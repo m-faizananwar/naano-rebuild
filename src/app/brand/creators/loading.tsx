@@ -1,28 +1,14 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeaderSkeleton } from "@/components/skeleton/PageHeaderSkeleton";
+import { CreatorGridSkeleton } from "@/components/skeleton/Skeletons";
+import { Bone } from "@/components/skeleton/Bone";
 
-const CARDS = 6;
-
+// Layout-matched skeleton for this route; the page crossfades over it once its data lands.
 export default function Loading() {
   return (
     <div aria-busy="true" aria-label="Loading creators">
-      <Skeleton className="h-9 w-40" />
-      <Skeleton className="mt-6 h-9 w-72 rounded-lg" />
-      <Skeleton className="mt-6 h-8 w-48" />
-      <Skeleton className="mt-2 h-4 w-96 max-w-full" />
-      <div className="mt-5 flex gap-2">
-        <Skeleton className="h-8 w-64" />
-        <Skeleton className="h-8 w-40" />
-      </div>
-      <div className="mt-3 flex gap-2">
-        {Array.from({ length: 3 }, (_, i) => (
-          <Skeleton key={i} className="h-7 w-24 rounded-full" />
-        ))}
-      </div>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: CARDS }, (_, i) => (
-          <Skeleton key={i} className="h-64 rounded-2xl" />
-        ))}
-      </div>
+      <PageHeaderSkeleton />
+      <div className="mt-5 flex flex-wrap gap-2"><Bone className="h-8 w-64 rounded-lg" /><Bone className="h-8 w-40 rounded-lg" />{Array.from({ length: 3 }, (_, i) => <Bone key={i} className="h-7 w-24 rounded-full" />)}</div>
+      <div className="mt-5"><CreatorGridSkeleton /></div>
     </div>
   );
 }
