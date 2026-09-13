@@ -7,6 +7,7 @@ import { createVapiProvider } from "@/features/voice/providers/vapi";
 import { createWebSpeechProvider, isWebSpeechSupported } from "@/features/voice/providers/web-speech";
 
 export type SpeechStatus = "idle" | "listening" | "call";
+export type SpeechFault = "unsupported" | "blocked" | null;
 type Handlers = { onPartial: (text: string) => void; onFinal: (text: string) => void };
 type SessionInfo = { provider: "vapi"; assistantId: string; publicKey: string; voiceToken: string } | { provider: "web-speech" };
 
@@ -21,6 +22,7 @@ const BLOCKED = "Mic blocked — allow it in the address bar";
 // browsers and a blocked mic get a toast and the input gets focus.
 export function useSpeechInput(handlers: Handlers, focusInput: () => void) {
   const [status, setStatus] = useState<SpeechStatus>("idle");
+  const [fault, setFault] = useState<SpeechFault>(null);
   const provider = useRef<VoiceProvider | null>(null);
   const silence = useRef<number>(0);
   const latest = useRef("");
@@ -58,6 +60,7 @@ export function useSpeechInput(handlers: Handlers, focusInput: () => void) {
       }
     }
     if (!isWebSpeechSupported()) {
+      setFault("unsupported");
       toast(UNSUPPORTED);
       focusInput();
       return;
@@ -72,9 +75,12 @@ export function useSpeechInput(handlers: Handlers, focusInput: () => void) {
       },
       onFinal: (t) => finish(t),
       onError: (m) => {
-        toast.error(/blocked|not-allowed/i.test(m) ? BLOCKED : m);
+        const blocked = /blocked|not-allowed/i.test(m);
+        if (blocked) setFault("blocked");
+        // "didn't catch anything" is silence, not a fault: the call loop just restarts
+        if (blocked || !/didn't catch/i.test(m)) toast.error(blocked ? BLOCKED : m);
         stop();
-        focusInput();
+        if (blocked) focusInput();
       },
     };
     provider.current = createWebSpeechProvider(events);
@@ -82,7 +88,9 @@ export function useSpeechInput(handlers: Handlers, focusInput: () => void) {
     try {
       await provider.current.start();
     } catch (e) {
-      toast.error(e instanceof Error && /not-allowed|blocked/i.test(e.message) ? BLOCKED : UNSUPPORTED);
+      const blocked = e instanceof Error && /not-allowed|blocked/i.test(e.message);
+      setFault(blocked ? "blocked" : "unsupported");
+      toast.error(blocked ? BLOCKED : UNSUPPORTED);
       stop();
       focusInput();
     }
@@ -95,5 +103,7 @@ export function useSpeechInput(handlers: Handlers, focusInput: () => void) {
   }, [status, start, finish, stop]);
 
   useEffect(() => () => provider.current?.stop(), []);
-  return { status, toggle };
+  // stop without submitting (the call pauses recognition while it speaks)
+  const cancel = stop;
+  return { status, fault, toggle, start, cancel };
 }

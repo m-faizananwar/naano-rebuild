@@ -1,9 +1,12 @@
 "use client";
 
+import { Fragment } from "react";
+
 import { cn } from "cn";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { isActive, navFor } from "./nav";
+import { CallNavItem } from "./CallNavItem";
 
 type Props = { role: "brand" | "creator"; section: "primary" | "secondary"; onNavigate?: () => void };
 
@@ -22,7 +25,8 @@ export function SidebarNav({ role, section, onNavigate }: Props) {
         // first-mount entrance: the MotionSites nav stagger on the first four items
         const entrance = index < NAV_STAGGER_COUNT ? `nav-link-${index + 1}` : undefined;
         return (
-          <li key={item.href} className={entrance}>
+          <Fragment key={item.href}>
+          <li className={entrance}>
             <Link
               href={item.href}
               onClick={onNavigate}
@@ -38,6 +42,8 @@ export function SidebarNav({ role, section, onNavigate }: Props) {
               <span className="side-label truncate">{item.label}</span>
             </Link>
           </li>
+          {item.label === "Messages" ? <CallNavItem role={role} onNavigate={onNavigate} /> : null}
+          </Fragment>
         );
       })}
     </ul>

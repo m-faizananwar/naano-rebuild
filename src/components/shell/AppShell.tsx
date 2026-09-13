@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { RouteTransition } from "@/components/motion/RouteTransition";
+import { CallOverlayHost } from "@/features/assistant/components/call/CallOverlayHost";
+import { AccountMenu } from "./AccountMenu";
 import { AssistantPill } from "./assistant/AssistantPill";
 import { Sidebar } from "./Sidebar";
 import { SidebarFrame } from "./SidebarFrame";
@@ -23,6 +25,7 @@ export function AppShell({ viewer, children }: { viewer: ShellViewer; children: 
         </main>
       </div>
       <AssistantPill role={viewer.role} workspace={viewer.workspace} csrfToken={viewer.csrfToken} />
+      <CallOverlayHost role={viewer.role} csrfToken={viewer.csrfToken} account={<AccountMenu viewer={viewer} />} />
     </div>
     </WalletProvider>
   );

@@ -2,7 +2,9 @@
 
 import { AnimatePresence, motion, useReducedMotion, useSpring } from "framer-motion";
 import { Liquid } from "liquid-gooey";
-import { ChevronDown, MessageCircle, Square } from "lucide-react";
+import { ChevronDown, MessageCircle, Phone, Square } from "lucide-react";
+import Link from "next/link";
+import { useAgentMode } from "./agentMode";
 import { MetalFx } from "metal-fx";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { CyclingText } from "@/components/motion/CyclingText";
@@ -57,6 +59,7 @@ export function AssistantWidget({ mode, csrfToken, autoVoice = false }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [travel, setTravel] = useState(0);
   const chat = useAssistantChat(csrfToken);
+  const [agentMode] = useAgentMode();
   const speech = useSpeechInput(
     {
       onPartial: (text) => setDraft(text),
@@ -252,6 +255,11 @@ export function AssistantWidget({ mode, csrfToken, autoVoice = false }: Props) {
                       className="h-full w-full bg-transparent text-sm text-foreground outline-none"
                     />
                   </span>
+                  {agentMode && mode !== "public" ? (
+                    <Link href={`/${mode}/call`} aria-label="Call Amplio" className="chat-hover-send flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+                      <Phone className="size-4" aria-hidden="true" />
+                    </Link>
+                  ) : null}
                   <MetalFx variant="circle" preset="silver" theme="light" strength={listening ? 0.55 : 0.22}>
                     <button
                       type="button"
