@@ -16,5 +16,6 @@ export const DEMOTION_TTL_MS = 10 * 60 * 1000;
 // Health probe: one tiny request per provider change, cached for 10 minutes.
 export const PROBE_TTL_MS = 10 * 60 * 1000;
 export const PROBE_MAX_TOKENS = 64;
-export const PROBE_TIMEOUT_MS = 8_000;
+export const PROBE_TIMEOUT_MS = 10_000;
 export const HTTP_TOO_MANY_REQUESTS = 429;
+export const GEMINI_MIN_TIMEOUT_MS = 10_000;

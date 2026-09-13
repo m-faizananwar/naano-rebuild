@@ -4,7 +4,7 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { HTTP_BAD_REQUEST, HTTP_FORBIDDEN, HTTP_PAYMENT_REQUIRED, HTTP_TOO_MANY_REQUESTS, HTTP_UNAUTHORIZED, MAX_PROVIDER_ATTEMPTS, PROBE_MAX_TOKENS, PROBE_TIMEOUT_MS, PROBE_TTL_MS } from "../constants";
-import { ANTHROPIC_MODEL, DEFAULT_MAX_RETRIES, DEFAULT_MAX_TOKENS, DEFAULT_TIMEOUT_MS, ERROR_MESSAGE_MAX, GEMINI_MODEL } from "../constants";
+import { ANTHROPIC_MODEL, DEFAULT_MAX_RETRIES, DEFAULT_MAX_TOKENS, DEFAULT_TIMEOUT_MS, ERROR_MESSAGE_MAX, GEMINI_MIN_TIMEOUT_MS, GEMINI_MODEL } from "../constants";
 import { aiProvider, demoteProvider } from "./provider";
 
 export type StructuredRequest<T extends z.ZodType> = {
@@ -132,7 +132,7 @@ async function geminiStructured<T extends z.ZodType>(req: StructuredRequest<T>, 
       maxOutputTokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
       // Short, schema-bound calls: thinking would eat the output budget.
       thinkingConfig: { thinkingBudget: 0 },
-      httpOptions: { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS },
+      httpOptions: { timeout: geminiTimeout(req.timeoutMs) },
     },
   });
   const text = response.text?.trim();
@@ -150,12 +150,15 @@ async function geminiText(req: TextRequest, apiKey: string) {
       systemInstruction: req.system,
       maxOutputTokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
       thinkingConfig: { thinkingBudget: 0 },
-      httpOptions: { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS },
+      httpOptions: { timeout: geminiTimeout(req.timeoutMs) },
     },
   });
   const text = response.text?.trim();
   return text ? { text, provider: "gemini" as const } : null;
 }
+
+// Gemini rejects deadlines under 10 seconds ("Minimum allowed deadline is 10s").
+const geminiTimeout = (ms?: number) => Math.max(ms ?? DEFAULT_TIMEOUT_MS, GEMINI_MIN_TIMEOUT_MS);
 
 // Gemini accepts a JSON Schema subset: `const` becomes a one-value `enum`,
 // `oneOf` becomes `anyOf`, `$schema` is dropped. Applied recursively.
