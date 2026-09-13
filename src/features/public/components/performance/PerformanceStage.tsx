@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { Beam } from "@/components/motion/Beam";
 import { STAGE_COPY, STAGE_MEDIA } from "./performance-copy";
 import { ConnectionsMapArt, ContextWallArt, GaugeArt, PaperTexture, StageFilterDefs } from "./StageArt";
 import { usePerformanceStage } from "./usePerformanceStage";
 import "./performance.css";
-
 type CardKey = keyof typeof STAGE_COPY.cards;
 
 // The landing's results section as the metric-cards stage
@@ -50,8 +50,10 @@ export function PerformanceStage() {
 function MetricCard({ kind, children }: { kind: CardKey; children: React.ReactNode }) {
   const card = STAGE_COPY.cards[kind];
   const media = STAGE_MEDIA[kind];
+  const [hover, setHover] = useState(false);
   return (
-    <article className={`card card--${kind}`} role="listitem">
+    <Beam size="md" strength={0.6} active={hover} className="card-beam" role="listitem">
+    <article className={`card card--${kind}`} onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)}>
       <video className="card__media" autoPlay muted loop playsInline preload="auto" aria-hidden="true" poster={media.poster} src={media.src} />
       {kind === "context" ? children : null}
       <svg className="card__grain" viewBox="0 0 429 554" preserveAspectRatio="none" aria-hidden="true"><rect width="429" height="554" filter="url(#cardNoise)" /></svg>
@@ -61,5 +63,6 @@ function MetricCard({ kind, children }: { kind: CardKey; children: React.ReactNo
       <p className="caption">{card.caption[0]}<br />{card.caption[1]}</p>
       <Link className="learn-more" href={STAGE_COPY.learnMore.href}>{STAGE_COPY.learnMore.label}</Link>
     </article>
+    </Beam>
   );
 }

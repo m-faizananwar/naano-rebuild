@@ -1,6 +1,6 @@
 "use client";
 
-import { BorderBeam } from "border-beam";
+import { Beam } from "@/components/motion/Beam";
 import { motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -37,7 +37,7 @@ export function ChatPanel({ messages, busy, onClose, onClear }: Props) {
   });
 
   return (
-    <BorderBeam size="line" colorVariant="mono" strength={0.35} theme="light" active={busy} className="w-full">
+    <Beam size="line" strength={busy ? 0.8 : 0.45} className="w-full">
       <section aria-label="Conversation" className="flex w-full flex-col overflow-hidden text-foreground" style={{ minHeight: PANEL_MIN_HEIGHT, maxHeight: `${PANEL_MAX_VH}vh` }}>
         <motion.div {...layer(1)} className="assistant-ink60 flex items-center justify-between px-4 pt-3 pb-1 text-xs">
           <button type="button" onClick={onClear} className="hover:text-foreground focus-visible:outline-none focus-visible:underline">Clear</button>
@@ -66,6 +66,6 @@ export function ChatPanel({ messages, busy, onClose, onClear }: Props) {
           <div ref={endRef} />
         </motion.ol>
       </section>
-    </BorderBeam>
+    </Beam>
   );
 }

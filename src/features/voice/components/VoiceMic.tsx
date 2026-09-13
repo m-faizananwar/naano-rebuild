@@ -6,6 +6,7 @@ import type { VoiceState } from "@/lib/voice-state";
 import { useVoice } from "./useVoice";
 import { Waveform } from "./Waveform";
 
+import { AiOrb } from "@/components/motion/AiOrb";
 const LABELS = {
   idle: "Tap to talk",
   listening: "Listening…",
@@ -57,7 +58,7 @@ export function VoiceMic({ csrfToken, wrap, onStatusChange }: Props) {
         className="chat-hover-send flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:opacity-50 data-[status=listening]:bg-brand data-[status=listening]:text-brand-foreground data-[status=confirming]:bg-brand data-[status=confirming]:text-brand-foreground data-[status=speaking]:bg-brand/20 data-[status=speaking]:text-brand data-[status=thinking]:bg-brand/20 data-[status=thinking]:text-brand"
       >
         <span key={state.status} className="chat-swap flex items-center justify-center">
-          {!supported ? <MicOff className="size-4" aria-hidden="true" /> : state.status === "idle" || state.status === "error" ? <Mic className="size-4" aria-hidden="true" /> : state.status === "listening" || state.status === "confirming" ? <Waveform mode={waveMode} /> : state.status === "thinking" ? <Waveform mode="thinking" /> : <Square className="size-3" aria-hidden="true" />}
+          {!supported ? <MicOff className="size-4" aria-hidden="true" /> : state.status === "idle" || state.status === "error" ? <Mic className="size-4" aria-hidden="true" /> : state.status === "listening" || state.status === "confirming" ? <Waveform mode={waveMode} /> : state.status === "thinking" ? <AiOrb state="working" label="Thinking" /> : <Square className="size-3" aria-hidden="true" />}
         </span>
       </button>
       )}

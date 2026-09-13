@@ -7,6 +7,7 @@ import styles from "./glass.module.css";
 import { useSplashGate } from "../splash/useSplashGate";
 import { useGlassSync } from "./useGlassSync";
 
+import { Beam } from "@/components/motion/Beam";
 // The liquid-glass card over the scroll hero: a window onto a refracted copy
 // of the hero's own video (a blob src, so the canvas is not even tainted).
 // Three layers: refracted duplicate (0), frost sheen (1), text and wave (2).
@@ -21,6 +22,8 @@ export function HeroGlassCard({ videoRef }: { videoRef: RefObject<HTMLVideoEleme
     <aside ref={card} className={cn(styles.card, styles.glassFont, !entered && styles.waiting)} aria-label={GLASS_CARD.title}>
       <div ref={container} className={styles.dup}><canvas ref={canvas} className={styles.dupImage} /></div>
       <div className={styles.frost} aria-hidden="true" />
+      {/* a low colourful beam rides the card's bottom edge at rest */}
+      <Beam size="line" strength={0.3} className={styles.beam} aria-hidden="true"><span className={styles.beamBox} /></Beam>
       <div className={styles.head}>
         <h2 className={styles.title}>{GLASS_CARD.title}</h2>
         <span className={styles.index}>{GLASS_CARD.index}</span>

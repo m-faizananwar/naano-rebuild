@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useEffect, useState } from "react";
-import { TypingDots } from "@/components/motion/TypingDots";
+import { AiOrb } from "@/components/motion/AiOrb";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 import { BRAND } from "@/config/brand";
@@ -23,7 +23,7 @@ export function StagedResults({ intro, children }: Props) {
   return (
     <>
       <p className="text-muted-foreground">{intro}</p>
-      {show ? <div className="animate-fade grid gap-3">{children}</div> : <TypingDots label={`${BRAND.copilot} is thinking`} />}
+      {show ? <div className="animate-fade grid gap-3">{children}</div> : <span className="inline-flex items-center gap-2 text-sm text-muted-foreground"><AiOrb state="searching" label={`${BRAND.copilot} is thinking`} /> {BRAND.copilot} is searching…</span>}
     </>
   );
 }

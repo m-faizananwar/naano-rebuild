@@ -77,6 +77,7 @@
     var(--card-ref-w) * 1px
   );
 }
+.perf .card-beam{ position: relative; flex: 0 0 auto; }
 .perf .card{
   container-type: inline-size; position: relative; flex: 0 0 auto; overflow: hidden;
   width: var(--card-w); aspect-ratio: 429 / 554;

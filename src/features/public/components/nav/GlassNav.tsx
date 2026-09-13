@@ -10,6 +10,7 @@ import styles from "./glass-nav.module.css";
 import { MobilePublicNav } from "./MobilePublicNav";
 import { useGlassNav } from "./useGlassNav";
 
+import { HoverBeam } from "@/components/motion/HoverBeam";
 // Layout after prisma, material after the LTX controller: the Amplio lockup
 // on the left as a plain link, the four-cell glass controller centred (columns
 // sized to their labels), Sign in + the Sign up pill on the right. Transparent
@@ -66,7 +67,7 @@ export function GlassNav() {
 
         <div className={styles.actions}>
           <Link href="/login" className={styles.signin}>Sign in</Link>
-          <Link href="/register" className={styles.pill}>Sign up</Link>
+          <HoverBeam size="line" strength={0.5} className={styles.pillBeam}><Link href="/register" className={styles.pill}>Sign up</Link></HoverBeam>
           <MobilePublicNav />
         </div>
       </div>

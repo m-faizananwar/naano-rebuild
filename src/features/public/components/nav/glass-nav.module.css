@@ -110,3 +110,6 @@
   .header, .capsule, .track, .cell, .pill, .controller { transition-duration: 1ms !important; transition-delay: 0s !important; }
   .faded { filter: none; }
 }
+
+/* hover-only beam around the Sign up pill */
+.pillBeam { border-radius: 999px; display: inline-flex; }

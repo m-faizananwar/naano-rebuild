@@ -12,6 +12,7 @@ import {
   BUBBLE_SIZE, BUBBLE_TRAVEL_PADDING, EDGE_GAP, HAPTIC, LIQUID, MOTION, PANEL_GAP, PANEL_RADIUS, PHRASES, PHRASE_INTERVAL_MS, PILL_FOCUS_GROW,
   PILL_HEIGHT, PILL_WIDTH, PRESS_MS, PRESS_SCALE, SPRING_BEZIER, STORAGE_KEYS,
 } from "../constants";
+import { Beam } from "@/components/motion/Beam";
 import { ChatPanel } from "./ChatPanel";
 import { buzz } from "./haptics";
 import { SpinnerRing } from "./SpinnerRing";
@@ -209,7 +210,7 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
               ) : (
                 <motion.form
                   onSubmit={submit}
-                  className="assistant-pill flex items-center gap-3 rounded-full pl-4 pr-1.5"
+                  className="assistant-pill relative flex items-center gap-3 rounded-full pl-4 pr-1.5"
                   style={{ maxWidth: "calc(100vw - 2rem)" }}
                   initial={reduced ? { opacity: 0 } : { scale: 0.9, opacity: 0 }}
                   animate={{
@@ -220,8 +221,9 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
                   }}
                   transition={reduced ? fade : pressed ? { duration: PRESS_MS / 1000 } : { ...MOTION.morph, opacity: { ...MOTION.fadeIn, delay: origin === "bubble" ? 0.12 : 0 } }}
                 >
-                  <span key={chat.busy ? "busy" : "idle"} className="assistant-ink60 chat-swap"><SpinnerRing spinning={chat.busy} /></span>
-                  <span className="relative min-w-0 flex-1">
+                  <Beam size="line" strength={0.28} className="absolute inset-0 rounded-full" aria-hidden="true"><span className="block h-full w-full rounded-full" /></Beam>
+                  <span key={chat.busy ? "busy" : "idle"} className="assistant-ink60 chat-swap relative"><SpinnerRing spinning={chat.busy} /></span>
+                  <span className="relative z-10 min-w-0 flex-1">
                     {draft ? null : <CyclingText phrases={PHRASES} intervalMs={PHRASE_INTERVAL_MS} className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-muted-foreground" />}
                     <input
                       value={draft}

@@ -4,7 +4,7 @@ import { ArrowUp, Bot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { TypingDots } from "@/components/motion/TypingDots";
+import { AiOrb } from "@/components/motion/AiOrb";
 import { Textarea } from "@/components/ui/textarea";
 import { BRIEF_PROMPT_MAX_CHARS } from "../../constants";
 import { createCampaignFromAi } from "../../server/actions";
@@ -90,7 +90,7 @@ export function AiComposer() {
         ))}
         {pending ? (
           <li className="flex items-center gap-2 text-sm text-muted-foreground">
-            <TypingDots label="Preparing your brief" /> Preparing your brief…
+            <AiOrb state="composing" label="Preparing your brief" /> Preparing your brief…
           </li>
         ) : null}
       </ol>

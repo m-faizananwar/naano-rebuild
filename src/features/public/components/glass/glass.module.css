@@ -118,3 +118,10 @@
 }
 .backdropImage::after { content: ""; position: absolute; inset: 0; background: rgba(242, 240, 236, 0.55); }
 .backdropContent { position: relative; z-index: 1; }
+
+/* border-beam overlay inside the card, above the frost, below the text */
+.beam { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.beamBox { display: block; width: 100%; height: 100%; border-radius: 48px; }
+
+/* hover-only beam wrapper around the chamfer; inline so the button keeps its own size */
+.chamferBeam { display: inline-block; }
