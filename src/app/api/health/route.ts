@@ -5,8 +5,8 @@ export const dynamic = "force-dynamic";
 
 const HTTP_SERVICE_UNAVAILABLE = 503;
 
-// Smoke test after every deploy: { ok, db, dbEnv, ai, voice, commit }.
-// ai/voice name which optional integrations are configured (presence only).
+// Smoke test after every deploy: { ok, db, dbEnv, ai, voice, email, commit }.
+// ai/voice/email name which optional integrations are configured (presence only).
 export async function GET() {
   const db = await pingDatabase();
   const body = {
@@ -15,6 +15,7 @@ export async function GET() {
     dbEnv: db.via,
     ai: process.env.ANTHROPIC_API_KEY ? "claude" : "template",
     voice: process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY && process.env.VAPI_PRIVATE_KEY ? "vapi" : "web-speech",
+    email: process.env.RESEND_API_KEY ? "resend" : "on-screen",
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local",
   };
   return NextResponse.json(body, { status: db.ok ? 200 : HTTP_SERVICE_UNAVAILABLE });

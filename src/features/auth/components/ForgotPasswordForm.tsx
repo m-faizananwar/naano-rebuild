@@ -12,10 +12,10 @@ import { FormField } from "./FormField";
 
 const INPUT = "h-12 rounded-xl px-4";
 
-type Outcome = { email: string; resetUrl: string | null } | null;
+type Outcome = { email: string; resetUrl: string | null; emailed: boolean } | null;
 
-// Same styling as the login form. On success the link that would have been
-// emailed is shown on screen, clearly labelled — no email is sent in this build.
+// Same styling as the login form. On success the link is always shown on
+// screen, labelled by whether it was also emailed (Resend, when configured).
 export function ForgotPasswordForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<Outcome>(null);
@@ -29,7 +29,7 @@ export function ForgotPasswordForm() {
       setServerError(result.error);
       return;
     }
-    setOutcome({ email: values.email, resetUrl: result.data.resetUrl });
+    setOutcome({ email: values.email, resetUrl: result.data.resetUrl, emailed: result.data.emailed });
   }
 
   if (outcome) return <ResetLinkBox outcome={outcome} onRetry={() => setOutcome(null)} />;
@@ -62,8 +62,12 @@ function ResetLinkBox({ outcome, onRetry }: { outcome: NonNullable<Outcome>; onR
     <div className="grid gap-4" role="status">
       {outcome.resetUrl ? (
         <div className="rounded-2xl border border-brand/30 bg-brand-soft/60 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand">No email is sent in this build</p>
-          <p className="mt-2 text-sm text-muted-foreground">Here&apos;s the link we&apos;d have sent to {outcome.email}. It works once and expires in 30 minutes.</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand">
+            {outcome.emailed ? "We've emailed you a link" : "No email is sent in this build"}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {outcome.emailed ? `No email in your inbox at ${outcome.email}? Use this one.` : `Here's the link we'd have sent to ${outcome.email}.`} It works once and expires in 30 minutes.
+          </p>
           <Link href={outcome.resetUrl} className="mt-3 block break-all rounded-lg bg-background px-3 py-2 font-mono text-xs text-brand ring-1 ring-border hover:underline">
             {outcome.resetUrl}
           </Link>

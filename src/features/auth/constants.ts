@@ -27,3 +27,8 @@ export const AUTH_MEDIA = {
 
 // naano's role query values on /register → our role sign-up steps.
 export const REGISTER_ROLE_PARAM: Record<string, string> = { saas: "/register/brand", brand: "/register/brand", influencer: "/register/creator", creator: "/register/creator" };
+
+// Password reset email (Resend). onboarding@resend.dev is Resend's shared
+// sender for accounts without a verified domain.
+export const RESET_EMAIL_FROM = `${BRAND.wordmark} <onboarding@resend.dev>`;
+export const RESET_EMAIL_SUBJECT = `Reset your ${BRAND.wordmark} password`;
