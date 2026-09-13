@@ -175,3 +175,26 @@
 .btn-glass:not(:disabled):active { transform: translateY(0) scale(.97); box-shadow: none; }
 /* the glass variant is a Button too: keep it out of the generic inversion rules above */
 .group\/button.btn-glass:not(:disabled):hover { background-color: var(--foreground); color: var(--background); border-color: var(--foreground); transform: translateY(-2px); }
+
+/* ── Card inversion (landing GlassCards: showcase stats, how-it-works, posts, pricing) ──
+   The card body inverts like the buttons: ink at 92% over 350ms, text and
+   hairline to paper, lift 3px, deeper shadow. Mini UI inside marked
+   .card-keep keeps its colours (it sits on a white inner card). The hero's
+   refracting "Latest results" card is a different component and is exempt. */
+.card-invert { transition: background-color .35s var(--ix-ease), color .35s var(--ix-ease), border-color .35s var(--ix-ease), translate .35s var(--ix-ease), box-shadow .35s ease; }
+/* `translate`, not transform: the card's entrance animation holds `transform` with fill-mode both */
+.card-invert:hover { background-color: rgb(13 12 11 / 0.92) !important; color: #f2f0ec; border-color: rgb(242 240 236 / 0.28) !important; translate: 0 -3px; box-shadow: 0 22px 48px rgb(13 12 11 / 0.28) !important; }
+.card-invert:hover :is(h2, h3, h4, p, span, li, dt, dd, time, strong, a):not(.card-keep *) { color: #f2f0ec; }
+.card-invert:hover .text-muted-foreground:not(.card-keep *) { color: rgb(242 240 236 / 0.72); }
+.card-invert:hover .border-b, .card-invert:hover .border-t, .card-invert:hover .border { border-color: rgb(242 240 236 / 0.22); }
+.card-invert:hover .card-keep { color: var(--foreground); }
+.card-invert:hover .card-keep .text-muted-foreground { color: var(--muted-foreground); }
+.card-invert:hover .card-keep .text-brand { color: var(--brand); }
+.card-invert:hover > [class*="frost"] { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .card-invert:hover { translate: none; } }
+
+/* ── Stopgap for the scroll hero (hero files are another stream's): the spec gives
+   every panel's .cta pointer-events:auto, so the invisible panels' pills sit over
+   the chamfer at scroll 0 and swallow its hover and click. While a panel is
+   faded out (the scrub writes pointer-events:none on it) its links stay inert. */
+[data-panel][style*="pointer-events: none"] * { pointer-events: none !important; }

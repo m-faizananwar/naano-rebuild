@@ -26,7 +26,7 @@ export function HowItWorksSection() {
             const Mock = MOCKS[index];
             return (
               <GlassCard key={step.n} as="li" title={step.label} index={index + 1} order={index} className="p-5">
-                <div className="flex min-h-44 flex-1 items-center justify-center">{Mock ? <Mock /> : null}</div>
+                <div className="card-keep flex min-h-44 flex-1 items-center justify-center">{Mock ? <Mock /> : null}</div>
               </GlassCard>
             );
           })}

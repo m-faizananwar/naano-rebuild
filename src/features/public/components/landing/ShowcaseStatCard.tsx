@@ -41,7 +41,7 @@ function Illustration({ kind }: { kind: Kind }) {
 export function ShowcaseStatCard({ title, body, kind, index }: { title: string; body: string; kind: Kind; index: number }) {
   return (
     <GlassCard title={title} index={index + 1} order={index} className="p-6">
-      <div className={kind === "flags" ? "flex h-60 items-center justify-center overflow-visible" : "flex h-28 items-center"}>
+      <div className={kind === "flags" ? "card-keep flex h-60 items-center justify-center overflow-visible" : "card-keep flex h-28 items-center"}>
         <Illustration kind={kind} />
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{body}</p>
