@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { PointerTilt } from "@/components/motion/PointerTilt";
 import { RouteProgress } from "@/components/motion/RouteProgress";
+import { PublicChrome } from "@/components/shell/PublicChrome";
 import { ScrollMorph } from "@/components/motion/ScrollMorph";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${inter.variable} ${cormorant.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <RouteProgress />
+        <PublicChrome />
         <ScrollMorph />
         <PointerTilt />
         {children}

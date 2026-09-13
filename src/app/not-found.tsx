@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { PublicFooter } from "@/features/public/components/nav/PublicFooter";
-import { PublicNav } from "@/features/public/components/nav/PublicNav";
 import { PillLink } from "@/features/public/components/shared/PillLink";
 
 export default function NotFound() {
   return (
     <>
-      <PublicNav />
       <main className="flex flex-1 flex-col items-center justify-center bg-linear-to-b from-brand-soft to-background px-4 py-32 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">404</p>
         <h1 className="mt-4 text-4xl font-bold tracking-[-0.03em] sm:text-6xl">This page isn&apos;t on the marketplace.</h1>
