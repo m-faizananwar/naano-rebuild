@@ -1,0 +1,30 @@
+/* The assistant's glass: the liquid-gooey silhouette is the white surface
+   (LIQUID.fill); these add the 12px backdrop blur behind it and keep the
+   content transparent so the goo underneath reads as the pill. */
+.assistant-pill,
+.assistant-panel {
+  background: transparent;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.assistant-panel {
+  border: 1px solid rgb(47 47 47 / 0.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-pill,
+  .assistant-panel {
+    animation: assistant-fade 0.2s ease both;
+  }
+}
+@keyframes assistant-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* pieces we move ourselves: a bouncy travel, plain snap under reduced motion */
+.assistant-blob {
+  transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-blob { transition: none; }
+}
