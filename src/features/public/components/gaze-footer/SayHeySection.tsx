@@ -29,7 +29,7 @@ export function SayHeySection() {
   }, []);
   return (
     <section ref={root} id="say-hey" className={`gaze say-hey${entered ? " say-hey--in" : ""}`} aria-label="Say hey">
-      <GazeFooter copy={LANDING_COPY} logo={<BrandLockup size="lg" />} logoLabel={`${BRAND.name} logo`} />
+      <GazeFooter copy={LANDING_COPY} logo={<BrandLockup size="lg" />} logoLabel={`${BRAND.name} logo`} lazyMedia />
     </section>
   );
 }

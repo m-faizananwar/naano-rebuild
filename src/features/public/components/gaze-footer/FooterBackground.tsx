@@ -26,7 +26,11 @@ function timeForAngle(angle: number) {
   return nearestTime + 1 / 240;
 }
 
-export default function FooterBackground() {
+// `lazy` (the landing section): the 13MB clip has no src and preload="none"
+// until the section is near the viewport, so it never competes with the
+// page's own chunks on the origin connection. The standalone keeps the spec's
+// eager preload="auto".
+export default function FooterBackground({ lazy = false }: { lazy?: boolean } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -88,7 +92,20 @@ export default function FooterBackground() {
     window.addEventListener('scroll', updateTarget, { passive: true });
     if (video.readyState >= 2) ready();
 
+    let io: IntersectionObserver | null = null;
+    if (lazy) {
+      io = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io?.disconnect();
+        video.preload = 'auto';
+        video.src = '/footer-scrub.mp4';
+        video.load();
+      }, { rootMargin: '80% 0px' });
+      io.observe(video);
+    }
+
     return () => {
+      io?.disconnect();
       disposed = true;
       cancelAnimationFrame(frame);
       video.removeEventListener('seeked', schedule);
@@ -103,7 +120,7 @@ export default function FooterBackground() {
 
   return (
     <div className="footer-background" aria-hidden="true">
-      <video ref={videoRef} muted playsInline preload="auto" src="/footer-scrub.mp4" />
+      {lazy ? <video ref={videoRef} muted playsInline preload="none" /> : <video ref={videoRef} muted playsInline preload="auto" src="/footer-scrub.mp4" />}
     </div>
   );
 }

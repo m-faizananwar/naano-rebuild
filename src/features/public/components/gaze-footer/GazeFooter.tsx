@@ -12,16 +12,16 @@ export type GazeFooterCopy = {
   note: string;
 };
 
-type Props = { copy: GazeFooterCopy; logo: ReactNode; logoLabel: string };
+type Props = { copy: GazeFooterCopy; logo: ReactNode; logoLabel: string; lazyMedia?: boolean };
 
 // docs/reference/gaze-footer-spec.md, app/page.tsx — the markup verbatim, with
 // the copy and the logo as props so the standalone route and the landing share
 // one component. Labels render as links only when a href is given (the
 // landing); the standalone keeps them as static spans, as the spec says.
-export function GazeFooter({ copy, logo, logoLabel }: Props) {
+export function GazeFooter({ copy, logo, logoLabel, lazyMedia = false }: Props) {
   return (
     <footer className="footer" aria-label="Footer">
-      <FooterBackground />
+      <FooterBackground lazy={lazyMedia} />
       <div className="jobs">
         <span className="tag">{copy.leftBadge}</span>
         <span className="headline job-title">{copy.leftHeadline[0]}<br />{copy.leftHeadline[1]}</span>
