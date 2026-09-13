@@ -14,6 +14,7 @@ import { MarketplaceToolbar } from "./filters/MarketplaceToolbar";
 import { useMarketplaceUrl } from "./filters/useMarketplaceUrl";
 import { MarketplaceProvider } from "./MarketplaceProvider";
 
+import { CreatorGlobe } from "@/features/globe/components/CreatorGlobe";
 type Props = { ctx: MarketplaceContextDto; list: CreatorListDto; query: MarketplaceQuery; countries: CountryOptionDto[] };
 
 function ListTabs({ query, list }: { query: MarketplaceQuery; list: CreatorListDto }) {
@@ -107,7 +108,10 @@ export function MarketplaceView({ ctx, list, query, countries }: Props) {
           />
         ) : null}
         <ListTabs query={query} list={list} />
-        <MarketplaceToolbar query={query} countries={countries} count={list.total} />
+        <div className="flex items-start gap-4">
+          <div className="min-w-0 flex-1"><MarketplaceToolbar query={query} countries={countries} count={list.total} /></div>
+          <CreatorGlobe size={120} countries={countries} className="hidden shrink-0 xl:block" label="Creators by country — use the country filter to narrow the list" />
+        </div>
         <ListBody list={list} query={query} />
       </section>
     </MarketplaceProvider>

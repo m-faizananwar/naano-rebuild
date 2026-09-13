@@ -1,0 +1,42 @@
+/* Marker hit targets pinned to cobe's CSS anchors; the tooltip shows on hover
+   or focus. Browsers without anchor positioning get the globe without tips. */
+.creator-globe__hit {
+  display: none;
+}
+@supports (position-anchor: --x) {
+  .creator-globe__hit {
+    display: block;
+    position: absolute;
+    position-anchor: var(--anchor);
+    left: anchor(center);
+    top: anchor(center);
+    translate: -50% -50%;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    opacity: var(--visible);
+    pointer-events: auto;
+    cursor: default;
+  }
+  .creator-globe__hit[style*="--visible: 0"] { pointer-events: none; }
+}
+.creator-globe__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  translate: -50% 0;
+  white-space: nowrap;
+  background: rgb(13 12 11);
+  color: rgb(255 255 255);
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 9px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.creator-globe__hit:hover .creator-globe__tip,
+.creator-globe__hit:focus-visible .creator-globe__tip {
+  opacity: 1;
+}

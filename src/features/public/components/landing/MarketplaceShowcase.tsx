@@ -32,7 +32,7 @@ export function MarketplaceShowcase({ creators }: { creators: PublicCreator[] })
             ) : null}
           </div>
         </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="mt-6 grid items-start gap-4 md:grid-cols-3">
           {SHOWCASE.stats.map((stat, index) => (
             <ShowcaseStatCard key={stat.title} title={stat.title} body={stat.body} kind={stat.kind} index={index} />
           ))}

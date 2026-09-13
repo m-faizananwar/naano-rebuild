@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/page/PageHeader";
+import { CountryGlobe } from "@/features/globe/components/CountryGlobe";
 import { buttonVariants } from "@/components/ui/button";
 import { Leaderboard } from "@/features/workspace/components/community/Leaderboard";
 import { AFFILIATE_MONTHS, AFFILIATE_SHARE_PERCENT, LEADERBOARD_SIZE } from "@/features/workspace/constants";
@@ -16,7 +17,11 @@ export default async function CreatorCommunityPage() {
   const rows = await getLeaderboard(LEADERBOARD_SIZE);
   return (
     <>
-      <PageHeader title="Community" description={`Learn with other B2B creators, share what works and make your ${BRAND.name} identity visible.`} />
+      <PageHeader
+        title="Community"
+        description={`Learn with other B2B creators, share what works and make your ${BRAND.name} identity visible.`}
+        actions={<CountryGlobe size={320} className="-my-8 hidden lg:block" />}
+      />
       <div className="grid gap-4">
         <div className="grid gap-4 lg:grid-cols-2">
           <section className="rounded-2xl border bg-background p-5">

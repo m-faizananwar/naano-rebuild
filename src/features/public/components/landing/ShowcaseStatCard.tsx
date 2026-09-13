@@ -1,3 +1,4 @@
+import { CountryGlobe } from "@/features/globe/components/CountryGlobe";
 import { SHOWCASE } from "../../constants";
 import { GlassCard } from "../glass/GlassCard";
 import { CreatorAvatar } from "../shared/CreatorAvatar";
@@ -16,15 +17,8 @@ function Illustration({ kind }: { kind: Kind }) {
     );
   }
   if (kind === "flags") {
-    return (
-      <ul className="flex max-w-56 flex-wrap gap-3 text-2xl" aria-label="Countries">
-        {SHOWCASE.flags.map((flag) => (
-          <li key={flag} className="rounded-lg bg-background px-1.5 shadow-sm ring-1 ring-border/60">
-            {flag}
-          </li>
-        ))}
-      </ul>
-    );
+    // One ink marker per seeded creator country, sized by count; cobe loads lazily.
+    return <CountryGlobe size={240} className="mx-auto" />;
   }
   return (
     <div className="flex items-center gap-4">
@@ -47,7 +41,7 @@ function Illustration({ kind }: { kind: Kind }) {
 export function ShowcaseStatCard({ title, body, kind, index }: { title: string; body: string; kind: Kind; index: number }) {
   return (
     <GlassCard title={title} index={index + 1} order={index} className="p-6">
-      <div className="flex h-28 items-center">
+      <div className={kind === "flags" ? "flex h-60 items-center justify-center overflow-visible" : "flex h-28 items-center"}>
         <Illustration kind={kind} />
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{body}</p>
