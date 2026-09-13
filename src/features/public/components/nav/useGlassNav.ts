@@ -1,16 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type RefObject, useLayoutEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useSplashGate } from "../splash/useSplashGate";
 
-// Capsule geometry per cell (index 0 = the lockup): 5px protrusions at both ends.
-const CAP_LEFT = ["-5px", "20%", "40%", "60%", "80%"];
-const CAP_WIDTH = ["calc(20% + 5px)", "20%", "20%", "20%", "calc(20% + 5px)"];
 const COLLAPSE_MS = 980;
 const REVERSE_MS = 980;
 const SCROLL_SETTLE_MS = 160;
 const STORAGE_KEY = "glassnav:collapsed";
-const CAPSULE_HALF_H = 36;
+const PROTRUSION_PX = 5;
+const SCROLL_THRESHOLD_PX = 40;
+const SECTION_THRESHOLD = 0.35;
+
+function subscribeScroll(cb: () => void) {
+  window.addEventListener("scroll", cb, { passive: true });
+  return () => window.removeEventListener("scroll", cb);
+}
 
 export type NavPhase = "idle" | "collapsing" | "expanding";
 export type ArrivalClasses = { collapsed: string; trackFaded: string; chosen: string; faded: string };
@@ -18,7 +23,7 @@ export type ArrivalClasses = { collapsed: string; trackFaded: string; chosen: st
 type Input = {
   controller: RefObject<HTMLDivElement | null>;
   capsule: RefObject<HTMLDivElement | null>;
-  cellCount: number;
+  cells: ReadonlyArray<{ href: string }>;
   // class names applied imperatively for the pre-paint collapsed frame on arrival
   classes: ArrivalClasses;
 };
@@ -28,34 +33,44 @@ function readArrival(cellCount: number): number | null {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     sessionStorage.removeItem(STORAGE_KEY);
     const index = stored === null ? NaN : Number(stored);
-    return Number.isFinite(index) && index > 0 && index < cellCount ? index : null;
+    return Number.isFinite(index) && index >= 0 && index < cellCount ? index : null;
   } catch { return null; }
 }
 
-// The controller's behaviour: hover/focus capsule, pointer-tracked highlight,
-// the forward choreography before navigation, the reverse on arrival or after
-// an in-page scroll settles. Geometry goes through custom properties only.
-export function useGlassNav({ controller, capsule, cellCount, classes }: Input) {
+// The controller's behaviour: capsule parked on the in-view section's cell,
+// sliding to the hovered/focused cell and back; the pointer-tracked
+// highlight; the forward choreography before navigation and the reverse on
+// arrival or once an in-page scroll settles. Geometry through custom
+// properties only, measured from the content-sized cells.
+export function useGlassNav({ controller, capsule, cells, classes }: Input) {
   const router = useRouter();
   const [phase, setPhase] = useState<NavPhase>("idle");
   const [chosen, setChosen] = useState<number | null>(null);
+  // compressed past 40px of scroll; the header entrance waits for the splash
+  const compressed = useSyncExternalStore(subscribeScroll, () => window.scrollY > SCROLL_THRESHOLD_PX, () => false);
+  const entered = useSplashGate();
   const lock = useRef(false);
   const focused = useRef<number | null>(null);
+  const parked = useRef(0);
 
+  // Capsule over cell `index`: its measured box, plus the 5px protrusion on the outer cells.
   const setCapsule = (index: number) => {
     const cap = capsule.current;
-    if (!cap) return;
-    cap.style.setProperty("--cap-left", CAP_LEFT[index] ?? CAP_LEFT[0]);
-    cap.style.setProperty("--cap-width", CAP_WIDTH[index] ?? CAP_WIDTH[0]);
+    const el = controller.current;
+    const cell = el?.querySelector<HTMLElement>(`[data-index="${index}"]`);
+    if (!cap || !el || !cell) return;
+    const first = index === 0, last = index === cells.length - 1;
+    const left = cell.offsetLeft - (first ? PROTRUSION_PX : 0);
+    const width = cell.offsetWidth + (first ? PROTRUSION_PX : 0) + (last ? PROTRUSION_PX : 0);
+    cap.style.setProperty("--cap-left", `${left}px`);
+    cap.style.setProperty("--cap-width", `${width}px`);
   };
+  const park = () => setCapsule(parked.current);
 
-  // Reverse: the bar opens and the label travels back to its cell (dropping
-  // the chosen class transitions the transform over 980ms); --dx/--dy are
-  // cleared once it has settled.
   const expand = (index: number) => {
     setPhase("expanding");
     setChosen(null);
-    setCapsule(0);
+    park();
     window.setTimeout(() => {
       const cell = controller.current?.querySelector<HTMLElement>(`[data-index="${index}"]`);
       cell?.style.removeProperty("--dx");
@@ -65,20 +80,19 @@ export function useGlassNav({ controller, capsule, cellCount, classes }: Input) 
     }, REVERSE_MS);
   };
 
-  // The label's travel to the collapsed capsule centre, measured from the live geometry.
+  // The label's travel to the collapsed capsule centre (the controller's centre).
   const placeChosen = (el: HTMLElement, cell: HTMLElement) => {
     const c = el.getBoundingClientRect();
     const b = cell.getBoundingClientRect();
     cell.style.setProperty("--dx", `${(c.left + c.width / 2 - (b.left + b.width / 2)).toFixed(1)}px`);
-    cell.style.setProperty("--dy", `${(c.top - 1 + CAPSULE_HALF_H - (b.top + b.height / 2)).toFixed(1)}px`);
+    cell.style.setProperty("--dy", `${(c.top + c.height / 2 - (b.top + b.height / 2)).toFixed(1)}px`);
   };
 
-  // Route arrival: paint the first frame collapsed on the clicked label (DOM
-  // classes, before paint), then hand over to React and play the reverse.
+  // Route arrival: paint the first frame collapsed on the clicked label, then hand over and reverse.
   useLayoutEffect(() => {
     const el = controller.current;
-    const index = readArrival(cellCount);
-    if (!el || index === null) { setCapsule(0); return; }
+    const index = readArrival(cells.length);
+    if (!el || index === null) { park(); return; }
     lock.current = true;
     el.classList.add(classes.collapsed, classes.trackFaded);
     el.querySelectorAll<HTMLElement>("[data-index]").forEach((cell) => {
@@ -96,7 +110,39 @@ export function useGlassNav({ controller, capsule, cellCount, classes }: Input) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Forward: lock, fade the others, travel the label to the capsule centre, collapse.
+  // Re-measure the capsule on resize and after the 500ms compress/expand resize.
+  useEffect(() => {
+    const onResize = () => { if (!lock.current) park(); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    const t = window.setTimeout(() => { if (!lock.current && focused.current === null) park(); }, 520);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compressed]);
+
+  // Active section: the cell whose anchor section is in view parks the capsule; otherwise cell 0.
+  useEffect(() => {
+    const targets = cells
+      .map((cell, index) => ({ index, id: cell.href.includes("#") ? cell.href.slice(cell.href.indexOf("#") + 1) : null }))
+      .filter((t): t is { index: number; id: string } => t.id !== null)
+      .map((t) => ({ index: t.index, el: document.getElementById(t.id) }))
+      .filter((t): t is { index: number; el: HTMLElement } => t.el !== null);
+    if (targets.length === 0) return;
+    const visible = new Map<number, boolean>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { const t = targets.find((x) => x.el === e.target); if (t) visible.set(t.index, e.isIntersecting); });
+      const active = targets.find((t) => visible.get(t.index));
+      parked.current = active ? active.index : 0;
+      if (!lock.current && focused.current === null && !controller.current?.matches(":hover")) park();
+    }, { threshold: SECTION_THRESHOLD });
+    targets.forEach((t) => io.observe(t.el));
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const collapse = (index: number) => {
     const el = controller.current;
     const cell = el?.querySelector<HTMLElement>(`[data-index="${index}"]`);
@@ -117,7 +163,6 @@ export function useGlassNav({ controller, capsule, cellCount, classes }: Input) 
     if (samePage && anchor) {
       window.setTimeout(() => {
         document.querySelector(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
-        // the reverse once the scroll settles
         let timer = 0;
         const settle = () => {
           window.clearTimeout(timer);
@@ -144,9 +189,9 @@ export function useGlassNav({ controller, capsule, cellCount, classes }: Input) 
   const focus = (index: number) => { focused.current = index; if (!lock.current) setCapsule(index); };
   const blur = (index: number) => {
     if (focused.current === index) focused.current = null;
-    if (!lock.current && !controller.current?.matches(":hover")) setCapsule(0);
+    if (!lock.current && !controller.current?.matches(":hover")) park();
   };
-  const leave = () => { if (lock.current || focused.current !== null) return; setCapsule(0); };
+  const leave = () => { if (lock.current || focused.current !== null) return; park(); };
 
-  return { phase, chosen, navigate, hover, focus, blur, leave, onPointerMove };
+  return { phase, chosen, compressed, entered, navigate, hover, focus, blur, leave, onPointerMove };
 }

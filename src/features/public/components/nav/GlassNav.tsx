@@ -1,6 +1,5 @@
 "use client";
 
-import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 import { cn } from "cn";
@@ -11,23 +10,27 @@ import styles from "./glass-nav.module.css";
 import { MobilePublicNav } from "./MobilePublicNav";
 import { useGlassNav } from "./useGlassNav";
 
-// The landing nav as the spec's five-cell glass controller: lockup (cell 0,
-// home link, the capsule's rest position), four links; capsule slides to the
-// hovered/focused cell; a click plays the forward choreography, then
-// navigates (or scrolls, then reverses). ≤700 the same glass track is the
-// trigger row for the slide-in menu.
+// Layout after prisma, material after the LTX controller: the Amplio lockup
+// on the left as a plain link, the four-cell glass controller centred (columns
+// sized to their labels), Sign in + the Sign up pill on the right. Transparent
+// at the top of the page, a frosted 44px bar past 40px of scroll. ≤700 the
+// lockup, the hamburger and the slide-in menu; no controller.
 export function GlassNav() {
   const controller = useRef<HTMLDivElement>(null);
   const capsule = useRef<HTMLDivElement>(null);
   const nav = useGlassNav({
-    controller, capsule, cellCount: GLASS_NAV_CELLS.length + 1,
+    controller, capsule, cells: GLASS_NAV_CELLS,
     classes: { collapsed: styles.collapsed, trackFaded: styles.trackFaded, chosen: styles.chosen, faded: styles.faded },
   });
   const busy = nav.phase !== "idle";
 
   return (
-    <header className={styles.header}>
+    <header className={cn(styles.header, nav.compressed && styles.compressed, nav.entered && styles.entered)}>
       <div className={styles.inner}>
+        <Link href="/" className={styles.brand} aria-label={`${BRAND.name} home`}>
+          <BrandLockup size="sm" />
+        </Link>
+
         <div
           ref={controller}
           role="navigation"
@@ -39,11 +42,7 @@ export function GlassNav() {
           <div className={cn(styles.glass, styles.track)} aria-hidden="true" />
           <div ref={capsule} className={cn(styles.glass, styles.capsule)} aria-hidden="true" />
           <div className={styles.cells}>
-            <Link href="/" data-index={0} aria-label={`${BRAND.name} home`} className={cn(styles.cell, styles.lockup, nav.phase === "collapsing" && styles.faded, nav.phase === "expanding" && styles.restoring)} onPointerEnter={() => nav.hover(0)}>
-              <BrandLockup size="sm" />
-            </Link>
-            {GLASS_NAV_CELLS.map((cell, i) => {
-              const index = i + 1;
+            {GLASS_NAV_CELLS.map((cell, index) => {
               const chosen = nav.chosen === index;
               return (
                 <a
@@ -64,14 +63,11 @@ export function GlassNav() {
             })}
           </div>
         </div>
+
         <div className={styles.actions}>
           <Link href="/login" className={styles.signin}>Sign in</Link>
           <Link href="/register" className={styles.pill}>Sign up</Link>
-        </div>
-        <div className={styles.mobileRow}>
-          <div className={cn(styles.glass, styles.track)} aria-hidden="true" />
-          <Link href="/" className={cn(styles.mobileCell, styles.lockup)} aria-label={`${BRAND.name} home`}><BrandLockup size="sm" /></Link>
-          <MobilePublicNav trigger={{ className: styles.mobileCell, children: <><Menu aria-hidden="true" size={18} /> Menu</> }} />
+          <MobilePublicNav />
         </div>
       </div>
     </header>
