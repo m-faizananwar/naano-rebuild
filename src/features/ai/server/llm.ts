@@ -111,7 +111,7 @@ function toGeminiSchema(node: unknown): unknown {
 
 // For logs: a one-line reason without the payload.
 export function describeAiError(error: unknown): string {
-  if (error instanceof Anthropic.APIError) return `anthropic ${error.status ?? ""} ${error.name}`.trim();
+  if (error instanceof Anthropic.APIError) return `anthropic ${error.status ?? ""} ${error.message.slice(0, ERROR_MESSAGE_MAX)}`.trim();
   if (error instanceof Error) return `${error.name}: ${error.message.slice(0, ERROR_MESSAGE_MAX)}`;
   return "unexpected error";
 }
