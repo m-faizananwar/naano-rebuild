@@ -1,9 +1,7 @@
-"use client";
+import { AssistantMount } from "@/features/assistant/components/AssistantMount";
 
-import { AssistantWidget } from "@/features/assistant/components/AssistantWidget";
-
-// The public site's floating assistant: the shared widget, logged out (it
-// answers about the product). The bubble keeps its own 16px corner position.
+// The public site's floating assistant: a static shell at paint, the widget
+// loaded on idle / approach (logged out, it answers about the product).
 export function PublicAssistantPill() {
-  return <AssistantWidget mode="public" />;
+  return <AssistantMount mode="public" />;
 }

@@ -1,11 +1,9 @@
-"use client";
-
-import { AssistantWidget } from "@/features/assistant/components/AssistantWidget";
+import { AssistantMount } from "@/features/assistant/components/AssistantMount";
 
 type Props = { role: "brand" | "creator"; workspace: string; csrfToken: string };
 
-// The app shells' floating assistant is the shared widget (src/features/assistant):
-// naano's pill, the chevron collapse to a bubble, the chat panel and the mic.
+// The app shells' floating assistant: a static shell at paint, the interactive
+// widget (src/features/assistant) loaded on idle / approach and swapped in place.
 export function AssistantPill({ role, csrfToken }: Props) {
-  return <AssistantWidget mode={role} csrfToken={csrfToken} />;
+  return <AssistantMount mode={role} csrfToken={csrfToken} />;
 }
