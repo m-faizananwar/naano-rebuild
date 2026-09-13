@@ -27,7 +27,7 @@ export function SidebarNav({ role, section, onNavigate }: Props) {
                 active && "bg-brand/10 text-brand hover:bg-brand/10 hover:text-brand",
               )}
             >
-              <item.icon className="size-4 shrink-0" aria-hidden="true" />
+              <span className="icon-chip -m-1 inline-flex rounded-full p-1" aria-hidden="true"><item.icon className="size-4 shrink-0" /></span>
               <span className="side-label truncate">{item.label}</span>
             </Link>
           </li>

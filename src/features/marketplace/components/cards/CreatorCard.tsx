@@ -14,7 +14,7 @@ import { ShortlistButton } from "./ShortlistButton";
 export function CreatorCard({ creator }: { creator: CreatorDto }) {
   const { openProfile } = useMarketplace();
   return (
-    <article className="glass-card flex w-full flex-col gap-4 rounded-2xl border bg-background p-4 shadow-xs" aria-label={creator.name}>
+    <article className="card-lift flex w-full flex-col gap-4 rounded-2xl border bg-background p-4 shadow-xs" aria-label={creator.name}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <ShortlistButton creator={creator} />

@@ -30,7 +30,7 @@ function deadlineLabel(days: number | null) {
 export function OpportunityCard({ opportunity: o, pending, onApply }: Props) {
   const state = o.existingStatus;
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border bg-background shadow-xs">
+    <article className="card-lift flex flex-col overflow-hidden rounded-2xl border bg-background shadow-xs">
       <div className="relative h-24 bg-linear-to-b from-sky-100 via-sky-50 to-background dark:from-sky-950/40 dark:via-sky-950/10">
         <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-background px-2.5 py-1 text-xs font-semibold shadow-xs">
           <LinkedInMark className="size-3.5" />

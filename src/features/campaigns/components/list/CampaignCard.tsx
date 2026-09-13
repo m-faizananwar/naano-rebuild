@@ -10,7 +10,7 @@ const STATUS_VARIANT = { draft: "outline", active: "default", completed: "second
 export function CampaignCard({ campaign }: { campaign: CampaignCardDto }) {
   const detail = `/brand/campaigns/${campaign.id}`;
   return (
-    <article className="flex flex-col rounded-2xl border bg-background p-5">
+    <article className="card-lift flex flex-col rounded-2xl border bg-background p-5">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <Badge variant={STATUS_VARIANT[campaign.status]}>{CAMPAIGN_STATUS_LABEL[campaign.status]}</Badge>
         <span aria-hidden="true">·</span>

@@ -15,7 +15,7 @@ export function AccountMenu({ viewer }: { viewer: ShellViewer }) {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label="Account menu"
-        className="relative rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+        className="icon-chip relative rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
       >
         <Avatar className="size-9">
           {viewer.avatarUrl ? <AvatarImage src={viewer.avatarUrl} alt="" /> : null}

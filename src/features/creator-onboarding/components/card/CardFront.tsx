@@ -34,7 +34,7 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
   const flag = model.country ? countryFlag(model.country) : "";
   const pending = model.progress < PROGRESS_DONE;
   return (
-    <div className="overflow-hidden rounded-[2rem] bg-card shadow-xl ring-1 ring-border/60">
+    <div className="card-lift overflow-hidden rounded-[2rem] bg-card shadow-xl ring-1 ring-border/60">
       <div className="relative h-32 bg-linear-to-br from-brand to-brand/80">
         <span className="absolute left-5 top-5 inline-flex size-9 items-center justify-center rounded-lg bg-brand-foreground/90 text-sm font-bold text-brand" aria-label="LinkedIn">
           in
