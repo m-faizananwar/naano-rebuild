@@ -5,6 +5,9 @@ import { type RefObject, useEffect, useLayoutEffect, useRef, useState, useSyncEx
 import { useSplashGate } from "../splash/useSplashGate";
 
 const COLLAPSE_MS = 980;
+// Route changes are pushed early: the collapse keeps playing over the new page
+// (which mounts collapsed on the same label and plays the reverse).
+const PUSH_AFTER_MS = 250;
 const REVERSE_MS = 980;
 const SCROLL_SETTLE_MS = 160;
 const STORAGE_KEY = "glassnav:collapsed";
@@ -178,7 +181,7 @@ export function useGlassNav({ controller, capsule, cells, classes }: Input) {
       return;
     }
     try { sessionStorage.setItem(STORAGE_KEY, String(index)); } catch { /* storage may be blocked */ }
-    window.setTimeout(() => router.push(href), COLLAPSE_MS);
+    window.setTimeout(() => router.push(href), PUSH_AFTER_MS);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
