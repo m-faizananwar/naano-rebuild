@@ -26,10 +26,11 @@ function timeForAngle(angle: number) {
   return nearestTime + 1 / 240;
 }
 
-// `lazy` (the landing section): the 13MB clip has no src and preload="none"
-// until the section is near the viewport, so it never competes with the
-// page's own chunks on the origin connection. The standalone keeps the spec's
-// eager preload="auto".
+// `lazy` (the landing section): the clip (1280×720 all-intra, ~2.6MB) has no
+// src until the section is one viewport away (rootMargin 100%), then
+// preload="auto" so the first frame is painted by the time it scrolls in; the
+// poster is that first frame so nothing is ever blank. The standalone keeps
+// the spec's eager preload="auto".
 export default function FooterBackground({ lazy = false }: { lazy?: boolean } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -56,10 +57,13 @@ export default function FooterBackground({ lazy = false }: { lazy?: boolean } = 
     const updateTarget = () => {
       if (mobile.matches || !pointer) return;
       const rect = video.getBoundingClientRect();
-      const scale = Math.max(rect.width / 1920, rect.height / 1080);
-      // Match the exact object-fit: cover positioning, including mobile crops.
-      const eyeX = rect.left + rect.width / 2 + (948 - 960) * scale;
-      const eyeY = rect.top + rect.height / 2 + (418 - 540) * scale;
+      // The eye midpoint is (948, 418) in the 1920×1080 source; kept as ratios so the
+      // 1280×720 encode (or any size) maps the same, matching object-fit: cover.
+      const vw = video.videoWidth || 1920;
+      const vh = video.videoHeight || 1080;
+      const scale = Math.max(rect.width / vw, rect.height / vh);
+      const eyeX = rect.left + rect.width / 2 + (948 / 1920 - 0.5) * vw * scale;
+      const eyeY = rect.top + rect.height / 2 + (418 / 1080 - 0.5) * vh * scale;
       const dx = pointer.x - eyeX;
       const dy = pointer.y - eyeY;
       // Avoid unstable angles directly between the eyes.
@@ -100,7 +104,7 @@ export default function FooterBackground({ lazy = false }: { lazy?: boolean } = 
         video.preload = 'auto';
         video.src = '/footer-scrub.mp4';
         video.load();
-      }, { rootMargin: '80% 0px' });
+      }, { rootMargin: '100% 0px' });
       io.observe(video);
     }
 
@@ -120,7 +124,11 @@ export default function FooterBackground({ lazy = false }: { lazy?: boolean } = 
 
   return (
     <div className="footer-background" aria-hidden="true">
-      {lazy ? <video ref={videoRef} muted playsInline preload="none" /> : <video ref={videoRef} muted playsInline preload="auto" src="/footer-scrub.mp4" />}
+      {lazy ? (
+        <video ref={videoRef} muted playsInline preload="none" poster="/footer-poster.jpg" />
+      ) : (
+        <video ref={videoRef} muted playsInline preload="auto" src="/footer-scrub.mp4" />
+      )}
     </div>
   );
 }
