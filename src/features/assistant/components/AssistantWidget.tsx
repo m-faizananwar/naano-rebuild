@@ -2,12 +2,10 @@
 
 import { AnimatePresence, motion, useReducedMotion, useSpring } from "framer-motion";
 import { Liquid } from "liquid-gooey";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import { ChevronDown, MessageCircle, Square } from "lucide-react";
 import { MetalFx } from "metal-fx";
-import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { CyclingText } from "@/components/motion/CyclingText";
-import { VoiceMic } from "@/features/voice/components/VoiceMic";
-import type { VoiceState } from "@/lib/voice-state";
 import {
   BUBBLE_SIZE, BUBBLE_TRAVEL_PADDING, EDGE_GAP, HAPTIC, LIQUID, MOTION, PANEL_GAP, PANEL_RADIUS, PHRASES, PHRASE_INTERVAL_MS, PILL_FOCUS_GROW,
   PILL_HEIGHT, PILL_WIDTH, PRESS_MS, PRESS_SCALE, SPRING_BEZIER, STORAGE_KEYS,
@@ -17,9 +15,10 @@ import { ChatPanel } from "./ChatPanel";
 import { buzz } from "./haptics";
 import { SpinnerRing } from "./SpinnerRing";
 import { useAssistantChat } from "./useAssistantChat";
+import { useSpeechInput } from "./useSpeechInput";
 import "./assistant.css";
 
-type Props = { mode: "public" | "brand" | "creator"; csrfToken?: string };
+type Props = { mode: "public" | "brand" | "creator"; csrfToken?: string; autoVoice?: boolean };
 // Where the panel morphs from/to: the pill (typing) or the dark bubble.
 type Origin = "pill" | "bubble";
 
@@ -46,7 +45,7 @@ function storeCollapsed(on: boolean) {
 // shell: width/height/translate on the spring curve (520ms), radius and
 // colour on the ease (420ms), so the bubble visibly grows into the panel and
 // shrinks back. Content fades/scales in from .94, staggered. Reduced motion: fades.
-export function AssistantWidget({ mode, csrfToken }: Props) {
+export function AssistantWidget({ mode, csrfToken, autoVoice = false }: Props) {
   const width = mode === "public" ? PILL_WIDTH.public : PILL_WIDTH.app;
   const reduced = useReducedMotion();
   const [bubble, setBubble] = useState(false);
@@ -55,9 +54,22 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
   const [draft, setDraft] = useState("");
   const [focused, setFocused] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const [voice, setVoice] = useState<VoiceState["status"]>("idle");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [travel, setTravel] = useState(0);
   const chat = useAssistantChat(csrfToken);
+  const speech = useSpeechInput(
+    {
+      onPartial: (text) => setDraft(text),
+      onFinal: (text) => {
+        setDraft("");
+        if (!open) setOrigin("pill");
+        setOpen(true);
+        buzz(HAPTIC.send);
+        void chat.send(text);
+      },
+    },
+    () => inputRef.current?.focus(),
+  );
   const x = useSpring(0, reduced ? { duration: 0.2 } : { duration: 0.52, bounce: 0.35 });
 
   useEffect(() => {
@@ -120,17 +132,18 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
     setDraft("");
   };
 
-  const listening = voice === "listening" || voice === "confirming";
+  const listening = speech.status !== "idle";
   const label = mode === "public" ? "Ask about the product" : "Ask the assistant";
   const fade = { duration: 0.2 };
-  const micRing = useCallback(
-    (button: React.ReactNode) => (
-      <MetalFx variant="circle" preset="silver" theme="light" strength={listening ? 0.55 : 0.22}>
-        {button}
-      </MetalFx>
-    ),
-    [listening],
-  );
+  // A click on the static shell's mic mounts the widget with autoVoice: start listening once.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoVoice || autoStarted.current) return;
+    autoStarted.current = true;
+    speech.toggle();
+    // once, on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoVoice]);
   const pillWidth = Math.min(width, typeof window === "undefined" ? width : window.innerWidth - 2 * EDGE_GAP);
 
   // The shell's bubble geometry, in the panel's own coordinate space: the
@@ -224,8 +237,13 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
                   <Beam size="line" strength={0.28} className="absolute inset-0 rounded-full" aria-hidden="true"><span className="block h-full w-full rounded-full" /></Beam>
                   <span key={chat.busy ? "busy" : "idle"} className="assistant-ink60 chat-swap relative"><SpinnerRing spinning={chat.busy} /></span>
                   <span className="relative z-10 min-w-0 flex-1">
-                    {draft ? null : <CyclingText phrases={PHRASES} intervalMs={PHRASE_INTERVAL_MS} className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-muted-foreground" />}
+                    {draft ? null : listening ? (
+                      <span className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-muted-foreground">{speech.status === "call" ? "On a call…" : "Listening…"}</span>
+                    ) : (
+                      <CyclingText phrases={PHRASES} intervalMs={PHRASE_INTERVAL_MS} className="pointer-events-none absolute inset-0 flex items-center truncate text-sm text-muted-foreground" />
+                    )}
                     <input
+                      ref={inputRef}
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
                       onFocus={() => { setFocused(true); if (chat.messages.length > 0 && !open) { setOrigin("pill"); setOpen(true); } }}
@@ -234,15 +252,20 @@ export function AssistantWidget({ mode, csrfToken }: Props) {
                       className="h-full w-full bg-transparent text-sm text-foreground outline-none"
                     />
                   </span>
-                  {csrfToken ? (
-                    <VoiceMic csrfToken={csrfToken} wrap={micRing} onStatusChange={setVoice} />
-                  ) : (
-                    <MetalFx variant="circle" preset="silver" theme="light" strength={0.22}>
-                      <button type="submit" aria-label="Send" className="chat-hover-send flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
-                        <span key={draft ? "send" : "wave"} className="chat-swap flex"><SendGlyph /></span>
-                      </button>
-                    </MetalFx>
-                  )}
+                  <MetalFx variant="circle" preset="silver" theme="light" strength={listening ? 0.55 : 0.22}>
+                    <button
+                      type="button"
+                      onClick={speech.toggle}
+                      aria-label={listening ? (speech.status === "call" ? "Hang up" : "Stop listening") : "Talk to the assistant"}
+                      aria-pressed={listening}
+                      data-status={speech.status}
+                      className="chat-hover-send flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-foreground data-[status=listening]:bg-brand data-[status=listening]:text-brand-foreground data-[status=call]:bg-brand data-[status=call]:text-brand-foreground"
+                    >
+                      <span key={speech.status} className="chat-swap flex items-center justify-center">
+                        {listening ? <Square className="size-3" aria-hidden="true" /> : <SendGlyph />}
+                      </span>
+                    </button>
+                  </MetalFx>
                 </motion.form>
               )}
             </motion.div>

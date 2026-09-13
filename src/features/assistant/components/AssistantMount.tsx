@@ -16,6 +16,7 @@ const FALLBACK_MS = 4000;
 // within 120px of the pill, focus reaching it, or 4s — and swaps in place.
 export function AssistantMount({ mode, csrfToken }: Props) {
   const [live, setLive] = useState(false);
+  const [autoVoice, setAutoVoice] = useState(false);
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,15 +42,24 @@ export function AssistantMount({ mode, csrfToken }: Props) {
     window.addEventListener("pointermove", near, { passive: true });
     const onFocus = () => go();
     root.current?.addEventListener("focusin", onFocus);
+    // the shell's mic: mount and start listening, so the click is never lost
+    const onMic = (e: Event) => {
+      if ((e.target as HTMLElement).closest(".assistant-shell-mic")) {
+        setAutoVoice(true);
+        go();
+      }
+    };
+    root.current?.addEventListener("click", onMic);
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("pointermove", near);
       window.removeEventListener("load", afterLoad);
       root.current?.removeEventListener("focusin", onFocus);
+      root.current?.removeEventListener("click", onMic);
     };
   }, []);
 
-  if (live) return <AssistantWidget mode={mode} csrfToken={csrfToken} />;
+  if (live) return <AssistantWidget mode={mode} csrfToken={csrfToken} autoVoice={autoVoice} />;
   return (
     <div ref={root}>
       <AssistantShell mode={mode} />
