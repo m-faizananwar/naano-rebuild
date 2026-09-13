@@ -15,7 +15,7 @@ export function EarningsTiles({ summary }: { summary: EarningsSummary }) {
           {summary.paidCollaborations} paid collaborations · {formatCents(summary.averageCents, "EUR")} average
         </p>
       </div>
-      <div className="rounded-2xl border bg-background p-5">
+      <div className="card-lift card-invert rounded-2xl border bg-background p-5">
         <p className="text-xs font-semibold text-muted-foreground">In transit</p>
         <p className="mt-2 text-3xl font-semibold tracking-tight"><CountUp value={summary.inTransitCents} format="eur" /></p>
         <p className="mt-1 text-xs text-muted-foreground">

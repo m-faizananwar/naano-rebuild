@@ -4,7 +4,7 @@ import type { ResultsSummary } from "../../server/queries";
 
 function Tile({ label, value, hint }: { label: string; value: React.ReactNode; hint: string }) {
   return (
-    <div className="rounded-2xl border bg-background p-5">
+    <div className="card-lift card-invert rounded-2xl border bg-background p-5">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
       <p className="mt-1 text-sm text-muted-foreground">{hint}</p>
