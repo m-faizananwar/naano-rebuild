@@ -2,15 +2,25 @@
 
 import { Bell, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ShellNotification } from "../viewer";
 
 type Props = { role: "brand" | "creator"; notifications: ShellNotification[] };
 
-function relative(iso: string) {
-  const diffMin = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000));
+// "now" is read once on the client after hydration (server snapshot 0), so the
+// relative labels never differ between the server render and the hydrating
+// client — a prod-only mismatch when the two clocks straddle a minute.
+const subscribeNever = () => () => undefined;
+function useClientNow() {
+  const at = useRef(0);
+  return useSyncExternalStore(subscribeNever, () => at.current || (at.current = Date.now()), () => 0);
+}
+
+function relative(iso: string, now: number) {
+  if (!now) return "recently";
+  const diffMin = Math.max(0, Math.round((now - new Date(iso).getTime()) / 60_000));
   if (diffMin < 60) return diffMin <= 1 ? "just now" : `${diffMin} min ago`;
   const diffH = Math.round(diffMin / 60);
   if (diffH < 24) return `${diffH} h ago`;
@@ -20,6 +30,7 @@ function relative(iso: string) {
 // The bell: collaboration events + messages for the current user, newest first.
 export function NotificationsButton({ role, notifications }: Props) {
   const [open, setOpen] = useState(false);
+  const now = useClientNow();
   const count = notifications.length;
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,7 +60,7 @@ export function NotificationsButton({ role, notifications }: Props) {
                 <Link href={n.href} onClick={() => setOpen(false)} className="grid gap-0.5 px-4 py-2.5 hover:bg-muted focus-visible:bg-muted focus-visible:outline-none">
                   <span className="flex items-baseline justify-between gap-2">
                     <span className="text-sm font-medium">{n.title}</span>
-                    <span className="shrink-0 text-[11px] text-muted-foreground">{relative(n.at)}</span>
+                    <span className="shrink-0 text-[11px] text-muted-foreground">{relative(n.at, now)}</span>
                   </span>
                   <span className="text-xs text-muted-foreground">{n.body}</span>
                 </Link>
