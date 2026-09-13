@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { brandNextAction, creatorNextAction } from "@/lib/collaboration-labels";
-import { formatDate, timeAgo } from "@/lib/dates";
+import { TimeAgo } from "@/components/TimeAgo";
+import { formatDate } from "@/lib/dates";
 import { formatCents } from "@/lib/money";
 import type { CollaborationDto, ViewerRole } from "../../schemas";
 import { BrandMark } from "../BrandMark";
@@ -52,7 +53,7 @@ export function CollaborationRow({ row, role }: Props) {
       </TableCell>
       <TableCell className="text-muted-foreground">{formatDate(row.dueDate)}</TableCell>
       <TableCell className="text-right font-medium tabular-nums">{formatCents(row.feeCents, "EUR")}</TableCell>
-      {role === "brand" ? <TableCell className="text-muted-foreground">{timeAgo(row.updatedAt)}</TableCell> : null}
+      {role === "brand" ? <TableCell className="text-muted-foreground"><TimeAgo iso={row.updatedAt} /></TableCell> : null}
     </TableRow>
   );
 }

@@ -1,9 +1,13 @@
 // Date display helpers over ISO strings (DTOs carry ISO, never Date objects).
-import { format, formatDistanceToNowStrict, isToday, isYesterday } from "date-fns";
+import { format, formatDistanceStrict, isToday, isYesterday } from "date-fns";
 
 const DAY_FORMAT = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 const SHORT_FORMAT = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 const DAY_MS = 86_400_000;
+// Calendar dates are formatted in UTC on both server and client, so a day never
+// flips between the UTC server render and a browser in another zone.
+const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" });
 
 // "12 Sept 2026" like naano's campaign cards (UTC).
 export function formatDay(iso: string | null | undefined): string {
@@ -18,20 +22,21 @@ export function formatShortDay(iso: string): string {
 export function formatDate(iso: string | null | undefined, fallback = "—"): string {
   if (!iso) return fallback;
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? fallback : format(date, "d MMM yyyy");
+  return Number.isNaN(date.getTime()) ? fallback : DATE_FORMAT.format(date);
 }
 
 export function formatDateTime(iso: string | null | undefined, fallback = "—"): string {
   if (!iso) return fallback;
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? fallback : format(date, "d MMM yyyy, HH:mm");
+  return Number.isNaN(date.getTime()) ? fallback : DATE_TIME_FORMAT.format(date);
 }
 
 // "2 hours ago", "3 days ago" — for "Updated" columns and thread previews.
-export function timeAgo(iso: string | null | undefined, fallback = "—"): string {
+// `now` lets a client component pass a post-hydration clock (see components/TimeAgo).
+export function timeAgo(iso: string | null | undefined, fallback = "—", now = Date.now()): string {
   if (!iso) return fallback;
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? fallback : `${formatDistanceToNowStrict(date)} ago`;
+  return Number.isNaN(date.getTime()) ? fallback : `${formatDistanceStrict(date, new Date(now))} ago`;
 }
 
 // Chat-style stamp: time today, "Yesterday", otherwise the date.
