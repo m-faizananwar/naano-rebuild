@@ -7,8 +7,8 @@ type Props = { href: string; label: string; variant?: "primary" | "secondary" | 
 const VARIANTS = {
   primary: "bg-foreground text-background hover:bg-foreground/85 px-6",
   brand: "bg-brand text-brand-foreground hover:bg-brand/90 px-6",
-  secondary: "bg-background text-foreground ring-1 ring-border hover:bg-muted px-6",
-  ghost: "text-foreground hover:bg-foreground/5 px-4",
+  secondary: "btn-glass text-foreground px-6",
+  ghost: "btn-glass text-foreground px-4",
 } as const;
 
 // naano's rounded pill buttons, as real links.

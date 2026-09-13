@@ -81,7 +81,7 @@ export function ReviewDraftDialog({ collaboration: c, open, onOpenChange, disabl
         <DialogFooter>
           {changing ? (
             <>
-              <Button type="button" variant="outline" disabled={isSubmitting} onClick={() => setChanging(false)}>
+              <Button type="button" variant="glass" disabled={isSubmitting} onClick={() => setChanging(false)}>
                 Back
               </Button>
               <Button type="button" disabled={disabled || isSubmitting} onClick={() => submit("request_changes")}>
@@ -90,7 +90,7 @@ export function ReviewDraftDialog({ collaboration: c, open, onOpenChange, disabl
             </>
           ) : (
             <>
-              <Button type="button" variant="outline" disabled={disabled || capReached} onClick={() => setChanging(true)}>
+              <Button type="button" variant="glass" disabled={disabled || capReached} onClick={() => setChanging(true)}>
                 Request changes
               </Button>
               <Button

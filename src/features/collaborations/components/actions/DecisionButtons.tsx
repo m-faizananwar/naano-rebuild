@@ -29,7 +29,7 @@ export function DecisionButtons({ acceptLabel, declineLabel, declineWarning, dis
       <Button type="button" disabled={disabled} className="bg-brand text-brand-foreground hover:bg-brand/90" onClick={() => onDecide("accept")}>
         {acceptLabel}
       </Button>
-      <Button type="button" variant="outline" disabled={disabled} onClick={() => setConfirming(true)}>
+      <Button type="button" variant="glass" disabled={disabled} onClick={() => setConfirming(true)}>
         {declineLabel}
       </Button>
       <AlertDialog open={confirming} onOpenChange={setConfirming}>

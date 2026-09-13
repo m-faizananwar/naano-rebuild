@@ -61,7 +61,7 @@ export function WithdrawDialog({ availableCents, awaitingReleaseCents, trigger, 
           <Label htmlFor="withdraw-amount">Amount (€) · {formatCents(availableCents, "EUR")} available</Label>
           <div className="flex gap-2">
             <Input id="withdraw-amount" type="number" min={MIN_WITHDRAWAL_CENTS / CENTS} step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" />
-            <Button type="button" variant="outline" onClick={() => setAmount((availableCents / CENTS).toFixed(2))} disabled={availableCents <= 0}>
+            <Button type="button" variant="glass" onClick={() => setAmount((availableCents / CENTS).toFixed(2))} disabled={availableCents <= 0}>
               Withdraw all
             </Button>
           </div>

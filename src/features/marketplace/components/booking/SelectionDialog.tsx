@@ -41,7 +41,7 @@ function RateRow({ creator, option, onBook, onNegotiate, pending, walletCents }:
       ) : (
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:justify-end">
           {onNegotiate ? (
-            <Button type="button" variant="outline" onClick={onNegotiate} disabled={pending}>
+            <Button type="button" variant="glass" onClick={onNegotiate} disabled={pending}>
               <ArrowLeftRight className="size-4" aria-hidden="true" />
               Negotiate
             </Button>

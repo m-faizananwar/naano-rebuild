@@ -15,7 +15,7 @@ export function ShortlistButton({ creator, className, size = "icon-sm" }: Props)
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="glass"
       size={size}
       aria-pressed={on}
       aria-label={on ? `Remove ${creator.name} from your shortlist` : `Add ${creator.name} to your shortlist`}
