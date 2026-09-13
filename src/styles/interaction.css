@@ -237,3 +237,21 @@ html { scroll-behavior: smooth; }
    progress bar carries the wait. */
 @keyframes skeletonAppear { from { opacity: 0; } to { opacity: 1; } }
 main [aria-busy="true"][aria-label^="Loading"] { animation: skeletonAppear 0s 0.3s both; }
+
+/* ---- case-study block hover: solid ink above the frost, paper text ----
+   The card's inner white panels (bg-card/80, the author chip, the stat
+   hairlines) used to keep their paper fill while the text went paper, so
+   the block ghosted grey-on-grey. On hover they dissolve into the ink and
+   keep only a paper/20% hairline; the avatar photo is untouched. */
+.card-invert:hover :is(.bg-card\/80, .bg-brand-soft\/70):not(.card-keep *) { background-color: rgb(242 240 236 / 0.06); --tw-ring-color: rgb(242 240 236 / 0.2); --tw-shadow: 0 0 #0000; box-shadow: 0 0 0 1px rgb(242 240 236 / 0.2); }
+.card-invert:hover .divide-x > :not(:last-child):not(.card-keep *) { border-color: rgb(242 240 236 / 0.2); }
+.card-invert:hover :is(.bg-foreground\/80):not(.card-keep *) { background-color: rgb(242 240 236 / 0.92); color: #0d0c0b; }
+.card-invert:hover .bg-background\/90:not(.card-keep *) { background-color: rgb(242 240 236 / 0.92); color: #0d0c0b; }
+.card-invert:hover .bg-background\/90 svg:not(.card-keep *) { color: #0d0c0b; }
+.card-invert:hover img:not(.card-keep *) { filter: none; opacity: 1; }
+.card-invert:hover :is(.bg-card\/80, .bg-brand-soft\/70) { transition: background-color .35s var(--ix-ease), box-shadow .35s var(--ix-ease); }
+
+/* the card body is a flex column in the module; a body that asks for a
+   grid (case study: 2fr/3fr on lg) must get one, or the video panel goes
+   full-width and 800px tall. */
+[class*="chromeBody"].grid { display: grid; }
