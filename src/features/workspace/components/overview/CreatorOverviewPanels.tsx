@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { BrandMark } from "@/features/collaborations/components/BrandMark";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { STATUS_LABELS } from "@/lib/collaboration-labels";
@@ -26,7 +27,7 @@ export function RecommendedOpportunities({ items }: { items: CreatorOverview["re
           {items.map((o) => (
             <li key={o.campaignId}>
               <Link href="/creator/opportunities" className="flex items-center gap-3 py-3 hover:bg-muted/50">
-                <span className="flex size-9 items-center justify-center rounded-lg bg-foreground text-sm font-bold text-background">{o.brand.charAt(0)}</span>
+                <BrandMark initial={o.brand.charAt(0)} name={o.brand} size="sm" className="size-9" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-medium">{o.brand}</span>
                   <span className="block truncate text-xs text-muted-foreground">{o.name} · {o.fit >= STRONG_MATCH ? "strong match" : "possible match"}</span>

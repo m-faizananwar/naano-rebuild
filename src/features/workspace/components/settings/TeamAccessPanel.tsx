@@ -1,5 +1,7 @@
 "use client";
 
+import { CreatorAvatar } from "@/features/public/components/shared/CreatorAvatar";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +40,7 @@ export function TeamAccessPanel({ owner }: { owner: { name: string; email: strin
         <ul className="mt-3 rounded-xl border">
           <li className="flex items-center gap-3 p-3">
             <span className="flex size-9 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background">
-              {owner.name.split(" ").map((p) => p.charAt(0)).join("")}
+              <CreatorAvatar name={owner.name} className="size-full" />
             </span>
             <span className="min-w-0 flex-1">
               <span className="block font-medium">{owner.name} <span className="text-xs text-muted-foreground">· You</span></span>

@@ -1,4 +1,5 @@
 import "server-only";
+import { avatarFor, brandMarkFor } from "@/lib/avatar";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { campaigns, collaborations, creators, messages, users } from "@/db/schema";
@@ -28,7 +29,7 @@ function toThreadDto(row: CollaborationRow, role: ViewerRole, last: { body: stri
     campaignName: row.campaignName,
     status: row.collab.status,
     counterpartName,
-    counterpartAvatarUrl: role === "brand" ? row.creatorAvatarUrl : null,
+    counterpartAvatarUrl: role === "brand" ? row.creatorAvatarUrl : brandMarkFor(row.brandCompany),
     counterpartInitial: initialOf(counterpartName),
     lastMessagePreview: preview(last.body),
     lastMessageAt: last.at ? last.at.toISOString() : null,
@@ -88,7 +89,7 @@ export async function getThread(scope: ThreadScope, collaborationId: string): Pr
     id: m.id,
     body: m.body,
     senderName: m.role === "brand" ? row.brandCompany : `${m.firstName} ${m.lastName}`.trim(),
-    senderAvatarUrl: m.avatarUrl,
+    senderAvatarUrl: m.avatarUrl ?? (m.role === "brand" ? brandMarkFor(row.brandCompany) : avatarFor(`${m.firstName} ${m.lastName}`)),
     mine: m.senderUserId === scope.userId,
     createdAt: m.createdAt.toISOString(),
   }));

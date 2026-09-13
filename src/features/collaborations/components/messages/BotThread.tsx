@@ -12,9 +12,7 @@ export function BotThread({ role }: { role: ViewerRole }) {
         <Link href={`/${role}/messages`} className="lg:hidden" aria-label="Back to all messages">
           <ArrowLeft className="size-5" aria-hidden="true" />
         </Link>
-        <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-full bg-foreground text-sm font-bold text-background">
-          n
-        </span>
+        <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-foreground">{/* eslint-disable-next-line @next/next/no-img-element -- the product mark */}<img src="/logo.svg" alt="" className="size-full" /></span>
         <div>
           <h2 className="font-semibold">{SUPPORT_BOT.name}</h2>
           <p className="text-xs text-muted-foreground">{BRAND.name} support</p>

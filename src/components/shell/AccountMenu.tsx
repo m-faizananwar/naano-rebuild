@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { navFor } from "./nav";
 import { SignOutButton } from "./SignOutButton";
+import { avatarFor } from "@/lib/avatar";
 import { initialsOf, type ShellViewer } from "./viewer";
 
 export function AccountMenu({ viewer }: { viewer: ShellViewer }) {
@@ -18,7 +19,7 @@ export function AccountMenu({ viewer }: { viewer: ShellViewer }) {
         className="icon-chip relative rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
       >
         <Avatar className="size-9">
-          {viewer.avatarUrl ? <AvatarImage src={viewer.avatarUrl} alt="" /> : null}
+          <AvatarImage src={viewer.avatarUrl ?? avatarFor(`${viewer.firstName} ${viewer.lastName}`)} alt="" />
           <AvatarFallback className="bg-foreground text-xs font-semibold text-background">{initialsOf(viewer)}</AvatarFallback>
         </Avatar>
         <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-background bg-emerald-500" aria-hidden="true" />

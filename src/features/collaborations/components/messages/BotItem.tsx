@@ -16,9 +16,7 @@ export function BotItem({ role, active }: { role: ViewerRole; active: boolean })
           active ? "bg-brand/5" : "bg-muted/30",
         )}
       >
-        <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-foreground text-sm font-bold text-background">
-          n
-        </span>
+        <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-foreground">{/* eslint-disable-next-line @next/next/no-img-element -- the product mark */}<img src="/logo.svg" alt="" className="size-full" /></span>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
             <span className="text-sm font-semibold">{SUPPORT_BOT.name}</span>

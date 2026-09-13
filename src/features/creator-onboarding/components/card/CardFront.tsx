@@ -1,3 +1,4 @@
+import { avatarFor } from "@/lib/avatar";
 import { ArrowRight, CalendarDays, Package } from "lucide-react";
 import { BrandLockup } from "@/components/brand/BrandLockup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -51,7 +52,7 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
       </div>
       <div className="-mt-10 flex flex-col items-center px-6 text-center">
         <Avatar className="size-20 ring-4 ring-card">
-          <AvatarImage src={model.avatarUrl} alt="" />
+          <AvatarImage src={model.avatarUrl ?? avatarFor(model.name)} alt="" />
           <AvatarFallback className="text-2xl font-semibold">{model.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <p key={model.name} className="animate-fade mt-4 text-2xl font-bold tracking-tight">{model.name}</p>

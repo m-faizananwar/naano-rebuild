@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "cn";
+import { avatarFor } from "@/lib/avatar";
 
 type Props = { name: string; src?: string | null; className?: string };
 
@@ -12,12 +13,12 @@ function initials(name: string) {
     .join("");
 }
 
-// Avatar with an initials fallback; the seed uses remote SVG avatars, the
-// static fallbacks have none.
+// Always a picture: the given src, else the seed's deterministic avatar for
+// the name. Initials only appear if the image fails to load.
 export function CreatorAvatar({ name, src, className }: Props) {
   return (
     <Avatar className={cn("bg-brand-soft", className)}>
-      {src ? <AvatarImage src={src} alt="" /> : null}
+      <AvatarImage src={src ?? avatarFor(name)} alt="" />
       <AvatarFallback className="bg-brand-soft text-xs font-semibold text-brand">{initials(name)}</AvatarFallback>
     </Avatar>
   );
