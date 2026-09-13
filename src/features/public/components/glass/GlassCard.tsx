@@ -30,7 +30,7 @@ export function GlassCard({ title, index, order = 0, as: Tag = "article", classN
 
   return (
     <Tag ref={card as never} className={cn(styles.chrome, "card-invert", className)} style={{ "--card-i": order } as CSSProperties}>
-      {backdrop ? <div ref={container} className={cn(styles.dup, styles.dupStatic)}><canvas ref={canvas} className={styles.dupImage} /></div> : null}
+      {backdrop?.src ? <div ref={container} className={cn(styles.dup, styles.dupStatic)}><canvas ref={canvas} className={styles.dupImage} /></div> : null}
       <div className={styles.frost} aria-hidden="true" />
       <div className={cn(styles.head, styles.glassFont)}>
         <h3 className={styles.title}>{title}</h3>

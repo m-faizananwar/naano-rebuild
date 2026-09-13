@@ -7,7 +7,7 @@ import { PostExampleCard } from "./PostExampleCard";
 // Hidden entirely when there is no database: no invented posts on the landing page.
 export function PostExamplesSection({ posts }: { posts: PublicPost[] }) {
   return (
-    <GlassSection className="px-4 py-24 sm:px-6">
+    <GlassSection refract className="px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         {posts.length > 0 ? (
           <>

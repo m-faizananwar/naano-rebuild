@@ -11,7 +11,7 @@ const MOCKS = [FindCreatorsMock, BriefMock, CollaborationMock, TrackingMock, Pay
 
 export function HowItWorksSection() {
   return (
-    <GlassSection id="how-it-works" className="scroll-mt-20 px-4 py-24 sm:px-6">
+    <GlassSection id="how-it-works" refract className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
