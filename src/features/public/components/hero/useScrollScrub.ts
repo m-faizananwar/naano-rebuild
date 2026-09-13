@@ -3,7 +3,7 @@
 import { type RefObject, useEffect, useState } from "react";
 import { markHeroReady, reportHeroProgress } from "../splash/splash-events";
 import {
-  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_VIDEO_BYTES, HERO_VIDEO_URL, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_EPSILON,
+  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_LOCAL_URL, HERO_VIDEO_BYTES, HERO_VIDEO_URL, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_RELEASE_MS, SEEK_SNAP_S, SWAP_IDLE_MS,
 } from "./hero-config";
 
 type Refs = {
@@ -43,13 +43,18 @@ type ScrubInput = { clip: HTMLVideoElement; wrapper: HTMLElement; refs: Refs; on
 
 function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
   let progress = 0, seekTo = 0, seekAt = 0, duration = 0, ready = false;
-  let started = false, attached = false, disposed = false, failed = false;
+  let started = false, attached = false, disposed = false, failed = false, swapping = false;
+  // rVFC pacing: the next currentTime is issued only after the previous frame painted
+  let seekInFlight = false;
   let rafId = 0;
+  const hasRvfc = "requestVideoFrameCallback" in clip;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Progress = scroll within the wrapper: 0 when its top hits the viewport top,
   // 1 when its bottom meets the viewport bottom (the sticky stage's last frame).
+  let lastScrollAt = 0;
   function readScroll() {
+    lastScrollAt = performance.now();
     const rect = wrapper.getBoundingClientRect();
     const max = rect.height - window.innerHeight;
     progress = max > 0 ? clamp(-rect.top / max, 0, 1) : 0;
@@ -74,12 +79,25 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
   // Easing currentTime toward the scroll target (rather than snapping) is what
   // turns a jumpy scrub into a smooth one.
   function stepSeek() {
-    if (!ready || !duration) return;
+    if (!ready || !duration || swapping) return;
     const gap = seekTo - seekAt;
-    if (Math.abs(gap) <= SEEK_EPSILON) return;
-    seekAt += gap * SEEK_EASE;
-    if (clip.readyState < 2 || clip.seeking) return;
-    try { clip.currentTime = seekAt; } catch { /* not seekable yet */ }
+    if (gap === 0) return;
+    // ease toward the target; snap once the remainder is under a few ms of video
+    seekAt = Math.abs(gap) < SEEK_SNAP_S ? seekTo : seekAt + gap * SEEK_EASE;
+    if (clip.readyState < 2 || clip.seeking || seekInFlight) return;
+    try {
+      clip.currentTime = seekAt;
+      if (hasRvfc) {
+        // fast wheels never queue seeks: wait for this frame to paint first.
+        // `seeked` and a short timeout also release it — a seek that lands on
+        // the frame already shown never presents a new one.
+        seekInFlight = true;
+        const release = () => { seekInFlight = false; };
+        clip.requestVideoFrameCallback(release);
+        clip.addEventListener("seeked", release, { once: true });
+        setTimeout(release, SEEK_RELEASE_MS);
+      }
+    } catch { /* not seekable yet */ }
   }
 
   function frame() {
@@ -105,11 +123,14 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     markHeroReady();
   }
 
+  // The local all-intra clip goes on at mount so seeking works from the first
+  // scroll; the CDN blob keeps loading behind it and is swapped in once ready.
   function attach(src: string) {
     if (attached) return;
     attached = true;
     // Bind listeners before setting src.
     clip.addEventListener("loadedmetadata", () => {
+      if (swapping) return;
       duration = clip.duration || 0;
       clip.pause();
       readScroll();
@@ -118,28 +139,70 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     });
     clip.addEventListener("loadeddata", start);
     clip.addEventListener("canplaythrough", start);
-    clip.addEventListener("error", () => { failed = true; start(); });
+    clip.addEventListener("error", () => { if (!swapping) { failed = true; start(); } });
     clip.src = src;
     clip.load();
-    // A stalled decode never strands the hero behind the preloader.
+    // A stalled decode never strands the hero.
     setTimeout(start, ATTACH_TIMEOUT_MS);
   }
 
-  // Fetch the mp4 as a fully buffered blob first: seeking inside a buffered blob
-  // is near instant, while range requests over the network are a slideshow.
+  // Swap the playing source to the buffered blob at the same currentTime in one
+  // frame: the current frame is held on a canvas over the video until the new
+  // source has painted the same time. (Our port only — the standalone never swaps src.)
+  function swapTo(src: string) {
+    if (disposed || failed || !ready) return;
+    const hold = document.createElement("canvas");
+    hold.width = clip.videoWidth || 1; hold.height = clip.videoHeight || 1;
+    try { hold.getContext("2d")?.drawImage(clip, 0, 0, hold.width, hold.height); } catch { /* keep going without the hold */ }
+    hold.style.cssText = clip.style.cssText;
+    hold.className = clip.className;
+    clip.parentElement?.insertBefore(hold, clip.nextSibling);
+    const at = clip.currentTime;
+    swapping = true;
+    const done = () => { swapping = false; seekInFlight = false; hold.remove(); };
+    const onMeta = () => {
+      clip.removeEventListener("loadedmetadata", onMeta);
+      duration = clip.duration || duration;
+      clip.pause();
+      const onSeeked = () => {
+        clip.removeEventListener("seeked", onSeeked);
+        if (hasRvfc) clip.requestVideoFrameCallback(done); else requestAnimationFrame(() => requestAnimationFrame(done));
+      };
+      clip.addEventListener("seeked", onSeeked);
+      try { clip.currentTime = at; } catch { done(); }
+    };
+    clip.addEventListener("loadedmetadata", onMeta);
+    // if the blob source fails or stalls, go back to the local clip at the same time
+    const revert = () => {
+      if (!swapping) return;
+      clip.removeEventListener("loadedmetadata", onMeta);
+      clip.addEventListener("loadedmetadata", () => { try { clip.currentTime = at; } catch { /* ignore */ } done(); }, { once: true });
+      clip.src = HERO_LOCAL_URL;
+      clip.load();
+    };
+    clip.addEventListener("error", revert, { once: true });
+    clip.src = src;
+    clip.load();
+    setTimeout(revert, ATTACH_TIMEOUT_MS);
+  }
+
+  // Fetch the CDN mp4 as a fully buffered blob in the background: seeking inside
+  // a buffered blob is near instant; until it lands, the local clip serves.
   function preload() {
     const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const bail = setTimeout(() => {
-      if (attached) return;
-      controller?.abort();
-      setProgress(1);
-      attach(HERO_VIDEO_URL);
-    }, PRELOAD_BAIL_MS);
+    // past the bail the local clip simply stays; nothing to fall back to
+    const bail = setTimeout(() => { controller?.abort(); setProgress(1); }, PRELOAD_BAIL_MS);
 
     fetch(HERO_VIDEO_URL, controller ? { signal: controller.signal } : undefined)
       .then(readAsBlob)
-      .then((blob) => { clearTimeout(bail); setProgress(1); attach(URL.createObjectURL(blob)); })
-      .catch(() => { clearTimeout(bail); setProgress(1); attach(HERO_VIDEO_URL); }); // CORS failure, abort, offline
+      .then((blob) => {
+        clearTimeout(bail); setProgress(1);
+        // swap between scrolls, never mid-scrub, so the held frame is never noticed
+        const url = URL.createObjectURL(blob);
+        const whenIdle = () => { if (performance.now() - lastScrollAt > SWAP_IDLE_MS) swapTo(url); else setTimeout(whenIdle, SWAP_IDLE_MS); };
+        whenIdle();
+      })
+      .catch(() => { clearTimeout(bail); setProgress(1); }); // CORS failure, abort, offline: the local clip stays
   }
 
   async function readAsBlob(res: Response) {
@@ -177,6 +240,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     failed = true;
     setTimeout(start, 0);
   } else {
+    attach(HERO_LOCAL_URL);
     preload();
     rafId = requestAnimationFrame(frame);
   }

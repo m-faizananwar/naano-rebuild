@@ -34,7 +34,7 @@ export function ScrollHero() {
         {/* Helvetica Neue Light for the glass card and the chamfer button only (glass-card-spec §1). */}
         <link rel="stylesheet" href={GLASS_FONT_HREF} />
         <GlassFilterDefs />
-        <video ref={clip} muted playsInline preload="none" disablePictureInPicture poster={HERO_POSTER} aria-hidden="true" />
+        <video ref={clip} muted playsInline preload="auto" disablePictureInPicture poster={HERO_POSTER} aria-hidden="true" />
         <div className={styles.veil} />
         <div className={styles.grain} />
         <i ref={meter} className={styles.meter} aria-hidden="true" />

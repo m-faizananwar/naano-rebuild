@@ -11,9 +11,10 @@
   --pill-fg: #ffffff;
   position: relative;
   z-index: 1;
-  /* the scroll track: the only thing that gives the hero its height */
-  height: 560vh;
-  min-height: 3200px;
+  /* the scroll track: the only thing that gives the hero its height (the
+     landing uses a shorter track than the standalone's 560vh) */
+  height: 260vh;
+  min-height: 1600px;
   background: var(--shade);
   color: var(--fg);
   font-weight: 400;
