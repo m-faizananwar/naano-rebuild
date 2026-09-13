@@ -12,6 +12,14 @@ export const NAV_LINKS = [
   { href: "/benchmarks", label: "Resources" },
 ] as const;
 
+// The glass controller's four link cells (cell 0 is the lockup).
+export const GLASS_NAV_CELLS = [
+  { href: "/", label: "For companies" },
+  { href: "/for-creators", label: "For creators" },
+  { href: "/for-agencies", label: "For agencies" },
+  { href: "/#how-it-works", label: "How it works" },
+] as const;
+
 // The slide-in menu (mobile nav), in the spec's five-link shape.
 export const MENU_LINKS = [
   { href: "/", label: "For companies" },

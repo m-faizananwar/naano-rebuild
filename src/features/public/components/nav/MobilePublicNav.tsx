@@ -2,10 +2,9 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { type ReactNode, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "cn";
-import { Button } from "@/components/ui/button";
 import { BRAND } from "@/config/brand";
 import { MENU_LINKS } from "../../constants";
 import styles from "./slide-menu.module.css";
@@ -21,7 +20,8 @@ const ARROW = (
 // that becomes a 380px drawer at ≥640, staggered links, "Get in touch" foot.
 // Closes on X / backdrop / link / Escape; focus goes to Close and back to
 // the hamburger.
-export function MobilePublicNav() {
+// `trigger` lets the glass nav render the opener as a cell of its mobile row.
+export function MobilePublicNav({ trigger }: { trigger?: { className: string; children: ReactNode } }) {
   const [open, setOpen] = useState(false);
   // true after hydration only (portals need document); no setState in an effect.
   const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
@@ -46,9 +46,9 @@ export function MobilePublicNav() {
 
   return (
     <>
-      <Button ref={openBtn} variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" aria-expanded={open} aria-controls={menuId} onClick={() => setMenu(true)}>
-        <Menu aria-hidden="true" />
-      </Button>
+      <button ref={openBtn} type="button" className={trigger ? trigger.className : "lg:hidden"} aria-label="Open menu" aria-expanded={open} aria-controls={menuId} onClick={() => setMenu(true)}>
+        {trigger ? trigger.children : <Menu aria-hidden="true" />}
+      </button>
       {mounted ? createPortal(
       <div id={menuId} className={cn(styles.menu, open && styles.open)} aria-hidden={!open}>
         <button type="button" className={styles.backdrop} aria-label="Close menu" tabIndex={-1} onClick={() => setMenu(false)} />
