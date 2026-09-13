@@ -138,3 +138,13 @@
   .group\/button:hover, .group\/button:active, .card-lift:hover { transform: none; }
   :is(.icon-chip, [data-slot="dialog-close"], .site-footer .socials a, .gaze .socials span):hover > svg { transform: none; }
 }
+
+/* ── Arrow nudge (blovio ArrowButton: group-hover:translate-x-0.5, 300ms) ──
+   Every link/button that carries a lucide arrow-right nudges it 2px in its
+   own direction on hover. */
+:is(a, button) svg.lucide-arrow-right, :is(a, button) svg.lucide-arrow-up-right, :is(a, button) svg.lucide-chevron-right, .arrow-nudge > svg { transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+:is(a, button):hover svg.lucide-arrow-right, :is(a, button):hover svg.lucide-chevron-right, .arrow-nudge:hover > svg { transform: translateX(2px); }
+:is(a, button):hover svg.lucide-arrow-up-right { transform: translate(2px, -2px); }
+:is(a, button):hover svg.lucide-arrow-down { transform: translateY(2px); }
+.arrow-glyph { display: inline-block; margin-left: 0.25em; transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+:is(a, button):hover .arrow-glyph { transform: translateX(2px); }

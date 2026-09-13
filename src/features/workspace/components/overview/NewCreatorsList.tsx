@@ -14,7 +14,7 @@ export function NewCreatorsList({ creators, campaignId }: { creators: BrandOverv
           <p className="text-sm text-muted-foreground">Profiles that fit your buyers</p>
         </div>
         <Link href={href} className="text-sm font-medium text-brand hover:underline">
-          See all →
+          See all <span className="arrow-glyph" aria-hidden="true">→</span>
         </Link>
       </div>
       <ul className="mt-4 divide-y">

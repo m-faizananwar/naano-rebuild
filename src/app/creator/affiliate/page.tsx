@@ -79,7 +79,7 @@ export default async function CreatorAffiliatePage() {
                 <span className="font-medium">Share your Creator Card</span>
                 <span className="block text-sm text-muted-foreground">Use your Deal Link when a brand contacts you. Your profile stays selected when it creates its account.</span>
               </span>
-              <Link href="/creator/card" className={buttonVariants({ variant: "outline" })}>Open My Card →</Link>
+              <Link href="/creator/card" className={buttonVariants({ variant: "outline" })}>Open My Card <span className="arrow-glyph" aria-hidden="true">→</span></Link>
             </li>
           </ul>
         </section>

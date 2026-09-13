@@ -61,7 +61,7 @@ export function ActiveCollaborations({ items }: { items: CreatorOverview["active
           <p className="text-sm text-muted-foreground">Everything currently moving from brief to publication.</p>
         </div>
         <Link href="/creator/collaborations" className="text-sm font-medium text-brand hover:underline">
-          See all →
+          See all <span className="arrow-glyph" aria-hidden="true">→</span>
         </Link>
       </div>
       {items.length === 0 ? (
