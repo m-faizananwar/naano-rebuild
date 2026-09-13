@@ -6,6 +6,8 @@ const TILT_DEG = 3;
 const SHIFT_PX = 4;
 const EASE_MS = 250;
 const SELECTOR = ".frost-card, .glass-tilt, .group\\/button.bg-primary";
+// the animatable owns `transform` while hovered, so the buttons' css lift (-2px) is folded in here
+const BUTTON_LIFT_PX = -2;
 
 type Animatable = { x: (v: number) => unknown; y: (v: number) => unknown; rotate: (v: number) => unknown; revert: () => void };
 
@@ -29,8 +31,9 @@ export function PointerTilt() {
       const r = el.getBoundingClientRect();
       const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
       const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+      const lift = el.classList.contains("group/button") ? BUTTON_LIFT_PX : 0;
       a.x(Math.max(-1, Math.min(1, dx)) * SHIFT_PX);
-      a.y(Math.max(-1, Math.min(1, dy)) * SHIFT_PX);
+      a.y(Math.max(-1, Math.min(1, dy)) * SHIFT_PX + lift);
       a.rotate(Math.max(-1, Math.min(1, dx)) * TILT_DEG);
     };
     const onOut = (e: PointerEvent) => {

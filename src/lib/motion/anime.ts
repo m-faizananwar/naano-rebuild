@@ -31,21 +31,27 @@ const toHandle = (anim: { then: (cb: () => void) => unknown; cancel: () => unkno
 // Fade + rise one element into place.
 export function reveal(el: Element | null, opts: { delay?: number; y?: number; duration?: number } = {}): MotionHandle {
   if (!el) return DONE;
-  if (reducedMotion()) { utils.set(el, { opacity: 1, translateY: 0 }); return DONE; }
+  if (reducedMotion()) { clearInline([el]); return DONE; }
   utils.set(el, { opacity: 0, translateY: opts.y ?? REVEAL_Y });
-  return toHandle(animate(el, { opacity: 1, translateY: 0, duration: clampMs(opts.duration ?? REVEAL_MS), delay: opts.delay ?? 0, ease: MOTION_EASE }));
+  return toHandle(animate(el, { opacity: 1, translateY: 0, duration: clampMs(opts.duration ?? REVEAL_MS), delay: opts.delay ?? 0, ease: MOTION_EASE, onComplete: () => clearInline([el]) }));
 }
 
 // Rows/cards appear one after another (default 30ms apart), e.g. after a filter change.
 export function stagger(list: ArrayLike<Element> | Element[], opts: { each?: number; from?: "first" | "last" | "center"; y?: number; duration?: number } = {}): MotionHandle {
   const targets = Array.from(list);
   if (targets.length === 0) return DONE;
-  if (reducedMotion()) { utils.set(targets, { opacity: 1, translateY: 0 }); return DONE; }
+  if (reducedMotion()) { clearInline(targets); return DONE; }
   utils.set(targets, { opacity: 0, translateY: opts.y ?? REVEAL_Y });
   return toHandle(animate(targets, {
     opacity: 1, translateY: 0, duration: clampMs(opts.duration ?? STAGGER_MS), ease: MOTION_EASE,
     delay: animeStagger(opts.each ?? STAGGER_EACH_MS, { from: opts.from ?? "first" }),
+    // leave no inline transform/opacity behind, so css :hover lifts still apply
+    onComplete: () => clearInline(targets),
   }));
+}
+
+function clearInline(targets: Element[]) {
+  for (const t of targets) { const el = t as HTMLElement; el.style.removeProperty("transform"); el.style.removeProperty("opacity"); }
 }
 
 // Count a number up in the element's text; `format` renders each frame.
