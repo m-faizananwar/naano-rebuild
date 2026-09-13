@@ -79,7 +79,7 @@ export function CallView({ role, csrfToken, account }: Props) {
               {loop.muted ? <MicOff className="size-5" aria-hidden="true" /> : <Mic className="size-5" aria-hidden="true" />}
             </button>
           )}
-          <button type="button" onClick={end} className="flex h-12 items-center gap-2 rounded-full border border-white/30 bg-white px-6 text-sm font-medium" style={{ color: "rgb(13 12 11)" }}>
+          <button type="button" onClick={end} className="flex h-12 items-center gap-2 rounded-full border border-white/30 px-6 text-sm font-medium text-white hover:bg-white/10" style={{ background: "rgb(13 12 11)" }}>
             <PhoneOff className="size-4" aria-hidden="true" /> End call
           </button>
         </div>
