@@ -11,3 +11,10 @@ export const HTTP_FORBIDDEN = 403;
 // One retry on the next provider after an account-level failure.
 export const MAX_PROVIDER_ATTEMPTS = 2;
 export const HTTP_BAD_REQUEST = 400;
+// How long a failing provider is set aside before it is tried again.
+export const DEMOTION_TTL_MS = 10 * 60 * 1000;
+// Health probe: one tiny request per provider change, cached for 10 minutes.
+export const PROBE_TTL_MS = 10 * 60 * 1000;
+export const PROBE_MAX_TOKENS = 16;
+export const PROBE_TIMEOUT_MS = 8_000;
+export const HTTP_TOO_MANY_REQUESTS = 429;

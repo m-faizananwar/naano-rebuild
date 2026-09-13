@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { pingDatabase } from "@/db/health";
+import { probeProvider } from "@/features/ai/server/llm";
 import { aiProvider, demotedProviders } from "@/features/ai/server/provider";
 import { aiKeyEnvNames } from "@/lib/ai-provider";
 
@@ -10,12 +11,15 @@ const HTTP_SERVICE_UNAVAILABLE = 503;
 // Smoke test after every deploy: { ok, db, dbEnv, ai, voice, email, commit }.
 // ai/voice/email name which optional integrations are configured (presence only).
 export async function GET() {
-  const db = await pingDatabase();
+  const [db, ai] = await Promise.all([pingDatabase(), probeProvider()]);
   const body = {
     ok: db.ok,
     db: db.ok ? "ok" : db.reason,
     dbEnv: db.via,
-    ai: aiProvider().name,
+    // the provider that actually answered a probe (cached 10 min), and the one the keys resolve to
+    ai: ai.provider,
+    aiResolved: aiProvider().name,
+    ...("probedAt" in ai ? { aiProbedAt: ai.probedAt } : {}),
     // names only, never values: shows a misspelt or prefixed key variable
     aiEnv: aiKeyEnvNames(process.env),
     // providers demoted in this process after an account-level error (reason text, no payload)

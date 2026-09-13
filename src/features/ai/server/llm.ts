@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
-import { HTTP_BAD_REQUEST, HTTP_FORBIDDEN, HTTP_PAYMENT_REQUIRED, HTTP_UNAUTHORIZED, MAX_PROVIDER_ATTEMPTS } from "../constants";
+import { HTTP_BAD_REQUEST, HTTP_FORBIDDEN, HTTP_PAYMENT_REQUIRED, HTTP_TOO_MANY_REQUESTS, HTTP_UNAUTHORIZED, MAX_PROVIDER_ATTEMPTS, PROBE_MAX_TOKENS, PROBE_TIMEOUT_MS, PROBE_TTL_MS } from "../constants";
 import { ANTHROPIC_MODEL, DEFAULT_MAX_RETRIES, DEFAULT_MAX_TOKENS, DEFAULT_TIMEOUT_MS, ERROR_MESSAGE_MAX, GEMINI_MODEL } from "../constants";
 import { aiProvider, demoteProvider } from "./provider";
 
@@ -35,9 +35,9 @@ export async function generateText(req: TextRequest): Promise<{ text: string; pr
   );
 }
 
-// Runs the call on the current provider. An account-level failure (no credit,
-// bad key, forbidden) demotes that provider and retries once on the next one;
-// transport errors still throw to the caller.
+// Runs the call on the current provider. A billing / auth / quota error or a
+// network failure sets that provider aside (10 min) and retries once on the
+// next one; other errors throw to the caller's template fallback.
 async function withDemotion<R>(call: (provider: ReturnType<typeof aiProvider>) => Promise<R | null>): Promise<R | null> {
   for (let attempt = 0; attempt < MAX_PROVIDER_ATTEMPTS; attempt++) {
     const provider = aiProvider();
@@ -53,15 +53,37 @@ async function withDemotion<R>(call: (provider: ReturnType<typeof aiProvider>) =
   return null;
 }
 
-const ACCOUNT_STATUSES = new Set([HTTP_UNAUTHORIZED, HTTP_PAYMENT_REQUIRED, HTTP_FORBIDDEN]);
+const ACCOUNT_STATUSES = new Set([HTTP_UNAUTHORIZED, HTTP_PAYMENT_REQUIRED, HTTP_FORBIDDEN, HTTP_TOO_MANY_REQUESTS]);
 const CREDIT_PATTERN = /credit balance|billing|quota|api key/i;
+const GEMINI_ACCOUNT_PATTERN = /API key|PERMISSION_DENIED|UNAUTHENTICATED|RESOURCE_EXHAUSTED|\b(401|403|429)\b/;
 function accountLevelReason(error: unknown): string | null {
+  if (error instanceof Anthropic.APIConnectionError) return describeAiError(error);
   if (error instanceof Anthropic.APIError) {
     if (ACCOUNT_STATUSES.has(error.status ?? 0) || (error.status === HTTP_BAD_REQUEST && CREDIT_PATTERN.test(error.message))) return describeAiError(error);
     return null;
   }
-  if (error instanceof Error && /API key|PERMISSION_DENIED|UNAUTHENTICATED|RESOURCE_EXHAUSTED/.test(error.message)) return describeAiError(error);
+  if (error instanceof Error && (GEMINI_ACCOUNT_PATTERN.test(error.message) || /fetch failed|ECONN|ENOTFOUND|network/i.test(error.message))) return describeAiError(error);
   return null;
+}
+
+// The provider that actually answers right now: one tiny request, cached for
+// PROBE_TTL_MS per provider name, so /api/health reports what works rather
+// than which keys exist. Never throws.
+let probe: { name: string; provider: string; at: number } | null = null;
+export async function probeProvider(): Promise<{ provider: string; probedAt: string } | { provider: "template" }> {
+  const current = aiProvider();
+  if (current.name === "template") return { provider: "template" };
+  const now = Date.now();
+  if (probe && probe.name === current.name && now - probe.at < PROBE_TTL_MS) return { provider: probe.provider, probedAt: new Date(probe.at).toISOString() };
+  let answered = "template";
+  try {
+    const result = await generateText({ system: "Reply with the single word ok.", user: "ok?", maxTokens: PROBE_MAX_TOKENS, timeoutMs: PROBE_TIMEOUT_MS });
+    answered = result?.provider ?? "template";
+  } catch (error) {
+    console.error("[ai] health probe failed", { reason: describeAiError(error) });
+  }
+  probe = { name: aiProvider().name, provider: answered, at: now };
+  return { provider: answered, probedAt: new Date(now).toISOString() };
 }
 
 async function anthropicStructured<T extends z.ZodType>(req: StructuredRequest<T>, apiKey: string) {
