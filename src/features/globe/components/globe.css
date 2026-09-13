@@ -33,10 +33,13 @@
   padding: 6px 9px;
   border-radius: 999px;
   opacity: 0;
+  /* out of layout until shown, so a hidden tip near the edge never widens the page */
+  display: none;
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
 .creator-globe__hit:hover .creator-globe__tip,
 .creator-globe__hit:focus-visible .creator-globe__tip {
+  display: block;
   opacity: 1;
 }
