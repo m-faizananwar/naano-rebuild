@@ -15,7 +15,7 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
   const nav = navFor(viewer.role);
   return (
     <nav aria-label="Main" className="flex h-full flex-col gap-4 px-3 py-5">
-      <Link href={root} className="px-3 [[data-collapsed=true]_&]:px-2" aria-label="Overview">
+      <Link href={root} className="nav-logo px-3 [[data-collapsed=true]_&]:px-2" aria-label="Overview">
         {/* Expanded: the lockup. Collapsed: the mark alone at 28px (the word is a .side-label). */}
         <BrandLockup size="md" wordClassName="side-label" className="[[data-collapsed=true]_&]:gap-0" />
       </Link>

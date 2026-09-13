@@ -11,7 +11,7 @@ export function TopBar({ viewer }: { viewer: ShellViewer }) {
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur lg:px-8">
       <MobileNav viewer={viewer} />
-      <div className="ml-auto flex items-center gap-2">
+      <div className="nav-root ml-auto flex items-center gap-2">
         {viewer.role === "brand" ? <McpPill /> : null}
         <WalletChip role={viewer.role} walletCents={viewer.walletCents} />
         <LocaleToggle />

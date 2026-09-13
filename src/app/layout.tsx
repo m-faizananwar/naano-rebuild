@@ -5,6 +5,7 @@ import { PointerTilt } from "@/components/motion/PointerTilt";
 import { RouteProgress } from "@/components/motion/RouteProgress";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import "@/styles/interaction.css";
 
 import { BRAND } from "@/config/brand";
 // Cormorant Garamond 500 is only for the brand lockup (src/components/brand).

@@ -8,16 +8,20 @@ import { isActive, navFor } from "./nav";
 type Props = { role: "brand" | "creator"; section: "primary" | "secondary"; onNavigate?: () => void };
 
 // Resolves the nav on the client so icon components never cross the RSC boundary as props.
+const NAV_STAGGER_COUNT = 4;
+
 export function SidebarNav({ role, section, onNavigate }: Props) {
   const pathname = usePathname();
   const root = `/${role}`;
   const items = navFor(role)[section];
   return (
     <ul className="grid gap-0.5">
-      {items.map((item) => {
+      {items.map((item, index) => {
         const active = isActive(pathname, item.href, root);
+        // first-mount entrance: the MotionSites nav stagger on the first four items
+        const entrance = index < NAV_STAGGER_COUNT ? `nav-link-${index + 1}` : undefined;
         return (
-          <li key={item.href}>
+          <li key={item.href} className={entrance}>
             <Link
               href={item.href}
               onClick={onNavigate}
