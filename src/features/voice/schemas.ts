@@ -76,4 +76,6 @@ export type VoiceResponse = {
   pending?: VoiceIntent;
   intent?: VoiceIntent;
   source?: "model" | "grammar";
+  // Why the grammar answered instead of the model (provider error class, never a payload).
+  fallbackReason?: string;
 };

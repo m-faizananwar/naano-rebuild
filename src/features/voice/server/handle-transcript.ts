@@ -24,7 +24,7 @@ export async function handleTranscript(input: {
     // Anything else replaces the pending action with a new command.
   }
 
-  const { intent, source } = await parseIntent(transcript, role);
+  const { intent, source, reason } = await parseIntent(transcript, role);
   const outcome = await executeIntent(intent, { viewer: input.viewer, confirmed: input.confirmed === true });
-  return { ok: !outcome.failed, ...outcome, intent, source };
+  return { ok: !outcome.failed, ...outcome, intent, source, ...(reason ? { fallbackReason: reason } : {}) };
 }
