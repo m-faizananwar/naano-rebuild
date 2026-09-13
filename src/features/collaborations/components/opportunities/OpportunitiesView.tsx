@@ -1,5 +1,7 @@
 "use client";
 
+import { StaggerIn } from "@/components/motion/StaggerIn";
+
 import { Store } from "lucide-react";
 import { startTransition, useMemo, useOptimistic, useState } from "react";
 import { toast } from "sonner";
@@ -58,11 +60,11 @@ export function OpportunitiesView({ opportunities, csrfToken }: Props) {
       ) : visible.length === 0 ? (
         <EmptyState title="No campaign matches these filters" body="Try another industry, country or search term." />
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <StaggerIn replayKey={visible.map((o) => o.campaignId).join(",")} className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {visible.map((o) => (
             <OpportunityCard key={o.campaignId} opportunity={o} pending={pendingIds.includes(o.campaignId)} onApply={setConfirming} />
           ))}
-        </div>
+        </StaggerIn>
       )}
       <ApplyDialog opportunity={confirming} onOpenChange={(open) => !open && setConfirming(null)} onConfirm={apply} />
     </>

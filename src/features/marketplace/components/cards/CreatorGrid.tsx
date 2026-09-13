@@ -1,21 +1,21 @@
-import type React from "react";
+import { StaggerIn } from "@/components/motion/StaggerIn";
 import { TOP_RANKED } from "../../constants";
 import type { CreatorDto } from "../../schemas";
 import { CreatorCard } from "./CreatorCard";
 
-function Grid({ creators, label, offset = 0 }: { creators: CreatorDto[]; label: string; offset?: number }) {
-  // Re-keying on the id set replays the 40ms stagger whenever a filter changes the result.
+function Grid({ creators, label }: { creators: CreatorDto[]; label: string }) {
+  // The id set as replay key: the 30ms anime stagger runs again whenever a filter changes the result.
   const setKey = creators.map((c) => c.id).join(",");
   return (
-    <ul key={setKey} style={{ "--stagger": "40ms" } as React.CSSProperties} className="stagger grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label={label}>
-      {creators.map((creator, index) => (
-        <li key={creator.id} style={{ "--i": index + offset } as React.CSSProperties} className="flex">
+    <StaggerIn as="ul" replayKey={setKey} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label={label}>
+      {creators.map((creator) => (
+        <li key={creator.id} className="flex">
           <div className="flex w-full">
             <CreatorCard creator={creator} />
           </div>
         </li>
       ))}
-    </ul>
+    </StaggerIn>
   );
 }
 
@@ -39,7 +39,7 @@ export function CreatorGrid({ creators, topRanked = 0 }: { creators: CreatorDto[
             <h2 id="all-creators-title" className="font-semibold">All creators</h2>
             <span className="h-px flex-1 bg-border" aria-hidden="true" />
           </div>
-          <Grid creators={rest} label="All creators" offset={0} />
+          <Grid creators={rest} label="All creators" />
         </section>
       ) : null}
     </div>

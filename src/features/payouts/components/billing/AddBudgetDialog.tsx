@@ -3,6 +3,7 @@
 import { CreditCard, Lock, PackageCheck, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useMotionDialog } from "@/components/motion/useMotionDialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatCents } from "@/lib/money";
 import { MIN_TOPUP_CENTS } from "../../constants";
@@ -31,6 +32,7 @@ function euros(cents: number) {
 // naano's "SECURE PAYMENT / Add budget" dialog, verbatim. The CTA credits the
 // ledger directly: there is no Stripe checkout in this build and the dialog says so.
 export function AddBudgetDialog({ open, onOpenChange, initialCents, suggested, currentBalanceCents, onSubmit }: Props) {
+  const { attachContent, handleOpenChange: requestOpenChange } = useMotionDialog(onOpenChange);
   const [cents, setCents] = useState(initialCents);
   const [pending, setPending] = useState(false);
   const valid = cents >= MIN_TOPUP_CENTS;
@@ -43,8 +45,8 @@ export function AddBudgetDialog({ open, onOpenChange, initialCents, suggested, c
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={requestOpenChange}>
+      <DialogContent ref={attachContent} className="sm:max-w-md data-open:animate-none data-closed:animate-none">
         <DialogHeader>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-brand">Secure payment</p>
           <DialogTitle className="text-xl">Add budget</DialogTitle>

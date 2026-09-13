@@ -1,9 +1,8 @@
 "use client";
 
 // naano draws every line chart on mount: 2.5s ease-out after a 0.5s delay.
-const CHART_DRAW_MS = 2500;
-const CHART_DRAW_DELAY_MS = 500;
 
+import { DrawnChart } from "@/components/motion/DrawnChart";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatShortDay } from "@/lib/dates";
 
@@ -14,7 +13,7 @@ type Props = { data: Array<{ day: string; clicks: number }> };
 export function ClicksChart({ data }: Props) {
   const points = data.map((d) => ({ ...d, label: formatShortDay(d.day) }));
   return (
-    <div className="h-64 w-full" role="img" aria-label="Daily qualified clicks over the last 12 days">
+    <DrawnChart replayKey={points.length} className="h-64 w-full" role="img" aria-label="Daily qualified clicks over the last 12 days">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={points} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
           <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -25,9 +24,9 @@ export function ClicksChart({ data }: Props) {
             contentStyle={{ borderRadius: 8, border: "1px solid var(--border)", background: "var(--popover)", color: "var(--popover-foreground)", fontSize: 12 }}
             formatter={(value) => [`${value} clicks`, "Qualified clicks"]}
           />
-          <Line type="monotone" dataKey="clicks" stroke="var(--brand)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "var(--brand)", stroke: "var(--background)", strokeWidth: 2 }} isAnimationActive animationBegin={CHART_DRAW_DELAY_MS} animationDuration={CHART_DRAW_MS} animationEasing="ease-out" />
+          <Line type="monotone" dataKey="clicks" stroke="var(--brand)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "var(--brand)", stroke: "var(--background)", strokeWidth: 2 }} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </DrawnChart>
   );
 }

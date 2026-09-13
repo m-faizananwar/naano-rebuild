@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useMotionDialog } from "@/components/motion/useMotionDialog";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +24,7 @@ const NOTE_ROWS = 4;
 // "Review LinkedIn post": the full draft, then approve or send it back with a
 // required comment. Request changes is capped by MAX_REVISION_ROUNDS.
 export function ReviewDraftDialog({ collaboration: c, open, onOpenChange, disabled, onSubmit }: Props) {
+  const { attachContent, handleOpenChange: requestOpenChange } = useMotionDialog(onOpenChange);
   const [changing, setChanging] = useState(false);
   const form = useForm<ReviewFormInput>({ resolver: zodResolver(reviewFormSchema), defaultValues: { decision: "approve", note: "" } });
   const { errors, isSubmitting } = form.formState;
@@ -42,8 +44,8 @@ export function ReviewDraftDialog({ collaboration: c, open, onOpenChange, disabl
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={requestOpenChange}>
+      <DialogContent ref={attachContent} className="max-h-[90vh] overflow-y-auto sm:max-w-2xl data-open:animate-none data-closed:animate-none">
         <DialogHeader>
           <DialogTitle>{COPY.reviewTitle}</DialogTitle>
           <DialogDescription>{COPY.reviewDescription}</DialogDescription>

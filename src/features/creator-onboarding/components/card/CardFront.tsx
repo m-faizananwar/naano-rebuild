@@ -11,7 +11,7 @@ const PROGRESS_DONE = 100;
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="px-2 py-5 text-center">
-      <dd className="text-xl font-bold tabular-nums">{value}</dd>
+      <dd data-stat className="text-xl font-bold tabular-nums [transform-style:preserve-3d]">{value}</dd>
       <dt className="mt-1 text-xs text-muted-foreground">{label}</dt>
     </div>
   );
@@ -55,7 +55,7 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
           <AvatarFallback className="text-2xl font-semibold">{model.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <p key={model.name} className="animate-fade mt-4 text-2xl font-bold tracking-tight">{model.name}</p>
-        {model.industries.length > 0 ? <p key={model.industries.join("|")} className="animate-fade mt-1 text-xs font-semibold uppercase tracking-wider text-brand">{model.industries.join(" · ")}</p> : null}
+        {model.industries.length > 0 ? <p data-industries className="mt-1 text-xs font-semibold uppercase tracking-wider text-brand">{model.industries.join(" · ")}</p> : null}
         <p key={model.headline} className="animate-fade mt-2 line-clamp-2 text-muted-foreground">{model.headline || "Your LinkedIn headline and topics will appear here."}</p>
         {model.hasPostData === false ? (
           <span className="mt-4 inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">

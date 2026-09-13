@@ -2,6 +2,7 @@
 
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMotionDialog } from "@/components/motion/useMotionDialog";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { primaryCta } from "@/lib/brief-markdown";
 import type { BriefDto } from "../../schemas";
@@ -31,9 +32,10 @@ function website(url: string | null) {
 // Right-side panel with the whole brief, opened from an opportunity card or a
 // collaboration. Same sections, same order as naano's drawer.
 export function BriefDrawer({ brief, open, onOpenChange }: Props) {
+  const { attachContent, handleOpenChange: requestOpenChange } = useMotionDialog(onOpenChange, { axis: "x", distance: 24 });
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" showCloseButton={false} className="w-full gap-0 overflow-y-auto bg-background p-0 data-[side=right]:w-full data-[side=right]:sm:max-w-2xl">
+    <Sheet open={open} onOpenChange={requestOpenChange}>
+      <SheetContent ref={attachContent} side="right" showCloseButton={false} className="w-full gap-0 overflow-y-auto bg-background p-0 transition-none data-[side=right]:w-full data-[side=right]:sm:max-w-2xl">
         <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background px-6 py-4">
           <BrandMark initial={brief.brandInitial} name={brief.brandCompany} size="lg" />
           <div className="min-w-0 flex-1">
