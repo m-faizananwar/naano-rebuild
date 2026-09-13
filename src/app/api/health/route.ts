@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { pingDatabase } from "@/db/health";
-import { aiProvider } from "@/features/ai/server/provider";
+import { aiProvider, demotedProviders } from "@/features/ai/server/provider";
 import { aiKeyEnvNames } from "@/lib/ai-provider";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,8 @@ export async function GET() {
     ai: aiProvider().name,
     // names only, never values: shows a misspelt or prefixed key variable
     aiEnv: aiKeyEnvNames(process.env),
+    // providers demoted in this process after an account-level error (reason text, no payload)
+    aiDemoted: demotedProviders(),
     voice: process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY && process.env.VAPI_PRIVATE_KEY ? "vapi" : "web-speech",
     email: process.env.RESEND_API_KEY ? "resend" : "on-screen",
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local",

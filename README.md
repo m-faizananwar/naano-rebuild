@@ -44,7 +44,7 @@ pnpm dev                          # http://localhost:3000
 
 CI (`.github/workflows/ci.yml`) runs typecheck + lint + test on every push. Smoke test after every deploy:
 `GET /api/health` → `{ ok, db, dbEnv, ai, voice, commit }` (503 with `db: "not configured"` until a database URL is set; `dbEnv` names
-the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`; `ai` is `anthropic`, `gemini` or `template` (provider order `ANTHROPIC_API_KEY` → `GEMINI_API_KEY` → template, `aiEnv` lists key-looking variable names),
+the variable it used — `DATABASE_URL` or one of Vercel's Neon-prefixed names, see `.env.example`; `ai` is `anthropic`, `gemini` or `template` (provider order `ANTHROPIC_API_KEY` → `GEMINI_API_KEY` → template, `aiEnv` lists key-looking variable names, `aiDemoted` names a provider set aside after an account-level error such as no credit),
 `voice` is `vapi` or `web-speech`, `email` is `resend` or `on-screen`, depending on which optional keys are present).
 
 **Without a database** every page still renders: the app shells show an honest "Database not configured" state on every

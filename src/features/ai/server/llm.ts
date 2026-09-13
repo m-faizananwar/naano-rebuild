@@ -3,8 +3,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
+import { HTTP_BAD_REQUEST, HTTP_FORBIDDEN, HTTP_PAYMENT_REQUIRED, HTTP_UNAUTHORIZED, MAX_PROVIDER_ATTEMPTS } from "../constants";
 import { ANTHROPIC_MODEL, DEFAULT_MAX_RETRIES, DEFAULT_MAX_TOKENS, DEFAULT_TIMEOUT_MS, ERROR_MESSAGE_MAX, GEMINI_MODEL } from "../constants";
-import { aiProvider } from "./provider";
+import { aiProvider, demoteProvider } from "./provider";
 
 export type StructuredRequest<T extends z.ZodType> = {
   system: string;
@@ -23,16 +24,43 @@ export type TextRequest = Omit<StructuredRequest<z.ZodType>, "schema">;
 // template (no key) or the model refused / produced nothing usable; throws
 // on transport errors so callers can log and fall back.
 export async function generateStructured<T extends z.ZodType>(req: StructuredRequest<T>): Promise<StructuredResult<z.infer<T>> | null> {
-  const provider = aiProvider();
-  if (provider.name === "anthropic") return anthropicStructured(req, provider.apiKey as string);
-  if (provider.name === "gemini") return geminiStructured(req, provider.apiKey as string);
-  return null;
+  return withDemotion<StructuredResult<z.infer<T>>>((provider) =>
+    provider.name === "anthropic" ? anthropicStructured(req, provider.apiKey as string) : geminiStructured(req, provider.apiKey as string),
+  );
 }
 
 export async function generateText(req: TextRequest): Promise<{ text: string; provider: "anthropic" | "gemini" } | null> {
-  const provider = aiProvider();
-  if (provider.name === "anthropic") return anthropicText(req, provider.apiKey as string);
-  if (provider.name === "gemini") return geminiText(req, provider.apiKey as string);
+  return withDemotion<{ text: string; provider: "anthropic" | "gemini" }>((provider) =>
+    provider.name === "anthropic" ? anthropicText(req, provider.apiKey as string) : geminiText(req, provider.apiKey as string),
+  );
+}
+
+// Runs the call on the current provider. An account-level failure (no credit,
+// bad key, forbidden) demotes that provider and retries once on the next one;
+// transport errors still throw to the caller.
+async function withDemotion<R>(call: (provider: ReturnType<typeof aiProvider>) => Promise<R | null>): Promise<R | null> {
+  for (let attempt = 0; attempt < MAX_PROVIDER_ATTEMPTS; attempt++) {
+    const provider = aiProvider();
+    if (provider.name === "template") return null;
+    try {
+      return await call(provider);
+    } catch (error) {
+      const reason = accountLevelReason(error);
+      if (!reason) throw error;
+      demoteProvider(provider.name, reason);
+    }
+  }
+  return null;
+}
+
+const ACCOUNT_STATUSES = new Set([HTTP_UNAUTHORIZED, HTTP_PAYMENT_REQUIRED, HTTP_FORBIDDEN]);
+const CREDIT_PATTERN = /credit balance|billing|quota|api key/i;
+function accountLevelReason(error: unknown): string | null {
+  if (error instanceof Anthropic.APIError) {
+    if (ACCOUNT_STATUSES.has(error.status ?? 0) || (error.status === HTTP_BAD_REQUEST && CREDIT_PATTERN.test(error.message))) return describeAiError(error);
+    return null;
+  }
+  if (error instanceof Error && /API key|PERMISSION_DENIED|UNAUTHENTICATED|RESOURCE_EXHAUSTED/.test(error.message)) return describeAiError(error);
   return null;
 }
 
