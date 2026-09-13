@@ -1,13 +1,11 @@
 import { BRAND } from "@/config/brand";
 
-// 1920×1080, 10.04s, 241 frames, all-intra: every frame is a keyframe, which is
-// why a scroll scrub can land on an exact frame instantly.
-export const HERO_VIDEO_URL = "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/45567745-d826-44a2-a5ce-7ef670944e60.mp4";
+// The hero clip, re-encoded once (scripts/backdrops.mjs) at 1280px / 24fps /
+// crf 30, all-intra so every frame is a keyframe and the scrub lands on exact
+// frames; ~2MB, served from public/media with long cache headers. The CDN
+// original is not fetched at runtime any more.
 export const HERO_POSTER = "/hero/poster.jpg";
-// The same clip re-encoded all-intra at 1600px (scripts/backdrops.mjs), served
-// from public/ with long cache headers: attached on mount so seeking works
-// from the first scroll while the CDN blob preloads behind it.
-export const HERO_LOCAL_URL = "/hero/hero-scrub.mp4";
+export const HERO_LOCAL_URL = "/media/hero-scrub.mp4";
 
 // Each panel owns a slice of scroll as [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd]
 // in 0..1 hero progress. The gaps between one panel's fadeOutEnd and the next's
@@ -25,11 +23,7 @@ export const DRIFT = 22; // px of counter-scroll travel per panel
 export const SEEK_EASE = 0.24;
 export const SEEK_SNAP_S = 0.004;
 export const SEEK_RELEASE_MS = 120;
-export const SWAP_IDLE_MS = 300;
-// the CDN blob download waits until this much of the local clip is buffered
-export const LOCAL_BUFFERED_FRACTION = 0.98;
 export const ATTACH_TIMEOUT_MS = 12000;
-export const PRELOAD_BAIL_MS = 15000;
 
 export type HeroPanel = { eyebrow: string; h1: string; sub: string; cta: { label: string; href: string } };
 

@@ -1,8 +1,9 @@
 /* docs/reference/glass-card-spec.md brought onto the landing: the liquid-glass
    card, the chamfer button and the vertical rules, verbatim values, scoped.
-   Helvetica Neue Light only inside the card and the button. */
+   The card and the button use the system Helvetica stack (weight 300) — the
+   third-party font host the spec links is off the hot path. */
 .glassFont {
-  font-family: 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

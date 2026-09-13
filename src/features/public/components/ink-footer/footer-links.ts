@@ -50,5 +50,6 @@ export const INK_LEGAL = [
   { label: "Terms & Policies", href: "/terms" },
   { label: "Cookie Notice", href: "/privacy#cookies" },
 ] as const;
-export const INK_VIDEO = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260901_122529_931c22c8-8d2d-47c0-ad51-b97f56a91e42.mp4";
-export const INK_POSTER = "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/4f690bd1-881a-4192-82f2-d714d34c8fb9.png";
+// Self-hosted: the spec's clip re-encoded to an 8s 1280px loop (~250KB) with its own poster.
+export const INK_VIDEO = "/media/footer.mp4";
+export const INK_POSTER = "/media/footer.jpg";

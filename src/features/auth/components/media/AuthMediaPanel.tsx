@@ -1,5 +1,6 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { AUTH_MEDIA } from "../../constants";
+import { AuthClip } from "./AuthClip";
 import { InstagramGlyph, LinkedInGlyph, XGlyph } from "./AuthSocialGlyphs";
 
 // Panel-only font (the spec's), self-hosted by next/font; the form column stays Inter.
@@ -21,9 +22,7 @@ export function AuthMediaPanel() {
       </div>
 
       <div className="hero__media anim" style={{ "--d": 0 } as React.CSSProperties} aria-hidden="true">
-        <video className="hero__video anim" style={{ "--d": 1 } as React.CSSProperties} autoPlay muted loop playsInline preload="auto" poster={AUTH_MEDIA.poster}>
-          <source src={AUTH_MEDIA.video} type="video/mp4" />
-        </video>
+        <AuthClip className="hero__video anim" style={{ "--d": 1 } as React.CSSProperties} src={AUTH_MEDIA.video} poster={AUTH_MEDIA.poster} />
 
         <div className="marker marker--water">
           <span className="marker__line anim" style={{ "--d": 14 } as React.CSSProperties} />

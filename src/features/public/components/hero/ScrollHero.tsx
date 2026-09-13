@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRef } from "react";
 import { cn } from "cn";
 import { ChamferLink } from "../glass/ChamferLink";
-import { GLASS_FONT_HREF } from "../glass/glass-copy";
 import { GlassFilterDefs } from "../glass/GlassFilterDefs";
 import { HeroGlassCard } from "../glass/HeroGlassCard";
 import { HeroRules } from "../glass/HeroRules";
@@ -31,8 +30,6 @@ export function ScrollHero() {
   return (
     <section ref={wrapper} className={cn(styles.hero, interTight.className, status === "static" && styles.static)} aria-label="Introduction">
       <div className={styles.stage}>
-        {/* Helvetica Neue Light for the glass card and the chamfer button only (glass-card-spec §1). */}
-        <link rel="stylesheet" href={GLASS_FONT_HREF} />
         <GlassFilterDefs />
         <video ref={clip} muted playsInline preload="auto" disablePictureInPicture poster={HERO_POSTER} aria-hidden="true" />
         <div className={styles.veil} />

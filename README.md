@@ -4,7 +4,7 @@ Shipped under the name Amplio; naano.com is the reference product. The mark is t
 
 A working rebuild of [naano](https://naano.com), the B2B LinkedIn creator marketplace: brands book vetted creators at a
 fixed price per post, creators write in their own voice, and every post's clicks, sign-ups and purchases are attributed
-back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn,
+back to the creator through a tracked link and a pixel. Next.js 16 (App Router), TypeScript, Tailwind v4, shadcn, Vercel Web Analytics + Speed Insights are mounted in the root layout (no custom events).
 Drizzle + Postgres, deployed on Vercel.
 
 **Live: https://naano-rebuild-opal.vercel.app** (auto-deployed from `main`; Postgres on Neon). Demo logins on `/login`:

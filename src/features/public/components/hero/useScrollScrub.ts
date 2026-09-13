@@ -3,7 +3,7 @@
 import { type RefObject, useEffect, useState } from "react";
 import { markHeroReady, reportHeroProgress } from "../splash/splash-events";
 import {
-  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_LOCAL_URL, HERO_VIDEO_URL, LOCAL_BUFFERED_FRACTION, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_RELEASE_MS, SEEK_SNAP_S, SWAP_IDLE_MS,
+  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_LOCAL_URL, SEEK_EASE, SEEK_RELEASE_MS, SEEK_SNAP_S,
 } from "./hero-config";
 
 type Refs = {
@@ -43,7 +43,7 @@ type ScrubInput = { clip: HTMLVideoElement; wrapper: HTMLElement; refs: Refs; on
 
 function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
   let progress = 0, seekTo = 0, seekAt = 0, duration = 0, ready = false;
-  let started = false, attached = false, disposed = false, failed = false, swapping = false;
+  let started = false, attached = false, disposed = false, failed = false;
   // rVFC pacing: the next currentTime is issued only after the previous frame painted
   let seekInFlight = false;
   let rafId = 0;
@@ -79,7 +79,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
   // Easing currentTime toward the scroll target (rather than snapping) is what
   // turns a jumpy scrub into a smooth one.
   function stepSeek() {
-    if (!ready || !duration || swapping) return;
+    if (!ready || !duration) return;
     const gap = seekTo - seekAt;
     if (gap === 0) return;
     // ease toward the target; snap once the remainder is under a few ms of video
@@ -123,14 +123,13 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     markHeroReady();
   }
 
-  // The local all-intra clip goes on at mount so seeking works from the first
-  // scroll; the CDN blob keeps loading behind it and is swapped in once ready.
+  // The one source: the small all-intra clip in public/media, attached at
+  // mount so seeking works from the first scroll (Vercel's CDN caches it).
   function attach(src: string) {
     if (attached) return;
     attached = true;
     // Bind listeners before setting src.
     clip.addEventListener("loadedmetadata", () => {
-      if (swapping) return;
       duration = clip.duration || 0;
       clip.pause();
       readScroll();
@@ -139,15 +138,12 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     });
     clip.addEventListener("loadeddata", start);
     clip.addEventListener("canplaythrough", start);
-    clip.addEventListener("error", () => { if (!swapping) { failed = true; start(); } });
-    // the splash counter follows the local clip's buffer; the CDN blob only
-    // starts once the local clip is fully buffered, so they never share bandwidth
+    clip.addEventListener("error", () => { failed = true; start(); });
+    // the splash counter follows the clip's buffer
     const onProgress = () => {
-      if (swapping || !clip.duration) return;
+      if (!clip.duration) return;
       const end = clip.buffered.length ? clip.buffered.end(clip.buffered.length - 1) : 0;
-      const f = end / clip.duration;
-      setProgress(f);
-      if (f >= LOCAL_BUFFERED_FRACTION) { clip.removeEventListener("progress", onProgress); preload(); }
+      setProgress(end / clip.duration);
     };
     clip.addEventListener("progress", onProgress);
     clip.addEventListener("canplaythrough", onProgress, { once: true });
@@ -157,79 +153,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     setTimeout(start, ATTACH_TIMEOUT_MS);
   }
 
-  // Swap the playing source to the buffered blob at the same currentTime in one
-  // frame: the current frame is held on a canvas over the video until the new
-  // source has painted the same time. (Our port only — the standalone never swaps src.)
-  function swapTo(src: string) {
-    if (disposed || failed || !ready) return;
-    const hold = document.createElement("canvas");
-    hold.width = clip.videoWidth || 1; hold.height = clip.videoHeight || 1;
-    try { hold.getContext("2d")?.drawImage(clip, 0, 0, hold.width, hold.height); } catch { /* keep going without the hold */ }
-    hold.style.cssText = clip.style.cssText;
-    hold.className = clip.className;
-    clip.parentElement?.insertBefore(hold, clip.nextSibling);
-    const at = clip.currentTime;
-    swapping = true;
-    const done = () => { swapping = false; seekInFlight = false; hold.remove(); };
-    const onMeta = () => {
-      clip.removeEventListener("loadedmetadata", onMeta);
-      duration = clip.duration || duration;
-      clip.pause();
-      const onSeeked = () => {
-        clip.removeEventListener("seeked", onSeeked);
-        if (hasRvfc) clip.requestVideoFrameCallback(done); else requestAnimationFrame(() => requestAnimationFrame(done));
-      };
-      clip.addEventListener("seeked", onSeeked);
-      try { clip.currentTime = at; } catch { done(); }
-    };
-    clip.addEventListener("loadedmetadata", onMeta);
-    // if the blob source fails or stalls, go back to the local clip at the same time
-    const revert = () => {
-      if (!swapping) return;
-      clip.removeEventListener("loadedmetadata", onMeta);
-      clip.addEventListener("loadedmetadata", () => { try { clip.currentTime = at; } catch { /* ignore */ } done(); }, { once: true });
-      clip.src = HERO_LOCAL_URL;
-      clip.load();
-    };
-    clip.addEventListener("error", revert, { once: true });
-    clip.src = src;
-    clip.load();
-    setTimeout(revert, ATTACH_TIMEOUT_MS);
-  }
 
-  // Fetch the CDN mp4 as a fully buffered blob in the background: seeking inside
-  // a buffered blob is near instant; until it lands, the local clip serves.
-  let preloading = false;
-  function preload() {
-    if (preloading || disposed) return;
-    preloading = true;
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    // past the bail the local clip simply stays; nothing to fall back to
-    const bail = setTimeout(() => { controller?.abort(); }, PRELOAD_BAIL_MS);
-
-    fetch(HERO_VIDEO_URL, controller ? { signal: controller.signal } : undefined)
-      .then(readAsBlobQuiet)
-      .then((blob) => {
-        clearTimeout(bail);
-        // swap between scrolls, never mid-scrub, so the held frame is never noticed
-        const url = URL.createObjectURL(blob);
-        const whenIdle = () => { if (performance.now() - lastScrollAt > SWAP_IDLE_MS) swapTo(url); else setTimeout(whenIdle, SWAP_IDLE_MS); };
-        whenIdle();
-      })
-      .catch(() => { clearTimeout(bail); }); // CORS failure, abort, offline: the local clip stays
-  }
-
-  // The blob download no longer drives the counter (the local clip does).
-  async function readAsBlobQuiet(res: Response) {
-    if (!res.ok || !res.body) throw new Error("bad response");
-    const reader = res.body.getReader();
-    const chunks: BlobPart[] = [];
-    for (;;) {
-      const r = await reader.read();
-      if (r.done) return new Blob(chunks, { type: "video/mp4" });
-      chunks.push(r.value);
-    }
-  }
 
   // iOS will not paint a frame from a video that has never been played, so nudge
   // it once on the first interaction and pause immediately.
@@ -251,7 +175,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     failed = true;
     setTimeout(start, 0);
   } else {
-    attach(HERO_LOCAL_URL); // preload() follows once the local clip is buffered
+    attach(HERO_LOCAL_URL);
     rafId = requestAnimationFrame(frame);
   }
 

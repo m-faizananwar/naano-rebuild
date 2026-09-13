@@ -112,11 +112,14 @@ export function LandingSplash() {
       finish();
     };
     const cap = window.setTimeout(force, forceIn);
+    // Unconditional: 2.5s after first paint the overlay is gone, whatever fonts,
+    // the clip or the exit animations are doing (the nav's fade keys off markSplashDone).
+    const hardExit = window.setTimeout(() => { if (killed) return; killed = true; cancelAnimationFrame(raf); unlock(); markSplashDone(); setGone(true); }, Math.max(0, BUDGET_MS - sincePaint));
     let fontsReady = false;
     const maybeSettle = () => { if (fontsReady && heroFraction >= 1) settle(); };
     document.fonts.ready.then(() => { fontsReady = true; maybeSettle(); });
     const offProgress = onHeroProgress((f) => { heroFraction = f; maybeSettle(); });
-    return () => { killed = true; window.clearTimeout(cap); cancelAnimationFrame(raf); offProgress(); unlock(); };
+    return () => { killed = true; window.clearTimeout(cap); window.clearTimeout(hardExit); cancelAnimationFrame(raf); offProgress(); unlock(); };
   }, []);
 
   if (gone) return null;
