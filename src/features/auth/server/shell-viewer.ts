@@ -40,7 +40,8 @@ export async function toShellViewer(viewer: Viewer): Promise<ShellViewer> {
 export async function resolveShellViewer(role: Role, pathname: string) {
   if (!isDbConfigured()) return { mode: "unconfigured" as const, shell: PREVIEW[role] };
   const viewer = await getViewer();
-  if (!viewer) redirect(`/login?next=${encodeURIComponent(pathname)}`);
+  // No viewer with a cookie present = the row is gone or expired: clear the cookie on the way to /login.
+  if (!viewer) redirect(`/api/auth/expired?next=${encodeURIComponent(pathname)}`);
   if (viewer.role !== role) redirect(ROLE_HOME[viewer.role]);
   const onboarded = role === "brand" ? viewer.brand?.onboarded : viewer.creator?.onboarded;
   if (!onboarded) redirect(ROLE_ONBOARDING[role]);

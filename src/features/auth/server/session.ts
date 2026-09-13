@@ -8,6 +8,8 @@ import { SESSION_COOKIE, SESSION_TTL_DAYS } from "../constants";
 import type { Role } from "../schemas";
 
 const DAY_MS = 86_400_000;
+// Only the Vapi voice token (createHeadlessSession) is short-lived; browser
+// sessions, demo logins included, get SESSION_TTL_DAYS.
 const HOUR_MS = 3_600_000;
 const TOKEN_BYTES = 32;
 
