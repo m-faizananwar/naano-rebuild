@@ -231,3 +231,9 @@ html { scroll-behavior: smooth; }
   .pop-ready [data-morph] { opacity: 1; }
   .pop-ready [data-morph].is-pop { animation: none; }
 }
+
+/* ── Skeleton delay: a route's loading skeleton only appears if the new page has
+   not streamed within 300ms, so warm navigations never flash it — the top
+   progress bar carries the wait. */
+@keyframes skeletonAppear { from { opacity: 0; } to { opacity: 1; } }
+main [aria-busy="true"][aria-label^="Loading"] { animation: skeletonAppear 0s 0.3s both; }

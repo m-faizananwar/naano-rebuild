@@ -2,7 +2,7 @@
 
 import { cn } from "cn";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { isActive, navFor } from "./nav";
 
 type Props = { role: "brand" | "creator"; section: "primary" | "secondary"; onNavigate?: () => void };
@@ -12,6 +12,7 @@ const NAV_STAGGER_COUNT = 4;
 
 export function SidebarNav({ role, section, onNavigate }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
   const root = `/${role}`;
   const items = navFor(role)[section];
   return (
@@ -25,6 +26,8 @@ export function SidebarNav({ role, section, onNavigate }: Props) {
             <Link
               href={item.href}
               onClick={onNavigate}
+              // warm the route on intent so the click swaps instantly
+              onPointerEnter={() => router.prefetch(item.href)}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
