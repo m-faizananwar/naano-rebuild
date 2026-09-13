@@ -13,11 +13,12 @@ Drizzle + Postgres, deployed on Vercel.
 
 ## How this was built
 
-Two Claude Code sessions, one repo. One session mapped naano.com screen by screen (`docs/reference/`), wrote the brief for
-each build step and evaluated the result; the other built. Every prompt and every final reply of the building session
-is captured automatically by a `Stop`/`UserPromptSubmit` hook into `.agent-logs/` (see `CAPTURE-TEST.md`), committed
-alongside the code it produced. Two rounds of work were fanned out to parallel subagents in git worktrees; their exact
-prompts and reports are in `docs/agent-streams.md`. The plan the build followed is `docs/plan.md`.
+Claude Code sessions, one repo. One session mapped naano.com screen by screen (`docs/reference/`), wrote the brief for
+each build step and evaluated every build; three builder sessions shipped in parallel on branches (the nav, assistant,
+interaction, polish and app-motion streams), rebasing onto `main` as they landed. Every prompt and every final reply is
+captured automatically by a `Stop`/`UserPromptSubmit` hook into `.agent-logs/` — one file per session (see
+`CAPTURE-TEST.md`) — committed alongside the code it produced. Two earlier rounds of work were fanned out to parallel
+subagents in git worktrees; their exact prompts and reports are in `docs/agent-streams.md`. The plan the build followed is `docs/plan.md`.
 
 ## Run
 
