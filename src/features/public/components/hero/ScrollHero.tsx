@@ -18,16 +18,15 @@ const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500"], dis
 
 // The scroll-scrubbed video hero, ported from public/hero/index.html: a 560vh
 // track with a sticky one-viewport stage; scrolling the track scrubs the video
-// and cross-fades three panels. Preload starts after hydration and the boot
-// overlay covers only the hero, so the ~11MB clip never blocks first paint.
+// and cross-fades three panels. Preload starts after hydration (the landing
+// splash shows its progress; the spec's boot overlay is gone), so the ~11MB
+// clip never blocks first paint.
 export function ScrollHero() {
   const wrapper = useRef<HTMLElement>(null);
   const clip = useRef<HTMLVideoElement>(null);
   const meter = useRef<HTMLElement>(null);
-  const bootBar = useRef<HTMLElement>(null);
-  const bootPct = useRef<HTMLParagraphElement>(null);
   const panels = useRef<Array<HTMLElement | null>>([]);
-  const status = useScrollScrub({ wrapper, clip, meter, bootBar, bootPct, panels });
+  const status = useScrollScrub({ wrapper, clip, meter, panels });
 
   return (
     <section ref={wrapper} className={cn(styles.hero, interTight.className, status === "static" && styles.static)} aria-label="Introduction">
@@ -56,10 +55,6 @@ export function ScrollHero() {
         <HeroRules />
         <HeroGlassCard videoRef={clip} />
 
-        <div className={cn(styles.boot, status !== "loading" && styles.bootDone)} aria-hidden={status !== "loading"}>
-          <div className={styles.bar}><i ref={bootBar} /></div>
-          <p ref={bootPct}>LOADING 0%</p>
-        </div>
       </div>
     </section>
   );

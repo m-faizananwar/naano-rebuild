@@ -4,6 +4,7 @@ import { type RefObject, useRef } from "react";
 import { cn } from "cn";
 import { GLASS_CARD, WAVE_PATH } from "./glass-copy";
 import styles from "./glass.module.css";
+import { useSplashGate } from "../splash/useSplashGate";
 import { useGlassSync } from "./useGlassSync";
 
 // The liquid-glass card over the scroll hero: a window onto a refracted copy
@@ -14,9 +15,10 @@ export function HeroGlassCard({ videoRef }: { videoRef: RefObject<HTMLVideoEleme
   const container = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   useGlassSync({ video: videoRef, card, container, canvas });
+  const entered = useSplashGate();
 
   return (
-    <aside ref={card} className={cn(styles.card, styles.glassFont)} aria-label={GLASS_CARD.title}>
+    <aside ref={card} className={cn(styles.card, styles.glassFont, !entered && styles.waiting)} aria-label={GLASS_CARD.title}>
       <div ref={container} className={styles.dup}><canvas ref={canvas} className={styles.dupImage} /></div>
       <div className={styles.frost} aria-hidden="true" />
       <div className={styles.head}>

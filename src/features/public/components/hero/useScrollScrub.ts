@@ -1,6 +1,7 @@
 "use client";
 
 import { type RefObject, useEffect, useState } from "react";
+import { markHeroReady, reportHeroProgress } from "../splash/splash-events";
 import {
   ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_VIDEO_BYTES, HERO_VIDEO_URL, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_EPSILON,
 } from "./hero-config";
@@ -9,8 +10,6 @@ type Refs = {
   wrapper: RefObject<HTMLElement | null>;
   clip: RefObject<HTMLVideoElement | null>;
   meter: RefObject<HTMLElement | null>;
-  bootBar: RefObject<HTMLElement | null>;
-  bootPct: RefObject<HTMLParagraphElement | null>;
   panels: RefObject<Array<HTMLElement | null>>;
 };
 
@@ -90,9 +89,10 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     rafId = requestAnimationFrame(frame);
   }
 
+  // The spec's boot bar is gone (the landing splash shows the number instead);
+  // progress goes to the splash bus so its counter is real.
   function setProgress(f: number) {
-    if (refs.bootBar.current) refs.bootBar.current.style.transform = `scaleX(${f})`;
-    if (refs.bootPct.current) refs.bootPct.current.textContent = `LOADING ${Math.round(f * 100)}%`;
+    reportHeroProgress(f);
   }
 
   function start() {
@@ -102,6 +102,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     readScroll();
     seekAt = seekTo;
     onStatus(failed ? "static" : "ready");
+    markHeroReady();
   }
 
   function attach(src: string) {

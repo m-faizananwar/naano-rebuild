@@ -12,6 +12,7 @@ import { PricingSection } from "@/features/public/components/landing/PricingSect
 import { QuoteSection } from "@/features/public/components/landing/QuoteSection";
 import { PublicAssistantPill } from "@/features/public/components/nav/PublicAssistantPill";
 import { PublicNav } from "@/features/public/components/nav/PublicNav";
+import { LandingSplash } from "@/features/public/components/splash/LandingSplash";
 import { CtaSection } from "@/features/public/components/shared/CtaSection";
 import { getShowcaseCreators, getTopPosts } from "@/features/public/server/queries";
 
@@ -29,6 +30,8 @@ export default async function HomePage() {
   const [creators, posts] = await Promise.all([getShowcaseCreators(), getTopPosts()]);
   return (
     <>
+      {/* First visit per tab: the splash covers the hero preload (no "LOADING 0%" first paint). */}
+      <LandingSplash />
       <PublicNav />
       <main className="flex-1">
         <ScrollHero />
