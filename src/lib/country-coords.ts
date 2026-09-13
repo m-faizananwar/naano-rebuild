@@ -33,8 +33,8 @@ export const COUNTRY_COORDS: Record<string, [number, number]> = {
 export type CountryCount = { code: string; count: number };
 export type GlobeMarker = { code: string; count: number; location: [number, number]; size: number };
 
-const MIN_SIZE = 0.035;
-const MAX_SIZE = 0.11;
+const MIN_SIZE = 0.03;
+const MAX_SIZE = 0.08;
 
 // Marker size scales with the country's share of the largest count.
 export function globeMarkers(countries: CountryCount[]): GlobeMarker[] {

@@ -1,5 +1,20 @@
-/* Marker hit targets pinned to cobe's CSS anchors; the tooltip shows on hover
-   or focus. Browsers without anchor positioning get the globe without tips. */
+/* Soft radial shadow under the globe so it sits on the page. */
+.creator-globe__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -4%;
+  width: 80%;
+  height: 40%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(13 12 11 / 0.12), rgb(13 12 11 / 0));
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* Marker hit targets pinned to cobe's CSS anchors; the tooltip is a small glass
+   pill that follows the marker. Browsers without anchor positioning get the
+   globe without tips. */
 .creator-globe__hit {
   display: none;
 }
@@ -26,11 +41,15 @@
   bottom: calc(100% + 6px);
   translate: -50% 0;
   white-space: nowrap;
-  background: rgb(13 12 11);
-  color: rgb(255 255 255);
+  background: rgb(255 255 255 / 0.72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgb(13 12 11 / 0.08);
+  box-shadow: 0 8px 24px rgb(13 12 11 / 0.1);
+  color: rgb(13 12 11);
   font-size: 12px;
   line-height: 1;
-  padding: 6px 9px;
+  padding: 6px 10px;
   border-radius: 999px;
   opacity: 0;
   /* out of layout until shown, so a hidden tip near the edge never widens the page */
