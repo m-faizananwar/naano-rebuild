@@ -6,10 +6,10 @@ import { FaqSection } from "@/features/public/components/landing/FaqSection";
 import { InkFooter } from "@/features/public/components/ink-footer/InkFooter";
 import { HowItWorksSection } from "@/features/public/components/landing/HowItWorksSection";
 import { MarketplaceShowcase } from "@/features/public/components/landing/MarketplaceShowcase";
+import { PerformanceStage } from "@/features/public/components/performance/PerformanceStage";
 import { PostExamplesSection } from "@/features/public/components/landing/PostExamplesSection";
 import { PricingSection } from "@/features/public/components/landing/PricingSection";
 import { QuoteSection } from "@/features/public/components/landing/QuoteSection";
-import { ResultsSection } from "@/features/public/components/landing/ResultsSection";
 import { PublicAssistantPill } from "@/features/public/components/nav/PublicAssistantPill";
 import { PublicNav } from "@/features/public/components/nav/PublicNav";
 import { CtaSection } from "@/features/public/components/shared/CtaSection";
@@ -36,7 +36,8 @@ export default async function HomePage() {
         <Reveal><MarketplaceShowcase creators={creators} /></Reveal>
         <Reveal><HowItWorksSection /></Reveal>
         <Reveal><CaseStudySection /></Reveal>
-        <Reveal><ResultsSection /></Reveal>
+        {/* Results = the metric-cards stage (docs/reference/metric-cards-spec.md); it runs its own entrance. */}
+        <PerformanceStage />
         <Reveal><PostExamplesSection posts={posts} /></Reveal>
         <Reveal><PricingSection /></Reveal>
         <Reveal><FaqSection /></Reveal>
