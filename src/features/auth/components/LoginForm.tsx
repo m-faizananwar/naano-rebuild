@@ -36,6 +36,9 @@ export function LoginForm({ next }: { next?: string }) {
       </FormField>
       <FormField id="password" label="Password" error={errors.password?.message}>
         <Input id="password" type="password" autoComplete="current-password" placeholder="••••••••" className={INPUT} {...form.register("password")} />
+        <Link href="/forgot-password" className="justify-self-end text-xs font-semibold text-brand hover:underline">
+          Forgot password?
+        </Link>
       </FormField>
       {serverError ? (
         <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive" role="alert">

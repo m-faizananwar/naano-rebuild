@@ -26,3 +26,17 @@ export type LoginInput = z.infer<typeof loginSchema>;
 
 // Every server action returns this shape; nothing throws to the client.
 export type ActionResult<T = undefined> = { ok: true; data: T } | { ok: false; error: string };
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email"),
+});
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1).max(200),
+    password: z.string().min(PASSWORD_MIN, `At least ${PASSWORD_MIN} characters`).max(200),
+    confirm: z.string(),
+  })
+  .refine((v) => v.password === v.confirm, { message: "Passwords don't match", path: ["confirm"] });
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

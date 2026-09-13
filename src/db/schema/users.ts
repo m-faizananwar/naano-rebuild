@@ -30,3 +30,19 @@ export const sessions = pgTable(
   },
   (t) => [uniqueIndex("sessions_token_hash_idx").on(t.tokenHash), index("sessions_user_id_idx").on(t.userId)],
 );
+
+// Single-use password reset tokens: only the hash is stored, 30 min expiry,
+// used_at set on consumption (src/features/auth/server/reset-tokens.ts).
+export const passwordResetTokens = pgTable(
+  "password_reset_tokens",
+  {
+    ...baseColumns,
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("password_reset_tokens_hash_idx").on(t.tokenHash), index("password_reset_tokens_user_id_idx").on(t.userId)],
+);
