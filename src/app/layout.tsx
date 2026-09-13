@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { PointerTilt } from "@/components/motion/PointerTilt";
 import { RouteProgress } from "@/components/motion/RouteProgress";
+import { ScrollMorph } from "@/components/motion/ScrollMorph";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import "@/styles/interaction.css";
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${inter.variable} ${cormorant.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <RouteProgress />
+        <ScrollMorph />
         <PointerTilt />
         {children}
         <Toaster position="bottom-right" duration={TOAST_MS} />
