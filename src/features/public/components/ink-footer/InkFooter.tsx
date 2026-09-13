@@ -1,9 +1,10 @@
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { BRAND } from "@/config/brand";
-import { INK_BLURB, INK_COLUMNS, INK_CONTACTS, INK_LEGAL, INK_LETTER, INK_POSTER, INK_SOCIALS, INK_VIDEO } from "./footer-links";
+import { INK_BLURB, INK_COLUMNS, INK_CONTACTS, INK_LEGAL, INK_LETTER, INK_SOCIALS } from "./footer-links";
 import { BrandMark } from "@/components/brand/BrandMark";
 import { EnvelopeIcon, InstagramIcon, LinkedInIcon, PhoneIcon, PinIcon, TikTokIcon, XIcon } from "./InkIcons";
+import { FooterMedia } from "./FooterMedia";
 import { NewsletterForm } from "./NewsletterForm";
 import "./ink-footer.css";
 
@@ -18,11 +19,7 @@ const SOCIAL_ICONS = { LinkedIn: LinkedInIcon, X: XIcon, Instagram: InstagramIco
 export function InkFooter() {
   return (
     <footer className={`site-footer under-sticky-nav ${poppins.variable}`}>
-      <div className="footer-media" aria-hidden="true">
-        <video className="footer-bg" autoPlay muted loop playsInline preload="auto" poster={INK_POSTER}>
-          <source src={INK_VIDEO} type="video/mp4" />
-        </video>
-      </div>
+      <FooterMedia />
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="brand">

@@ -163,3 +163,9 @@
    to the end it would sit over the column titles. Add the nav's height to the
    spec's top padding; the rest of the padding is unchanged. */
 .site-footer.under-sticky-nav{padding-top:calc(clamp(2.25rem,4.5vh,4rem) + 4rem)}
+
+/* Landing only: the fixed assistant pill sits over the bottom row — give it room.
+   (While the row is on screen FooterMedia sets <html data-footer-row>, for any
+   fixed element that needs to move out of its way.) */
+.site-footer.under-sticky-nav .footer-bottom { padding-bottom: calc(clamp(1.25rem, 3vh, 2rem) + 96px); }
+@media (min-width: 721px) { .site-footer.under-sticky-nav .footer-bottom { padding-bottom: 96px; } }
