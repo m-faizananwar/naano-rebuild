@@ -69,21 +69,26 @@ function accountLevelReason(error: unknown): string | null {
 // The provider that actually answers right now: one tiny request, cached for
 // PROBE_TTL_MS per provider name, so /api/health reports what works rather
 // than which keys exist. Never throws.
-let probe: { name: string; provider: string; at: number } | null = null;
-export async function probeProvider(): Promise<{ provider: string; probedAt: string } | { provider: "template" }> {
+let probe: { name: string; provider: string; at: number; error?: string } | null = null;
+export async function probeProvider(): Promise<{ provider: string; probedAt?: string; probeError?: string }> {
   const current = aiProvider();
   if (current.name === "template") return { provider: "template" };
   const now = Date.now();
-  if (probe && probe.name === current.name && now - probe.at < PROBE_TTL_MS) return { provider: probe.provider, probedAt: new Date(probe.at).toISOString() };
+  if (probe && probe.name === current.name && now - probe.at < PROBE_TTL_MS) {
+    return { provider: probe.provider, probedAt: new Date(probe.at).toISOString(), ...(probe.error ? { probeError: probe.error } : {}) };
+  }
   let answered = "template";
+  let probeError: string | undefined;
   try {
     const result = await generateText({ system: "Reply with the single word ok.", user: "ok?", maxTokens: PROBE_MAX_TOKENS, timeoutMs: PROBE_TIMEOUT_MS });
     answered = result?.provider ?? "template";
+    if (!result) probeError = "empty answer";
   } catch (error) {
-    console.error("[ai] health probe failed", { reason: describeAiError(error) });
+    probeError = describeAiError(error);
+    console.error("[ai] health probe failed", { reason: probeError });
   }
-  probe = { name: aiProvider().name, provider: answered, at: now };
-  return { provider: answered, probedAt: new Date(now).toISOString() };
+  probe = { name: aiProvider().name, provider: answered, at: now, error: probeError };
+  return { provider: answered, probedAt: new Date(now).toISOString(), ...(probeError ? { probeError } : {}) };
 }
 
 async function anthropicStructured<T extends z.ZodType>(req: StructuredRequest<T>, apiKey: string) {

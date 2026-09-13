@@ -19,7 +19,8 @@ export async function GET() {
     // the provider that actually answered a probe (cached 10 min), and the one the keys resolve to
     ai: ai.provider,
     aiResolved: aiProvider().name,
-    ...("probedAt" in ai ? { aiProbedAt: ai.probedAt } : {}),
+    ...(ai.probedAt ? { aiProbedAt: ai.probedAt } : {}),
+    ...(ai.probeError ? { aiProbeError: ai.probeError } : {}),
     // names only, never values: shows a misspelt or prefixed key variable
     aiEnv: aiKeyEnvNames(process.env),
     // providers demoted in this process after an account-level error (reason text, no payload)
