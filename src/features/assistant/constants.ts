@@ -14,7 +14,7 @@ export const BUBBLE_TRAVEL_PADDING = 720; // liquid filter slack so the bar can 
 export const PANEL_MAX_VH = 60;
 export const EDGE_GAP = 16;
 
-export const STORAGE_KEYS = { conversation: "amplio.assistant.conversation", collapsed: "amplio.assistant.collapsed", cookies: "amplio.cookies.ok" } as const;
+export const STORAGE_KEYS = { conversation: "amplio.assistant.conversation", collapsed: "amplio.assistant.collapsed" } as const;
 
 export const MESSAGE_MAX_CHARS = 500;
 export const ANSWER_MAX_WORDS = 80;
