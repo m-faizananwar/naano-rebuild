@@ -125,6 +125,8 @@ async function geminiStructured<T extends z.ZodType>(req: StructuredRequest<T>, 
       responseMimeType: "application/json",
       responseJsonSchema: toGeminiSchema(z.toJSONSchema(req.schema)),
       maxOutputTokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
+      // Short, schema-bound calls: thinking would eat the output budget.
+      thinkingConfig: { thinkingBudget: 0 },
       httpOptions: { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS },
     },
   });
@@ -139,7 +141,12 @@ async function geminiText(req: TextRequest, apiKey: string) {
   const response = await ai.models.generateContent({
     model: GEMINI_MODEL,
     contents: req.user,
-    config: { systemInstruction: req.system, maxOutputTokens: req.maxTokens ?? DEFAULT_MAX_TOKENS, httpOptions: { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS } },
+    config: {
+      systemInstruction: req.system,
+      maxOutputTokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
+      thinkingConfig: { thinkingBudget: 0 },
+      httpOptions: { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS },
+    },
   });
   const text = response.text?.trim();
   return text ? { text, provider: "gemini" as const } : null;

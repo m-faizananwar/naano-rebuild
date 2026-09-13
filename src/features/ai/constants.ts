@@ -15,6 +15,6 @@ export const HTTP_BAD_REQUEST = 400;
 export const DEMOTION_TTL_MS = 10 * 60 * 1000;
 // Health probe: one tiny request per provider change, cached for 10 minutes.
 export const PROBE_TTL_MS = 10 * 60 * 1000;
-export const PROBE_MAX_TOKENS = 16;
+export const PROBE_MAX_TOKENS = 64;
 export const PROBE_TIMEOUT_MS = 8_000;
 export const HTTP_TOO_MANY_REQUESTS = 429;
