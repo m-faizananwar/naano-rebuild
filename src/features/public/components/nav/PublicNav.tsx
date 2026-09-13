@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { NAV_LINKS } from "../../constants";
 import { MobilePublicNav } from "./MobilePublicNav";
 
@@ -17,7 +17,7 @@ export function PublicNav() {
     <header className="sticky top-0 z-40 w-full bg-background/70 backdrop-blur-md supports-backdrop-filter:bg-background/50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" aria-label={`${BRAND.wordmark} home`} className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
-          <BrandWordmark />
+          <BrandLockup size="md" />
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (

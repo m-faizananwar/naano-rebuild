@@ -1,5 +1,5 @@
 import { ArrowRight, CalendarDays, Package } from "lucide-react";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { countryFlag, countryName } from "@/lib/country-flag";
 import { formatEuro } from "@/lib/format-euro";
@@ -45,7 +45,7 @@ export function CardFront({ model, onMore }: { model: CardModel; onMore: () => v
           </span>
         ) : null}
         <div className="absolute inset-x-0 top-9 flex justify-center">
-          <BrandWordmark inverted className="text-xl" />
+          <BrandLockup size="sm" className="text-brand-foreground" />
         </div>
         {model.reading ? <ReadingChip /> : null}
       </div>

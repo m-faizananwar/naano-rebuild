@@ -1,7 +1,7 @@
 import { Globe } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { PANEL_COPY } from "../constants";
 import { LiveCard } from "./card/LiveCard";
 import type { CardModel } from "./card/toCardModel";
@@ -17,7 +17,7 @@ export function OnboardingSplitLayout({ children, card }: { children: ReactNode;
           <div className="animate-section w-full max-w-md">
             <div className="flex items-center justify-between">
               <Link href="/" aria-label={`${BRAND.wordmark} home`} className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
-                <BrandWordmark />
+                <BrandLockup size="md" />
               </Link>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/80">
                 <Globe className="size-3.5" aria-hidden="true" />

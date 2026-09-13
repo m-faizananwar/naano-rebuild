@@ -1,6 +1,6 @@
 # naano-rebuild
 
-Shipped under the name Amplio; naano.com is the reference product.
+Shipped under the name Amplio; naano.com is the reference product. The mark is the ink footer's oval-and-sprig (`src/components/brand`), the wordmark is Cormorant Garamond 500; `pnpm icons` re-renders the favicon PNGs.
 
 A working rebuild of [naano](https://naano.com), the B2B LinkedIn creator marketplace: brands book vetted creators at a
 fixed price per post, creators write in their own voice, and every post's clicks, sign-ups and purchases are attributed

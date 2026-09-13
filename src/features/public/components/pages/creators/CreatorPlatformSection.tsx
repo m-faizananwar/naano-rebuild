@@ -1,5 +1,5 @@
 import { Banknote, CreditCard, LayoutGrid, MessagesSquare, User } from "lucide-react";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { FOR_CREATORS } from "../../../page-copy";
 import { SectionHeading } from "../../shared/SectionHeading";
 
@@ -26,7 +26,7 @@ function DashboardMock() {
       </div>
       <div className="grid sm:grid-cols-[10rem_1fr]">
         <div className="hidden border-r p-4 sm:block">
-          <BrandWordmark className="text-sm" />
+          <BrandLockup size="sm" />
           <ul className="mt-5 space-y-1">
             {SIDEBAR.map((item) => (
               <li key={item.label} className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs ${item.active ? "bg-brand-soft font-semibold text-brand" : "text-muted-foreground"}`}>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { AgencyModeToggle } from "./AgencyModeToggle";
 import { navFor } from "./nav";
 import { SidebarNav } from "./SidebarNav";
@@ -16,7 +16,8 @@ export function Sidebar({ viewer, onNavigate }: { viewer: ShellViewer; onNavigat
   return (
     <nav aria-label="Main" className="flex h-full flex-col gap-4 px-3 py-5">
       <Link href={root} className="px-3 [[data-collapsed=true]_&]:px-2" aria-label="Overview">
-        <BrandWordmark />
+        {/* Expanded: the lockup. Collapsed: the mark alone at 28px (the word is a .side-label). */}
+        <BrandLockup size="md" wordClassName="side-label" className="[[data-collapsed=true]_&]:gap-0" />
       </Link>
       {viewer.role === "brand" ? (
         <div className="side-chrome">

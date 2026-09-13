@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { buttonVariants } from "@/components/ui/button";
 import { WorkspaceCard } from "@/features/workspace/components/card/WorkspaceCard";
 import { getPublicCard } from "@/features/workspace/server/card-queries";
@@ -22,7 +22,7 @@ export default async function PublicCardPage({ params }: { params: Promise<{ han
   return (
     <main className="mx-auto grid max-w-4xl gap-6 px-6 py-10">
       <div className="flex items-center justify-between">
-        <Link href="/"><BrandWordmark /></Link>
+        <Link href="/"><BrandLockup size="sm" /></Link>
         <Link href="/register/brand" className={buttonVariants({ size: "sm" })}>Book {card.name.split(" ")[0]} on {BRAND.name}</Link>
       </div>
       <div className="grid gap-6 lg:grid-cols-[22rem_1fr]">

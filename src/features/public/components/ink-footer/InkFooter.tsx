@@ -1,14 +1,14 @@
-import { Cormorant_Garamond, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { BRAND } from "@/config/brand";
 import { INK_BLURB, INK_COLUMNS, INK_CONTACTS, INK_LEGAL, INK_LETTER, INK_POSTER, INK_SOCIALS, INK_VIDEO } from "./footer-links";
-import { EnvelopeIcon, InstagramIcon, LinkedInIcon, PhoneIcon, PinIcon, SprigMark, TikTokIcon, XIcon } from "./InkIcons";
+import { BrandMark } from "@/components/brand/BrandMark";
+import { EnvelopeIcon, InstagramIcon, LinkedInIcon, PhoneIcon, PinIcon, TikTokIcon, XIcon } from "./InkIcons";
 import { NewsletterForm } from "./NewsletterForm";
 import "./ink-footer.css";
 
-// Footer-only fonts (the spec's Google Fonts pair), self-hosted by next/font.
+// Poppins is footer-only (self-hosted by next/font); Cormorant comes from the root layout (--font-cormorant).
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-poppins", display: "swap" });
-const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-cormorant", display: "swap" });
 
 const SOCIAL_ICONS = { LinkedIn: LinkedInIcon, X: XIcon, Instagram: InstagramIcon, TikTok: TikTokIcon } as const;
 
@@ -17,7 +17,7 @@ const SOCIAL_ICONS = { LinkedIn: LinkedInIcon, X: XIcon, Instagram: InstagramIco
 // tokens live on .site-footer; the seam above it is a plain edge.
 export function InkFooter() {
   return (
-    <footer className={`site-footer under-sticky-nav ${poppins.variable} ${cormorant.variable}`}>
+    <footer className={`site-footer under-sticky-nav ${poppins.variable}`}>
       <div className="footer-media" aria-hidden="true">
         <video className="footer-bg" autoPlay muted loop playsInline preload="auto" poster={INK_POSTER}>
           <source src={INK_VIDEO} type="video/mp4" />
@@ -27,7 +27,7 @@ export function InkFooter() {
         <div className="footer-grid">
           <div className="brand">
             <div className="brand-lockup">
-              <SprigMark />
+              <BrandMark size={74} className="brand-mark" />
               <p className="brand-name">{BRAND.wordmark}</p>
             </div>
             <p className="brand-blurb">{INK_BLURB}</p>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandWordmark } from "@/components/BrandWordmark";
+import { BrandLockup } from "@/components/brand/BrandLockup";
 import { FOOTER_COLUMNS, FOOTER_TAGLINE } from "../../constants";
 import { LinkedInMark } from "../shared/LinkedInMark";
 
@@ -12,7 +12,7 @@ export function PublicFooter() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_repeat(5,minmax(0,1fr))]">
           <div>
-            <BrandWordmark />
+            <BrandLockup size="md" />
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">{FOOTER_TAGLINE}</p>
             <a
               href={`https://www.linkedin.com/company/${BRAND.wordmark}`}

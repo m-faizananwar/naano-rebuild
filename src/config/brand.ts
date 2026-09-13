@@ -3,7 +3,7 @@
 // reference product. Renaming = edit this file, reseed (demo emails), redeploy.
 export const BRAND = {
   name: "Amplio",
-  wordmark: "amplio",
+  wordmark: "Amplio",
   tagline: "The creators your buyers already trust.",
   // Demo logins: brand@<demoDomain> / creator@<demoDomain>, seeded by scripts/seed.
   demoDomain: "demo.amplio",
@@ -16,6 +16,8 @@ export const BRAND = {
   bot: "AmplioBot",
   // Global installed by /n.js on customer sites: window.<pixelGlobal>("event", …).
   pixelGlobal: "amplio",
+  // The logo: the ink footer's oval-and-sprig (src/components/brand/BrandMark.tsx).
+  mark: "sprig-oval",
   // Prefix for cookies, localStorage keys and exported file names.
   key: "amplio",
 } as const;
