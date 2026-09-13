@@ -8,7 +8,6 @@ export const HERO_POSTER = "/hero/poster.jpg";
 // from public/ with long cache headers: attached on mount so seeking works
 // from the first scroll while the CDN blob preloads behind it.
 export const HERO_LOCAL_URL = "/hero/hero-scrub.mp4";
-export const HERO_VIDEO_BYTES = 11e6; // approximate size, used when the server sends no content-length
 
 // Each panel owns a slice of scroll as [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd]
 // in 0..1 hero progress. The gaps between one panel's fadeOutEnd and the next's
@@ -27,6 +26,8 @@ export const SEEK_EASE = 0.24;
 export const SEEK_SNAP_S = 0.004;
 export const SEEK_RELEASE_MS = 120;
 export const SWAP_IDLE_MS = 300;
+// the CDN blob download waits until this much of the local clip is buffered
+export const LOCAL_BUFFERED_FRACTION = 0.98;
 export const ATTACH_TIMEOUT_MS = 12000;
 export const PRELOAD_BAIL_MS = 15000;
 

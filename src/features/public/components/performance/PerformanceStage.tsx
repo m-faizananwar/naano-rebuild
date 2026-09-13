@@ -19,8 +19,9 @@ export function PerformanceStage() {
   const c = STAGE_COPY;
   return (
     <section ref={root} className="perf" aria-labelledby="perf-title">
-      <video className="stage-motion stage-motion--wide" autoPlay muted loop playsInline preload="auto" aria-hidden="true" poster={STAGE_MEDIA.wide.poster} src={STAGE_MEDIA.wide.src} />
-      <video className="stage-motion stage-motion--narrow" autoPlay muted loop playsInline preload="none" aria-hidden="true" poster={STAGE_MEDIA.narrow.poster} src={STAGE_MEDIA.narrow.src} />
+      {/* ~31MB of clips: sources are attached by usePerformanceStage once the stage is near the viewport */}
+      <video className="stage-motion stage-motion--wide" autoPlay muted loop playsInline preload="none" aria-hidden="true" poster={STAGE_MEDIA.wide.poster} data-src={STAGE_MEDIA.wide.src} />
+      <video className="stage-motion stage-motion--narrow" autoPlay muted loop playsInline preload="none" aria-hidden="true" poster={STAGE_MEDIA.narrow.poster} data-src={STAGE_MEDIA.narrow.src} />
       <PaperTexture />
       <StageFilterDefs />
 
@@ -54,7 +55,7 @@ function MetricCard({ kind, children }: { kind: CardKey; children: React.ReactNo
   return (
     <Beam size="md" strength={0.6} active={hover} className="card-beam" role="listitem">
     <article className={`card card--${kind}`} onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)}>
-      <video className="card__media" autoPlay muted loop playsInline preload="auto" aria-hidden="true" poster={media.poster} src={media.src} />
+      <video className="card__media" autoPlay muted loop playsInline preload="none" aria-hidden="true" poster={media.poster} data-src={media.src} />
       {kind === "context" ? children : null}
       <svg className="card__grain" viewBox="0 0 429 554" preserveAspectRatio="none" aria-hidden="true"><rect width="429" height="554" filter="url(#cardNoise)" /></svg>
       <h3 className="card__title">{card.title[0]}<br />{card.title[1]}</h3>

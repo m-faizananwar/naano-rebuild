@@ -3,7 +3,7 @@
 import { type RefObject, useEffect, useState } from "react";
 import { markHeroReady, reportHeroProgress } from "../splash/splash-events";
 import {
-  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_LOCAL_URL, HERO_VIDEO_BYTES, HERO_VIDEO_URL, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_RELEASE_MS, SEEK_SNAP_S, SWAP_IDLE_MS,
+  ATTACH_TIMEOUT_MS, CUES, DRIFT, HERO_LOCAL_URL, HERO_VIDEO_URL, LOCAL_BUFFERED_FRACTION, PRELOAD_BAIL_MS, SEEK_EASE, SEEK_RELEASE_MS, SEEK_SNAP_S, SWAP_IDLE_MS,
 } from "./hero-config";
 
 type Refs = {
@@ -140,6 +140,17 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     clip.addEventListener("loadeddata", start);
     clip.addEventListener("canplaythrough", start);
     clip.addEventListener("error", () => { if (!swapping) { failed = true; start(); } });
+    // the splash counter follows the local clip's buffer; the CDN blob only
+    // starts once the local clip is fully buffered, so they never share bandwidth
+    const onProgress = () => {
+      if (swapping || !clip.duration) return;
+      const end = clip.buffered.length ? clip.buffered.end(clip.buffered.length - 1) : 0;
+      const f = end / clip.duration;
+      setProgress(f);
+      if (f >= LOCAL_BUFFERED_FRACTION) { clip.removeEventListener("progress", onProgress); preload(); }
+    };
+    clip.addEventListener("progress", onProgress);
+    clip.addEventListener("canplaythrough", onProgress, { once: true });
     clip.src = src;
     clip.load();
     // A stalled decode never strands the hero.
@@ -188,35 +199,35 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
 
   // Fetch the CDN mp4 as a fully buffered blob in the background: seeking inside
   // a buffered blob is near instant; until it lands, the local clip serves.
+  let preloading = false;
   function preload() {
+    if (preloading || disposed) return;
+    preloading = true;
     const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     // past the bail the local clip simply stays; nothing to fall back to
-    const bail = setTimeout(() => { controller?.abort(); setProgress(1); }, PRELOAD_BAIL_MS);
+    const bail = setTimeout(() => { controller?.abort(); }, PRELOAD_BAIL_MS);
 
     fetch(HERO_VIDEO_URL, controller ? { signal: controller.signal } : undefined)
-      .then(readAsBlob)
+      .then(readAsBlobQuiet)
       .then((blob) => {
-        clearTimeout(bail); setProgress(1);
+        clearTimeout(bail);
         // swap between scrolls, never mid-scrub, so the held frame is never noticed
         const url = URL.createObjectURL(blob);
         const whenIdle = () => { if (performance.now() - lastScrollAt > SWAP_IDLE_MS) swapTo(url); else setTimeout(whenIdle, SWAP_IDLE_MS); };
         whenIdle();
       })
-      .catch(() => { clearTimeout(bail); setProgress(1); }); // CORS failure, abort, offline: the local clip stays
+      .catch(() => { clearTimeout(bail); }); // CORS failure, abort, offline: the local clip stays
   }
 
-  async function readAsBlob(res: Response) {
+  // The blob download no longer drives the counter (the local clip does).
+  async function readAsBlobQuiet(res: Response) {
     if (!res.ok || !res.body) throw new Error("bad response");
-    const total = Number(res.headers.get("content-length") || 0) || 0;
     const reader = res.body.getReader();
     const chunks: BlobPart[] = [];
-    let got = 0;
     for (;;) {
       const r = await reader.read();
       if (r.done) return new Blob(chunks, { type: "video/mp4" });
       chunks.push(r.value);
-      got += r.value.length;
-      setProgress(total ? got / total : Math.min(got / HERO_VIDEO_BYTES, 0.95));
     }
   }
 
@@ -240,8 +251,7 @@ function createScrub({ clip, wrapper, refs, onStatus }: ScrubInput) {
     failed = true;
     setTimeout(start, 0);
   } else {
-    attach(HERO_LOCAL_URL);
-    preload();
+    attach(HERO_LOCAL_URL); // preload() follows once the local clip is buffered
     rafId = requestAnimationFrame(frame);
   }
 

@@ -16,6 +16,19 @@ export function usePerformanceStage(root: RefObject<HTMLElement | null>) {
     const stage = root.current;
     if (!stage) return;
     stage.querySelectorAll<HTMLElement>("[data-dots]").forEach(renderDots);
+    // The stage's clips (~31MB) only start loading once the stage is near the
+    // viewport, so they never compete with the hero on a first load.
+    const media = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      media.disconnect();
+      stage.querySelectorAll<HTMLVideoElement>("video[data-src]").forEach((v) => {
+        if (getComputedStyle(v).display === "none") return;
+        v.preload = "auto";
+        v.src = v.dataset.src ?? "";
+        v.play().catch(() => undefined);
+      });
+    }, { rootMargin: "100% 0px" });
+    media.observe(stage);
     const ticks = stage.querySelector<SVGGElement>(".gauge-ticks");
     if (ticks && ticks.childElementCount === 0) renderTicks(ticks);
 
@@ -35,7 +48,7 @@ export function usePerformanceStage(root: RefObject<HTMLElement | null>) {
       start();
     }, { threshold: ENTRANCE_THRESHOLD });
     io.observe(stage);
-    return () => { io.disconnect(); clearTimeout(failsafe); };
+    return () => { io.disconnect(); media.disconnect(); clearTimeout(failsafe); };
     // refs are stable; run once after hydration
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
