@@ -11,6 +11,8 @@ const STORAGE_KEY = "glassnav:collapsed";
 const PROTRUSION_PX = 5;
 const SCROLL_THRESHOLD_PX = 40;
 const SECTION_THRESHOLD = 0.35;
+// Sections the capsule parks for without a cell of their own: say-hey parks on the home cell.
+const EXTRA_SECTIONS: ReadonlyArray<{ id: string; index: number }> = [{ id: "say-hey", index: 0 }];
 
 function subscribeScroll(cb: () => void) {
   window.addEventListener("scroll", cb, { passive: true });
@@ -125,8 +127,10 @@ export function useGlassNav({ controller, capsule, cells, classes }: Input) {
 
   // Active section: the cell whose anchor section is in view parks the capsule; otherwise cell 0.
   useEffect(() => {
-    const targets = cells
-      .map((cell, index) => ({ index, id: cell.href.includes("#") ? cell.href.slice(cell.href.indexOf("#") + 1) : null }))
+    const targets = [
+      ...cells.map((cell, index) => ({ index, id: cell.href.includes("#") ? cell.href.slice(cell.href.indexOf("#") + 1) : null })),
+      ...EXTRA_SECTIONS,
+    ]
       .filter((t): t is { index: number; id: string } => t.id !== null)
       .map((t) => ({ index: t.index, el: document.getElementById(t.id) }))
       .filter((t): t is { index: number; el: HTMLElement } => t.el !== null);

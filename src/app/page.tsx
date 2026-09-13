@@ -3,6 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { CaseStudySection } from "@/features/public/components/landing/CaseStudySection";
 import { ScrollHero } from "@/features/public/components/hero/ScrollHero";
 import { FaqSection } from "@/features/public/components/landing/FaqSection";
+import { SayHeySection } from "@/features/public/components/gaze-footer/SayHeySection";
 import { InkFooter } from "@/features/public/components/ink-footer/InkFooter";
 import { HowItWorksSection } from "@/features/public/components/landing/HowItWorksSection";
 import { MarketplaceShowcase } from "@/features/public/components/landing/MarketplaceShowcase";
@@ -45,6 +46,8 @@ export default async function HomePage() {
         <Reveal><PricingSection /></Reveal>
         <Reveal><FaqSection /></Reveal>
         <Reveal><CtaSection /></Reveal>
+        {/* The gaze-scrub character as a section (docs/reference/gaze-footer-spec.md), the ink footer follows. */}
+        <SayHeySection />
       </main>
       {/* The ink footer (docs/reference/ink-footer-spec.md); its cream/ink tokens live on .site-footer. */}
       <InkFooter />
