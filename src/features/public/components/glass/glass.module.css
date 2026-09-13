@@ -88,3 +88,31 @@
   .card { animation: none; }
   .chamfer, .frost { transition-duration: 0.01ms; }
 }
+
+/* ---- the same chrome for every landing card (GlassCard) ---- */
+.chrome {
+  position: relative; display: flex; flex-direction: column;
+  padding: 2rem; border-radius: 48px; overflow: hidden;
+  background: transparent; border: 1px solid rgba(47, 47, 47, 0.15); color: inherit;
+  animation: fade-slide-up-card 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-i, 0) * 60ms);
+}
+.chrome:hover .frost { background: rgba(255, 255, 255, 0.1); }
+.chrome .head { padding-bottom: 1rem; }
+.chrome .title { font-size: 1.125rem; }
+.chromeBody { position: relative; z-index: 2; display: flex; flex: 1; flex-direction: column; margin-top: 1.25rem; min-width: 0; }
+/* the static duplicate is hidden on phones: chrome only, no canvas */
+.dupStatic { display: none; }
+@media (min-width: 768px) { .dupStatic { display: block; } }
+@media (max-width: 640px) { .chrome { padding: 1.5rem; } }
+@media (prefers-reduced-motion: reduce) { .chrome { animation: none; } }
+
+/* ---- card sections: the hero still, blurred under a paper wash, as texture ---- */
+.backdropSection { position: relative; isolation: isolate; overflow: hidden; }
+.backdropImage {
+  position: absolute; inset: -18px; z-index: 0; pointer-events: none;
+  background: url("/backdrops/hero-still.jpg") center / cover no-repeat;
+  filter: blur(18px);
+}
+.backdropImage::after { content: ""; position: absolute; inset: 0; background: rgba(242, 240, 236, 0.55); }
+.backdropContent { position: relative; z-index: 1; }

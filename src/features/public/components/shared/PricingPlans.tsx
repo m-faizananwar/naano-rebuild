@@ -6,8 +6,8 @@ export function PricingPlans() {
   return (
     <div>
       <div className="grid gap-6 lg:grid-cols-2">
-        {PRICING.plans.map((plan) => (
-          <PricingPlanCard key={plan.eyebrow} plan={plan} />
+        {PRICING.plans.map((plan, index) => (
+          <PricingPlanCard key={plan.eyebrow} plan={plan} index={index} />
         ))}
       </div>
       <p className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground">

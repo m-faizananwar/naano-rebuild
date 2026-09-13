@@ -1,4 +1,5 @@
 import { SHOWCASE } from "../../constants";
+import { GlassCard } from "../glass/GlassCard";
 import { CreatorAvatar } from "../shared/CreatorAvatar";
 
 type Kind = (typeof SHOWCASE.stats)[number]["kind"];
@@ -43,14 +44,13 @@ function Illustration({ kind }: { kind: Kind }) {
   );
 }
 
-export function ShowcaseStatCard({ title, body, kind }: { title: string; body: string; kind: Kind }) {
+export function ShowcaseStatCard({ title, body, kind, index }: { title: string; body: string; kind: Kind; index: number }) {
   return (
-    <div className="rounded-2xl bg-linear-to-b from-background to-brand-soft/60 p-6 shadow-sm ring-1 ring-border/60">
+    <GlassCard title={title} index={index + 1} order={index} className="p-6">
       <div className="flex h-28 items-center">
         <Illustration kind={kind} />
       </div>
-      <h3 className="mt-4 text-lg font-semibold">{title}</h3>
-      <p className="text-sm text-muted-foreground">{body}</p>
-    </div>
+      <p className="mt-4 text-sm text-muted-foreground">{body}</p>
+    </GlassCard>
   );
 }

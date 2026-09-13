@@ -1,11 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { GlassCard } from "../glass/GlassCard";
+import { GlassSection } from "../glass/GlassSection";
 import { FAQ } from "../../constants";
 import { FaqList } from "../shared/FaqList";
 
 export function FaqSection() {
   return (
-    <section id="faq" className="scroll-mt-20 bg-background px-4 py-24 sm:px-6">
+    <GlassSection id="faq" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.6fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <h2 className="text-4xl font-bold tracking-[-0.03em] sm:text-5xl">{FAQ.title}</h2>
@@ -18,8 +20,10 @@ export function FaqSection() {
             </Link>
           </p>
         </div>
-        <FaqList items={FAQ.items} />
+        <GlassCard title="FAQ" index={1} className="p-6 sm:p-8">
+          <FaqList items={FAQ.items} />
+        </GlassCard>
       </div>
-    </section>
+    </GlassSection>
   );
 }

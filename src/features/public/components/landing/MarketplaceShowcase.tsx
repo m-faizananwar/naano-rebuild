@@ -1,6 +1,7 @@
 import { type PublicCreator, SHOWCASE, STATIC_SHOWCASE_CREATORS } from "../../constants";
 import { SectionHeading } from "../shared/SectionHeading";
 import { PublicCreatorCard } from "./PublicCreatorCard";
+import { GlassSection } from "../glass/GlassSection";
 import { ShowcaseStatCard } from "./ShowcaseStatCard";
 
 import { BRAND } from "@/config/brand";
@@ -8,7 +9,7 @@ export function MarketplaceShowcase({ creators }: { creators: PublicCreator[] })
   const list = creators.length > 0 ? creators : STATIC_SHOWCASE_CREATORS;
   const illustrative = creators.length === 0;
   return (
-    <section className="bg-background px-4 pb-24 sm:px-6">
+    <GlassSection className="px-4 pb-24 sm:px-6">
       <SectionHeading eyebrow={SHOWCASE.eyebrow} title={SHOWCASE.title} sub={SHOWCASE.sub} />
       <div className="relative mx-auto mt-14 max-w-6xl">
         <div className="rounded-[2rem] bg-linear-to-b from-brand-sky to-brand-soft p-3 pt-10 sm:p-6 sm:pt-14">
@@ -32,11 +33,11 @@ export function MarketplaceShowcase({ creators }: { creators: PublicCreator[] })
           </div>
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {SHOWCASE.stats.map((stat) => (
-            <ShowcaseStatCard key={stat.title} title={stat.title} body={stat.body} kind={stat.kind} />
+          {SHOWCASE.stats.map((stat, index) => (
+            <ShowcaseStatCard key={stat.title} title={stat.title} body={stat.body} kind={stat.kind} index={index} />
           ))}
         </div>
       </div>
-    </section>
+    </GlassSection>
   );
 }
